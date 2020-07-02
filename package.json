@@ -1,0 +1,25 @@
+{
+  "name": "fua.module.time",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/module.time.js",
+  "dependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "jest": {
+    "rootDir": "test",
+    "verbose": false,
+    "testRegex": "(\\.|/)test\\.js$"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@git02.int.nsc.ag:10022/Research/fua/lib/module.time.git"
+  },
+  "keywords": [
+    "time",
+    "time ontology"
+  ],
+  "author": "jlangkau@nicos-ag.com",
+  "license": ""
+}
