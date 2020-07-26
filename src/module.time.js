@@ -177,10 +177,10 @@ module.exports = (
 
         let
             //TODO: 0 <= day < 7
-            result      = {'@type': undefined, '@v': undefined}
+            result      = {'@type': undefined, '@value': undefined}
         ;
-        result['@v']    = dayOfWeek[day];
-        result['@type'] = ((result['@v'] !== undefined) ? "sxd:NonNegativeInteger" : undefined);
+        result['@value']    = dayOfWeek[day];
+        result['@type'] = ((result['@value'] !== undefined) ? "sxd:NonNegativeInteger" : undefined);
         return result;
     } // function dayOfWeek()
 
