@@ -134,7 +134,6 @@ module.exports = (
 
     // TODO: move to fua-t
     function daysInSeconds(days) {
-        //REM:  /** 7 * 31 */ 217 + /** 4 * 30 */ 120 = 337
         return days * dayInSeconds;
     } // function yearInSeconds
 
@@ -150,6 +149,7 @@ module.exports = (
         });
         return result;
     } // function monthsInSeconds
+
     ////region TEST
     //let monthsInSeconds_result;
     ////monthsInSeconds_result = monthsInSeconds(2019, 11);
@@ -158,13 +158,14 @@ module.exports = (
 
     // TODO: move to fua-t
     function yearInSeconds(year) {
-        //REM:  /** 7 * 31 */ 217 + /** 4 * 30 */ 120 = 337
         return (isLeapYear(year) ?  /** 337 + 29 */ 365 : /** 337 + 28 */ 366) * dayInSeconds;
     } // function yearInSeconds
+
     ////region TEST
     //let yearInSeconds_result;
     //yearInSeconds_result = yearInSeconds(2019);
     ////endregion TEST
+
     //endregion fn
 
     //region helper
@@ -249,7 +250,7 @@ module.exports = (
         '@type':           {value: "owl:Class"},
         //'rdfs:isDefinedBy': {value: `<${rdf_URI}>`},
         'rdfs:label':      {value: "Temporal entity"},
-        'rdfs:comment':    {value: "The class of RDF properties."},
+        'rdfs:comment':    {value: ""},
         'rdfs:subClassOf': {value: "owl:Thing"}
         ,
         '$serialize':      {
@@ -837,11 +838,11 @@ module.exports = (
         //    j['hasBeginning']['inTimePosition']['numericPosition']['@value']
         //)
         //    result = (
-            return (
-                i['hasEnd']['inTimePosition']['numericPosition']['@value']
-                <
-                j['hasBeginning']['inTimePosition']['numericPosition']['@value']
-            );
+        return (
+            i['hasEnd']['inTimePosition']['numericPosition']['@value']
+            <
+            j['hasBeginning']['inTimePosition']['numericPosition']['@value']
+        );
 
         //return result;
     } // function Before()
