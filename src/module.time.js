@@ -35,7 +35,9 @@ module.exports = (
         time            = {},
         trs_Unix_time   = "http://dbpedia.org/resource/Unix_time",
         //spaced         = false, // REM: NOT brought to space
-        _trs            = new Map([[trs_Unix_time, trs_Unix_time]])
+        _trs            = new Map([[trs_Unix_time, trs_Unix_time]]),
+        //meanDay = new Date("1962-10-12")
+        meanDay         = "1962-10-12"
     ; // const
 
     //region fn
@@ -277,21 +279,9 @@ module.exports = (
     }); // Object.defineProperties(TemporalEntity)
 
     function Instant(dateTimeStamp) {
-        //let
-        //    node             = {
-        //        'date':        buildDate(dateTimeStamp),
-        //        'hasDuration': 0
-        //    }
-        //;
-        //node['hasBeginning'] = node['hasEnd'] = (node['date'].valueOf() / 1000.0);
-        //node['hasDuration']  = 0;
-        //return node;
-
-        this['date']        = buildDate(dateTimeStamp);
-        this['hasDuration'] = 0;
-
+        this['date']         = buildDate(dateTimeStamp);
+        this['hasDuration']  = 0;
         this['hasBeginning'] = this['hasEnd'] = (this['date'].valueOf() / 1000.0);
-        //return this;
     }
 
     Object.defineProperties(Instant['prototype'], {
@@ -300,119 +290,57 @@ module.exports = (
 
                 let node = {
                     'inTimePosition': {
+                        '@type':           "time:TimePosition",
+                        'hasTRS':          "<http://dbpedia.org/resource/Unix_time>",
                         'numericPosition': {
+                            '@type':  "xsd:decimal",
                             '@value': this['hasBeginning']
                         }
                     }
                 };
                 Object.defineProperties(node, {
-                    '@type':                  {value: "time:Instant"},
-                    'hasBeginning':           {
-                        value: node
-                    },
-                    'hasEnd':                 {
-                        value: node
-                    },
-                    'hasDuration':            {
+                    '@type':              {value: "time:Instant"},
+                    'hasBeginning':       {value: node},
+                    'hasEnd':             {value: node},
+                    'hasDuration':        {
                         value: {
                             '@type':           "time:Duration",
                             'numericDuration': 0,
                             'unitType':        "time:unitSecond"
+                        }
+                    },
+                    'inXSDDateTimeStamp': {
+                        value: this['date'].toISOString()
+                    },
+                    'inXSDgYear':         {
+                        value: this['date']['getFullYear']()
+                    },
+                    'inXSDgYearMonth':    {
+                        value: `${this['date']['getFullYear']()}-${padZero(this['date']['getMonth']() + 1)}`
+                    },
+                    /**
+                     :inDateTime [
+                     a :DateTimeDescription ;
+                     :day "---01"^^xsd:gDay ;
+                     :hour "17"^^xsd:nonNegativeInteger ;
+                     :minute "58"^^xsd:nonNegativeInteger ;
+                     :month "--11"^^xsd:gMonth ;
+                     :second 16.102 ;
+                     :timeZone <http://dbpedia.org/page/Coordinated_Universal_Time> ;
+                     :year "2015"^^xsd:gYear ;
+                     ] ;
+                     */
+                    'inDateTime':         {
+                        value: {
+                            '@type':     "time:DateTimeDescription",
+                            'time:day':  {'@type': "xsd:gDay", '@value': `---${padZero(this['date'].getDay())}`},
+                            'time:hour': {'@type': "xsd:nonNegativeInteger", '@value': this['date'].getHours()}
                         }
                     }
                 });
                 return node;
             }
         }
-
-    }); // Object.defineProperties(Instant)
-
-    function HOLD_Instant(node, parameter) {
-        node = node || {};
-
-        let
-            date                        = buildDate(parameter['dateTimeStamp']),
-            inNumericTimePosition       = (date.valueOf() / 1000.0),
-            hasEndInNumericTimePosition = (date.valueOf() / 1000.0)
-        ;
-
-        Object.defineProperties(node, {
-            '@type':                  {value: (node['@type'] || Instant['@id'])},
-            '$inScriptDate':          {value: date},
-            '$inNumericTimePosition': {
-                //REM: short cut node.inTimePosition.numericPosition
-                value: inNumericTimePosition
-            },
-            //
-            'inTimePosition':         {
-                get: () => {
-                    return {
-                        'rdf:type':        "time:TimePosition",
-                        'hasTRS':          "<http://dbpedia.org/resource/Unix_time>",
-                        'numericPosition': inNumericTimePosition
-                    };
-                }
-            },
-            'inXSDDateTimeStamp':     {
-                get: () => {
-                    return node['$inScriptDate'].toISOString()
-                }
-            },
-            'inXSDgYear':             {
-                get: () => {
-                    return node['$inScriptDate']['getFullYear']()
-                }
-            },
-            'inXSDgYearMonth':        {
-                get: () => {
-                    return `${node['$inScriptDate']['getFullYear']()}-${padZero(node['$inScriptDate']['getMonth']() + 1)}`;
-                }
-            },
-            'inDateTime':             {
-                get: () => {
-                    return {
-                        '@type':     "time:DateTimeDescription",
-                        'time:day':  {'@type': "xsd:gDay", '@value': `---${padZero(date.getDay())}`},
-                        'time:hour': {'@type': "xsd:nonNegativeInteger", '@value': date.getHours()}
-                    };
-                }
-            },
-            /**
-             :inDateTime [
-             a :DateTimeDescription ;
-             :day "---01"^^xsd:gDay ;
-             :hour "17"^^xsd:nonNegativeInteger ;
-             :minute "58"^^xsd:nonNegativeInteger ;
-             :month "--11"^^xsd:gMonth ;
-             :second 16.102 ;
-             :timeZone <http://dbpedia.org/page/Coordinated_Universal_Time> ;
-             :year "2015"^^xsd:gYear ;
-             ] ;
-             */
-            //
-            'hasBeginning':           {
-                value: node
-            },
-            'hasEnd':                 {
-                value: node
-            },
-            'hasDuration':            {
-                value: {
-                    '@type':           "time:Duration",
-                    'numericDuration': 0,
-                    'unitType':        "time:unitSecond"
-                }
-            }
-        });
-        node = new TemporalEntity(node, parameter);
-        Object.seal(node);
-        return node;
-    } // function Instant
-    Object.defineProperties(HOLD_Instant, {
-        '@id':        {value: `${namespace}:Instant`},
-        '@type':      {value: "owl:Class"},
-        //'rdfs:isDefinedBy': {value: `<${rdf_URI}>`},
-        'rdfs:label': {value: "Time instant"}
     }); // Object.defineProperties(Instant)
 
     function Interval(node, parameter) {
