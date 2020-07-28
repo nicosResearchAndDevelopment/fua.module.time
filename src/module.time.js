@@ -156,7 +156,7 @@ module.exports = (
     // TODO: move to fua-t
     function daysInSeconds(days) {
         return days * dayInSeconds;
-    } // function yearInSeconds
+    } // function daysInSeconds
 
     // TODO: move to fua-t
     function monthsInSeconds(year, months) {
@@ -233,51 +233,6 @@ module.exports = (
 
     //endregion helper
 
-    //function TRS(config, node) {
-    //    node = node || {};
-    //    node = owl['Thing'](node, parameter);
-    //    node = IM['$instance_serializer'](node, TRS);
-    //    return node;
-    //} // function TRS ()
-
-    //Object.defineProperties(TRS, {
-    //    //'@id':              {value: `${namespace}${vocab}BasicContainer`},
-    //    '@id':              {value: `${namespace}:TRS`},
-    //    '@type':            {value: "owl:Thing"},
-    //    'rdfs:label':       {value: "TRS"},
-    //    'rdfs:comment':     {value: ""},
-    //    'rdfs:subClassOf':  {value: [{'@id': "ldp:Container"}]},
-    //    "rdfs:isDefinedBy": {value: [{"@id": "http://www.w3.org/ns/ldp#"}]}
-    //    ,
-    //    '$serialize':       {
-    //        value: (instance, node) => {
-    //            node = owl['Thing']['$serialize'](instance, node, /** TODO */ parameter);
-    //            return node;
-    //        }
-    //    }
-    //}); // Object.defineProperties(TRS)
-
-    function TemporalEntity(node, parameter) {
-        node = node || {'@id': `urn:${uuid()}`};
-        //node['@id']   = node['@id'] || `urn:${uuid()}`;
-        //node['@type'] = node['@type'] || TemporalEntity['@id'];
-        //node          = owl['Thing'](node, parameter);
-        //node          = IM['$instance_serializer'](node, TemporalEntity);
-
-        Object.defineProperties(node, {
-            '@id':   {value: (node['@id'] || `urn:${uuid()}`)},
-            '@type': {value: (node['@type'] || TemporalEntity['@id'])}
-        });
-
-        return node;
-    } // function TemporalEntity
-    Object.defineProperties(TemporalEntity, {
-        '@id':        {value: `${namespace}:TemporalEntity`},
-        '@type':      {value: "owl:Class"},
-        //'rdfs:isDefinedBy': {value: `<${rdf_URI}>`},
-        'rdfs:label': {value: "Temporal entity"}
-    }); // Object.defineProperties(TemporalEntity)
-
     function Instant(dateTimeStamp) {
         this['date']         = buildDate(dateTimeStamp);
         this['hasDuration']  = 0;
@@ -343,29 +298,72 @@ module.exports = (
         }
     }); // Object.defineProperties(Instant)
 
-    function Interval(node, parameter) {
-        node['@type'] = node['@type'] || Interval['@id'];
-        node          = new TemporalEntity(node, parameter);
-        return node;
-    } // function Instant
-    Object.defineProperties(Interval, {
-        '@id':        {value: `${namespace}:Interval`},
-        '@type':      {value: "owl:Class"},
-        //'rdfs:isDefinedBy': {value: `<${rdf_URI}>`},
-        'rdfs:label': {value: "Time interval"}
-    }); // Object.defineProperties(Interval)
+    function ProperInterval(hasBeginning, hasEnd /** hasDuration */) {
+        this['dateHasBeginning'] = buildDate(hasBeginning);
+        this['dateHasEnd']       = buildDate(hasEnd);
+        this['hasBeginning']     = (this['dateHasBeginning'].valueOf() / 1000.0);
+        this['hasEnd']           = (this['dateHasEnd'].valueOf() / 1000.0);
+        this['hasDuration']      = (this['hasEnd'] - this['hasBeginning']);
+    }
 
-    function ProperInterval(node, parameter) {
-        node['@type'] = node['@type'] || ProperInterval['@id'];
-        node          = new Interval(node, parameter);
-        return node;
-    } // function Instant
-    Object.defineProperties(ProperInterval, {
-        '@id':        {value: `${namespace}:ProperInterval`},
-        '@type':      {value: "owl:Class"},
-        //'rdfs:isDefinedBy': {value: `<${rdf_URI}>`},
-        'rdfs:label': {value: "Proper time interval"}
-    }); // Object.defineProperties(ProperInterval)
+    Object.defineProperties(Instant['prototype'], {
+        '$serialize': {
+            value: function () {
+
+                let node = {
+                    'inTimePosition': {
+                        '@type':           "time:TimePosition",
+                        'hasTRS':          "<http://dbpedia.org/resource/Unix_time>",
+                        'numericPosition': {
+                            '@type':  "xsd:decimal",
+                            '@value': this['hasBeginning']
+                        }
+                    }
+                };
+                Object.defineProperties(node, {
+                    '@type':              {value: "time:Instant"},
+                    'hasBeginning':       {value: node},
+                    'hasEnd':             {value: node},
+                    'hasDuration':        {
+                        value: {
+                            '@type':           "time:Duration",
+                            'numericDuration': 0,
+                            'unitType':        "time:unitSecond"
+                        }
+                    },
+                    'inXSDDateTimeStamp': {
+                        value: this['date'].toISOString()
+                    },
+                    'inXSDgYear':         {
+                        value: this['date']['getFullYear']()
+                    },
+                    'inXSDgYearMonth':    {
+                        value: `${this['date']['getFullYear']()}-${padZero(this['date']['getMonth']() + 1)}`
+                    },
+                    /**
+                     :inDateTime [
+                     a :DateTimeDescription ;
+                     :day "---01"^^xsd:gDay ;
+                     :hour "17"^^xsd:nonNegativeInteger ;
+                     :minute "58"^^xsd:nonNegativeInteger ;
+                     :month "--11"^^xsd:gMonth ;
+                     :second 16.102 ;
+                     :timeZone <http://dbpedia.org/page/Coordinated_Universal_Time> ;
+                     :year "2015"^^xsd:gYear ;
+                     ] ;
+                     */
+                    'inDateTime':         {
+                        value: {
+                            '@type':     "time:DateTimeDescription",
+                            'time:day':  {'@type': "xsd:gDay", '@value': `---${padZero(this['date'].getDay())}`},
+                            'time:hour': {'@type': "xsd:nonNegativeInteger", '@value': this['date'].getHours()}
+                        }
+                    }
+                });
+                return node;
+            }
+        }
+    }); // Object.defineProperties(Instant)
 
     //region functions
 
