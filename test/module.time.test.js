@@ -8,7 +8,7 @@ const
         uuid
     });
 
-decribe("$buildDate should", () => {
+describe("$buildDate should", () => {
 
     test("return a time:Instant from a numeric value", () => {
         expect(time.$buildDate(1337)).toBeInstanceOf(time.Instant);
