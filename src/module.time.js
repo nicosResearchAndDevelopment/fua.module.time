@@ -4,11 +4,12 @@ module.exports = (
     {
         'root':          root = "1/",
         'namespace':     namespace = "time",
-        'setInstanceId': setInstanceId = true
+        'setInstanceId': setInstanceId = true,
+        'map':           map = new Map()
     }) => {
 
     const
-        map                            = new Map(),
+
         prefix                         = namespace, // "fua-t"
         //
         secondInMilliseconds           = 1000,
@@ -36,28 +37,117 @@ module.exports = (
         month31inSeconds               = month30inSeconds + dayInSeconds,
         month31inMilliseconds          = Math.floor(month31inSeconds * secondInMilliseconds),
         months                         = {
-            0:  {'days': 31, 'seconds': month31inSeconds},
-            1:  {
-                28: {'days': 28, 'seconds': month28inSeconds, 'milliseconds': month28inMilliseconds},
-                29: {'days': 29, 'seconds': month29inSeconds, 'milliseconds': month29inMilliseconds}
+            0:  {
+                'days': 31, 'seconds': month31inSeconds,
+                'label':               {
+                    'long':  {'en': "january"},
+                    'short': {'en': "jan"}
+                },
+                'next':                1
             },
-            2:  {'days': 31, 'seconds': month31inSeconds, 'milliseconds': month31inMilliseconds},
-            3:  {'days': 30, 'seconds': month30inSeconds, 'milliseconds': month30inMilliseconds},
-            4:  {'days': 31, 'seconds': month31inSeconds, 'milliseconds': month31inMilliseconds},
-            5:  {'days': 30, 'seconds': month30inSeconds, 'milliseconds': month30inMilliseconds},
-            6:  {'days': 31, 'seconds': month31inSeconds, 'milliseconds': month31inMilliseconds},
-            7:  {'days': 31, 'seconds': month31inSeconds, 'milliseconds': month31inMilliseconds},
-            8:  {'days': 30, 'seconds': month30inSeconds, 'milliseconds': month30inMilliseconds},
-            9:  {'days': 31, 'seconds': month31inSeconds, 'milliseconds': month31inMilliseconds},
-            10: {'days': 30, 'seconds': month30inSeconds, 'milliseconds': month30inMilliseconds},
-            11: {'days': 31, 'seconds': month31inSeconds, 'milliseconds': month31inMilliseconds}
+            1:  {
+                28:      {
+                    'days': 28, 'seconds': month28inSeconds, 'milliseconds': month28inMilliseconds
+                },
+                29:      {
+                    'days': 29, 'seconds': month29inSeconds, 'milliseconds': month29inMilliseconds
+                },
+                'label': {
+                    'long':  {'en': "february"},
+                    'short': {'en': "feb"}
+                },
+                'next':  2
+            },
+            2:  {
+                'days': 31, 'seconds': month31inSeconds, 'milliseconds': month31inMilliseconds,
+                'label':                                                 {
+                    'long':  {'en': "march"},
+                    'short': {'en': "mar"}
+                },
+                'next':                                                  3
+            },
+            3:  {
+                'days': 30, 'seconds': month30inSeconds, 'milliseconds': month30inMilliseconds,
+                'label':                                                 {
+                    'long':  {'en': "april"},
+                    'short': {'en': "apr"}
+                },
+                'next':                                                  4
+            },
+            4:  {
+                'days': 31, 'seconds': month31inSeconds, 'milliseconds': month31inMilliseconds,
+                'label':                                                 {
+                    'long':  {'en': "may"},
+                    'short': {'en': "may"}
+                },
+                'next':                                                  5
+            },
+            5:  {
+                'days': 30, 'seconds': month30inSeconds, 'milliseconds': month30inMilliseconds,
+                'label':                                                 {
+                    'long':  {'en': "june"},
+                    'short': {'en': "jun"}
+                },
+                'next':                                                  6
+            },
+            6:  {
+                'days': 31, 'seconds': month31inSeconds, 'milliseconds': month31inMilliseconds,
+                'label':                                                 {
+                    'long':  {'en': "july"},
+                    'short': {'en': "jul"}
+                },
+                'next':                                                  7
+            },
+            7:  {
+                'days': 31, 'seconds': month31inSeconds, 'milliseconds': month31inMilliseconds,
+                'label':                                                 {
+                    'long':  {'en': "august"},
+                    'short': {'en': "aug"}
+                },
+                'next':                                                  8
+            },
+            8:  {
+                'days': 30, 'seconds': month30inSeconds, 'milliseconds': month30inMilliseconds,
+                'label':                                                 {
+                    'long':  {'en': "september"},
+                    'short': {'en': "sep"}
+                }
+                ,
+                'next':                                                  9
+            },
+            9:  {
+                'days': 31, 'seconds': month31inSeconds, 'milliseconds': month31inMilliseconds,
+                'label':                                                 {
+                    'long':  {'en': "october"},
+                    'short': {'en': "oct"}
+                }
+                ,
+                'next':                                                  10
+            },
+            10: {
+                'days': 30, 'seconds': month30inSeconds, 'milliseconds': month30inMilliseconds,
+                'label':                                                 {
+                    'long':  {'en': "november"},
+                    'short': {'en': "nov"}
+                },
+                'next':                                                  11
+            },
+            11: {
+                'days': 31, 'seconds': month31inSeconds, 'milliseconds': month31inMilliseconds,
+                'label':                                                 {
+                    'long':  {'en': "december"},
+                    'short': {'en': "dec"}
+                }
+                ,
+                'next':                                                  0
+            }
         },
         leapYearInDays                 = 366, // 7 * 31 = 217, 4 * 30 = 120, 29
         leapYearInSeconds              = (leapYearInDays * dayInSeconds),
         leapYearInMilliseconds         = (leapYearInDays * dayInMilliseconds),
         nonLeapYearInDays              = 365,
-        nonLeapInSeconds               = (nonLeapYearInDays * dayInSeconds), // 7 * 31 = 217, 4 * 30 = 120, 29
-        nonLeapInMilliseconds          = (nonLeapYearInDays * dayInMilliseconds),
+        nonLeapYearInSeconds           = (nonLeapYearInDays * dayInSeconds), // 7 * 31 = 217, 4 * 30 = 120, 29
+        nonLeapYearInMilliseconds      = (nonLeapYearInDays * dayInMilliseconds),
         monthsWithoutFebInSeconds      = Math.floor((7 * month31inSeconds) + (4 * month30inSeconds)),
         monthsWithoutFebInMilliseconds = Math.floor(monthsWithoutFebInSeconds * secondInMilliseconds),
         //
@@ -101,6 +191,7 @@ module.exports = (
         return result;
     } // buildDate()
 
+    // TIODO: noch nicht benutzt und auch nic richtig
     function buildTemporalEntities(i, j, trs) {
         trs = trs || context['$trs'] || "marzipanhausen";
         let _i, _j;
@@ -150,6 +241,17 @@ module.exports = (
         } // if ()
         return {'_i': _i, '_j': _j};
     } // buildTemporalProperties()
+
+    function moduloAndRest(value, divisor) {
+        return [Math.floor((value / divisor)), (value % divisor)];
+    }
+
+    ////region TEST
+    //let grunz = moduloAndRest(8, 3);
+    //grunz = moduloAndRest((dayInMilliseconds * 3) + 100, dayInMilliseconds);
+    //grunz = 0;
+    //throw new Error();
+    ////endregion TEST
 
     function padZero(value) {
         return ((value === undefined) ? "00" : ((value < 10) ? `0${value}` : `${value}`));
@@ -297,25 +399,39 @@ module.exports = (
         return ((result === "P") ? durationZeroPeriod : result);
     } // xsdDuration2durationArray()
 
-    function durationFromDatesDiff2xsdDuration(diff, leapDays) {
-        // REM: "+" so it is positive ever?!?
-        //return durationArray2xsdDuration(["+", (diff.getUTCFullYear() - 1970), diff.getUTCMonth(), (diff.getUTCDate() - (1 + leapDays)), diff.getUTCHours(), diff.getUTCMinutes(), (diff.getUTCSeconds() + (diff.getUTCMilliseconds() / 1000))]);
-        //return durationArray2xsdDuration(["+", (diff.getUTCFullYear() - 1970), diff.getUTCMonth(), (diff.getUTCDate() - ((leapDays === 0) ? 1 : ((leapDays === 1) ? 2 : 2))), diff.getUTCHours(), diff.getUTCMinutes(), (diff.getUTCSeconds() + (diff.getUTCMilliseconds() / 1000))]);
-        //return durationArray2xsdDuration(["+", (diff.getUTCFullYear() - 1970), diff.getUTCMonth(), (diff.getUTCDate() - ((leapDays > 0) ? 2 : 1)), diff.getUTCHours(), diff.getUTCMinutes(), (diff.getUTCSeconds() + (diff.getUTCMilliseconds() / 1000))]);
-        //return durationArray2xsdDuration(["+", (diff.getUTCFullYear() - 1970), diff.getUTCMonth(), (diff.getUTCDate() - ((leapDays === 0) ? 1 : leapDays)), diff.getUTCHours(), diff.getUTCMinutes(), (diff.getUTCSeconds() + (diff.getUTCMilliseconds() / 1000))]);
-        return durationArray2xsdDuration(["+", (diff.getUTCFullYear() - 1970), diff.getUTCMonth(), (diff.getUTCDate() - ((leapDays > 1) ? 2 : 1)), diff.getUTCHours(), diff.getUTCMinutes(), (diff.getUTCSeconds() + (diff.getUTCMilliseconds() / 1000))]);
-    } // durationFromDates2xsdDuration()
+    //function durationFromDatesDiff2xsdDuration(diff, leapDays) {
+    //    // REM: "+" so it is positive ever?!?
+    //    //return durationArray2xsdDuration(["+", (diff.getUTCFullYear() - 1970), diff.getUTCMonth(), (diff.getUTCDate() - (1 + leapDays)), diff.getUTCHours(), diff.getUTCMinutes(), (diff.getUTCSeconds() + (diff.getUTCMilliseconds() / 1000))]);
+    //    //return durationArray2xsdDuration(["+", (diff.getUTCFullYear() - 1970), diff.getUTCMonth(), (diff.getUTCDate() - ((leapDays === 0) ? 1 : ((leapDays === 1) ? 2 : 2))), diff.getUTCHours(), diff.getUTCMinutes(), (diff.getUTCSeconds() + (diff.getUTCMilliseconds() / 1000))]);
+    //    //return durationArray2xsdDuration(["+", (diff.getUTCFullYear() - 1970), diff.getUTCMonth(), (diff.getUTCDate() - ((leapDays > 0) ? 2 : 1)), diff.getUTCHours(), diff.getUTCMinutes(), (diff.getUTCSeconds() + (diff.getUTCMilliseconds() / 1000))]);
+    //    //return durationArray2xsdDuration(["+", (diff.getUTCFullYear() - 1970), diff.getUTCMonth(), (diff.getUTCDate() - ((leapDays === 0) ? 1 : leapDays)), diff.getUTCHours(), diff.getUTCMinutes(), (diff.getUTCSeconds() + (diff.getUTCMilliseconds() / 1000))]);
+    //    return durationArray2xsdDuration(["+", (diff.getUTCFullYear() - 1970), diff.getUTCMonth(), (diff.getUTCDate() - ((leapDays > 1) ? 2 : 1)), diff.getUTCHours(), diff.getUTCMinutes(), (diff.getUTCSeconds() + (diff.getUTCMilliseconds() / 1000))]);
+    //} // durationFromDates2xsdDuration()
 
     function durationFromDates2xsdDuration(beginning, end) {
+        let
+            diffInMilliseconds = (end - beginning),
+            calc,
+            durationArray      = ["+", 0, 0, 0, 0, 0, 0]
+        ;
 
-        const utc_beginning = Date.UTC(beginning.getFullYear(), beginning.getMonth(), beginning.getDate(), beginning.getHours(), beginning.getMinutes(), (beginning.getSeconds() + (beginning.getMilliseconds() / 1000)));
-        const utc_end = Date.UTC(end.getFullYear(), end.getMonth(), end.getDate(), end.getHours(), end.getMinutes(), (end.getSeconds() + (end.getMilliseconds() / 1000)));
-
-        //return durationFromDatesDiff2xsdDuration(new Date(end['getTime']() - beginning['getTime']()), getNumberOfLeapDaysFromInterval({
-        return durationFromDatesDiff2xsdDuration(new Date(utc_end - utc_beginning), getNumberOfLeapDaysFromInterval({
-            'dateBeginning': beginning,
-            'dateEnd':       end
-        }));
+        if (diffInMilliseconds !== 0) {
+            calc             = moduloAndRest(diffInMilliseconds, dayInMilliseconds);
+            durationArray[3] = calc[0];
+            if (calc[1] !== 0) {
+                calc             = moduloAndRest(calc[1], hourInMilliseconds);
+                durationArray[4] = calc[0];
+                if (calc[1] !== 0) {
+                    calc             = moduloAndRest(calc[1], minuteInMilliseconds);
+                    durationArray[5] = calc[0];
+                    if (calc[1] !== 0) {
+                        calc             = moduloAndRest(calc[1], secondInMilliseconds);
+                        durationArray[6] = (calc[0] + (calc[1] / 1000));
+                    } // if ()
+                } // if ()
+            } // if ()
+        } // if()
+        return durationArray2xsdDuration(durationArray);
     } // durationFromDates2xsdDuration()
 
     function durationFromInstants2xsdDuration(beginning, end) {
@@ -331,7 +447,7 @@ module.exports = (
     function getNumberOfLeapDaysFromInterval(interval) {
         // TODO: das sollte man DEFINITV anders, intelligenter machen...
         let
-            feb  = (interval['dateBeginning']['getMonth']() <= 1),
+            feb        = (interval['dateBeginning']['getMonth']() <= 1),
             afterFeb   = (interval['dateEnd']['getMonth']() > 1),
             start_year = ((interval['dateBeginning']['getMonth']() < 2) ? interval['dateBeginning']['getFullYear']() : (interval['dateBeginning']['getFullYear']() + 1)),
             end_year   = ((interval['dateEnd']['getMonth']() > 1) ? interval['dateEnd']['getFullYear']() : (interval['dateEnd']['getFullYear']() - 1)),
@@ -355,15 +471,243 @@ module.exports = (
     } // function now()
 
     class Year {
+
+        #year     = null;
+        #isLeap   = null; // !!!
+        #months   = null; // !!!
+        #quarters = null; // !!!
+        #halfs    = null; // !!!
+
         constructor(year) {
             if (setInstanceId) this['@id'] = `${root}years/${year}/`
+            this['@type']          = `${prefix}:Year`;
             //this['properInterval'] = new ProperInterval(new Instant(new Date(year, 0, 1)), new Instant(new Date(year, 11, 31)));
-            this['year']           = year;
+            this.#year             = year;
             this['xsd:gYear']      = `${this['year']}`;
+            this['xsd:duration']   = `P1Y`;
             this['properInterval'] = new ProperInterval(new Instant(new Date(year, 0, 1)), new Instant(new Date((year + 1), 0, 1)));
             //this['workingWeeks']   = [];
         } // constructor
+
+        get year() {
+            return this.#year;
+        }
+
+        get isLeapYear() {
+            if (this.#isLeap === null)
+                this.#isLeap = isLeapYear(this.#year)
+            return this.#isLeap;
+        }
+
+        get inDays() {
+            return ((this.#isLeap) ? leapYearInDays : nonLeapYearInDays);
+        }
+
+        get inSeconds() {
+            return ((this.#isLeap) ? leapYearInSeconds : nonLeapYearInSeconds);
+        }
+
+        get months() {
+            if (this.#months === null) {
+                this.#months = [];
+                let series = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+                series.map(i => {
+                    this.#months.push(new Month(/** year */ this, i));
+                });
+            } // if ()
+            return this.#months;
+        }
+
+        get quarters() {
+            if (this.#quarters === null) {
+                this.#quarters = [];
+                let series = [1, 2, 3, 4];
+                series.map(i => {
+                    this.#quarters.push(new QuarterOfYear(/** year */ this, i));
+                });
+            } // if ()
+            return this.#quarters;
+        }
+
+        get halfs() {
+            if (this.#halfs === null) {
+                this.#halfs = [];
+                let series = [0, 1];
+                series.map(i => {
+                    this.#halfs.push(new HalfOfYear(/** year */ this, i));
+                });
+            } // if ()
+            return this.#halfs;
+        }
+
     } // class Year()
+
+    class HalfOfYear {
+
+        #year = null;
+        #half = null;
+
+        constructor(/** class */ year, /** 1-2 */ half) {
+            if (setInstanceId) this['@id'] = `${root}years/${year['year']}/h${half}/`
+            this['@type']          = `${prefix}:QuarterOfYear`;
+            //this['properInterval'] = new ProperInterval(new Instant(new Date(year, 0, 1)), new Instant(new Date(year, 11, 31)));
+            this.#year             = year;
+            this.#half             = half;
+            this['xsd:duration']   = `P6M`;
+            this['properInterval'] = new ProperInterval(
+                new Instant(new Date(year['year'], [undefined, 0, 6][half], 1)),
+                new Instant(new Date(((half === 2) ? (year['year'] + 1) : year['year']), 6, 1))
+            );
+        } // constructor
+
+        get year() {
+            return this.#year;
+        }
+
+        get half() {
+            return this.#half;
+        }
+
+        get months() {
+            throw new Error();
+        }
+
+        get quarters() {
+            throw new Error();
+        }
+
+    } // class HalfOfYear()
+
+    class QuarterOfYear {
+
+        #year    = null;
+        #quarter = null;
+        #months = null; // !!!
+
+        constructor(/** class */ year, /** 1-4 */ quarter) {
+            if (setInstanceId) this['@id'] = `${root}years/${year['year']}/q${quarter}/`
+            this['@type']          = `${prefix}:QuarterOfYear`;
+            //this['properInterval'] = new ProperInterval(new Instant(new Date(year, 0, 1)), new Instant(new Date(year, 11, 31)));
+            this.#year             = year;
+            this.#quarter          = quarter;
+            this['xsd:duration']   = `P3M`;
+            //this['properInterval'] = new ProperInterval(
+            //    new Instant(new Date(year['year'], ([undefined, 0, 3, 6, 9][this.#quarter]), 1)),
+            //    new Instant(new Date(((this.#quarter === 4) ? (year['year'] + 1) : year['year']), ([undefined, 3, 6, 9, 0][this.#quarter]), 1))
+            //);
+            let date = new Date(((this.#quarter === 4) ? (year['year'] + 1) : year['year']), ([undefined, 3, 6, 9, 0][this.#quarter]), 1, 0,0,0);
+            date = new Date("2020-04-01T13:11:11");
+            date = new Date(2020, 11, 1, 0,0,0);
+            this['properInterval'] = new ProperInterval(
+                new Date(year['year'], ([undefined, 0, 3, 6, 9][this.#quarter]), 1),
+                new Date(((this.#quarter === 4) ? (year['year'] + 1) : year['year']), ([undefined, 3, 6, 9, 0][this.#quarter]), 1)
+            );
+        } // constructor
+
+        get year() {
+            return this.#year;
+        }
+
+        get quarter() {
+            return this.#quarter;
+        }
+
+        get months() {
+            throw new Error();
+        }
+
+    } // class QuarterOfYear()
+
+    class Month {
+
+        #year  = null;
+        #month = null;
+        #days  = null; // !!!
+
+        constructor(/** class */ year, /** 0-11 */ month) {
+            if (setInstanceId) this['@id'] = `${root}years/${year['year']}/${month}/`
+            this['@type']          = `${prefix}:Month`;
+            //this['properInterval'] = new ProperInterval(new Instant(new Date(year, 0, 1)), new Instant(new Date(year, 11, 31)));
+            this.#year             = year;
+            this.#month            = month;
+            this['xsd:gMonth']     = `--${padZero(month)}`;
+            this['xsd:duration']   = `P1M`;
+            this['properInterval'] = new ProperInterval(new Instant(new Date(year['year'], month, 1)), new Instant(new Date(((month === 11) ? (year['year'] + 1) : year['year']), ((month === 11) ? 0 : month), 1)));
+            //this['workingWeeks']   = [];
+        } // constructor
+
+        get year() {
+            return this.#year;
+        }
+
+        get month() {
+            return this.#month;
+        }
+
+        get inSeconds() {
+            return ((this.#month !== 1) ? months[this.#month]['seconds'] : ((this.#year['isLeap']) ? months[this.#month]['29']['seconds'] : months[this.#month]['28']['seconds']));
+        }
+
+        get days() {
+            if (this.#days === null) {
+                let amount = ((this.#month === 1) ? ((this.#year['isLeap']) ? months[1]['29']['days'] : months[1]['29']['days']) : months[this.#month]['days']) + 1;
+                this.#days = [];
+                for (let i = 1; i < amount; i++) {
+                    this.#days.push(new Day(this, i));
+                } // for (i)
+            } // if ()
+            return this.#days;
+        } // get days
+
+        label(language = "en") {
+            return (months[this.#month]['label']['long'][language] || months[this.#month]['label']['long']['en']);
+        }
+    } // class Month()
+
+    class Day {
+
+        #month = null;
+        #day   = null;
+
+        constructor(/** class */ month, day) {
+            if (setInstanceId) this['@id'] = `${month['@id']}${day}/`
+            this['@type'] = `${prefix}:Day`;
+            //this['properInterval'] = new ProperInterval(new Instant(new Date(year, 0, 1)), new Instant(new Date(year, 11, 31)));
+
+            this.#month            = month;
+            this.#day              = day;
+            this['xsd:gDay']       = `--${padZero(this.#day)}`;
+            this['xsd:duration']   = `P1D`;
+            this['properInterval'] = new ProperInterval(
+                new Instant(new Date(this.#month['year']['year'], this.#month['month'], day)),
+                new Instant(new Date((
+                        ((this.#month['month'] === 11) && (day === months['11']['days'])) ?
+                            (this.#month['year']['year'] + 1) :
+                            this.#month['year']['year']
+                    ),
+                    (((this.#month['month'] === 11) && (day === months['11']['days'])) ?
+                            0 :
+                            this.#month['month']
+                    ),
+                    (((this.#month['month'] === 11) && (day === months['11']['days'])) ?
+                            1 : (day + 1)
+                    )))
+            );
+            //this['workingWeeks']   = [];
+        } // constructor
+
+        get year() {
+            return this.#month['year'];
+        }
+
+        get month() {
+            return this.#month;
+        }
+
+        //label(language = "en") {
+        //    return (months[this.#month]['label']['long'][language] || months[this.#month]['label']['long']['en']);
+        //}
+    } // class Day()
 
     //class CalenderWeek {
     //    constructor(year) {
@@ -373,29 +717,29 @@ module.exports = (
     //        this['workingWeeks']   = []
     //    } // constructor
     //} // class CalenderWeek()
-
-    function InsideWorkingWeek(year, workingWeek, temporalEntity) {
-        let
-            properInterval,
-            result = false
-        ;
-        switch (typeof year) {
-            case "number":
-                properInterval = new Year(year)['properInterval'];
-                break;
-            case "object":
-            default:
-                if (year instanceof ProperInterval) {
-                    properInterval = year;
-                } else if (year instanceof Year) {
-                    properInterval = year['properInterval'];
-                } else {
-                    return false;
-                } // if ()
-                break; // default, object
-        } // switch()
-        return result;
-    }
+    //
+    //function InsideCalendaryWeek(year, workingWeek, temporalEntity) {
+    //    let
+    //        properInterval,
+    //        result = false
+    //    ;
+    //    switch (typeof year) {
+    //        case "number":
+    //            properInterval = new Year(year)['properInterval'];
+    //            break;
+    //        case "object":
+    //        default:
+    //            if (year instanceof ProperInterval) {
+    //                properInterval = year;
+    //            } else if (year instanceof Year) {
+    //                properInterval = year['properInterval'];
+    //            } else {
+    //                return false;
+    //            } // if ()
+    //            break; // default, object
+    //    } // switch()
+    //    return result;
+    //} // InsideCalendaryWeek()
 
     //endregion individuals
 
@@ -528,8 +872,8 @@ module.exports = (
         //this['xsdDuration'] = durationFromDates2xsdDuration(this['dateBeginning'], this['dateEnd']);
 
         //if (setInstanceId) this['@id'] =
-        `${root}/time/instant/${xsdDateTimeStamp2id(this['dateBeginning']['toISOString']())}-${xsdDateTimeStamp2id(this['dateEnd']['toISOString']())}`
-        ;
+        //`${root}/time/instant/${xsdDateTimeStamp2id(this['dateBeginning']['toISOString']())}-${xsdDateTimeStamp2id(this['dateEnd']['toISOString']())}`
+        //;
         //node = map.get(this['@id']);
         //if (!node) {
         //    node                = this;
@@ -570,8 +914,8 @@ module.exports = (
     //region binary operators
 
     function Before(i, j) {
-        if (!properLeftRight())
-            throw new Error();
+        //if (!properLeftRight())
+        //    throw new Error();
         return (
             i['end']
             <
