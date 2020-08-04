@@ -138,37 +138,3 @@ describe("time.ProperInterval should", () => {
 
 });
 
-describe("time.Before should", () => {
-
-    const
-        now = Date.now(),
-        t1 = new time.Instant(now),
-        t2 = new time.ProperInterval(now - 100, now + 100),
-        t3 = new time.Instant(now - 1000),
-        t4 = new time.ProperInterval(now - 1000, now - 101);
-
-    test("accept exactly 2 temporal entites as arguments.", () => {
-        expect(() => time.Before(t1, t2)).not.toThrow();
-        expect(() => time.Before("Hello World!", t2)).toThrow();
-        expect(() => time.Before()).toThrow();
-    });
-
-    test("return true if left argument comes before the right argument.", () => {
-        expect(time.Before(t1, t2)).toBeFalsy();
-        expect(time.Before(t1, t3)).toBeFalsy();
-        expect(time.Before(t1, t4)).toBeFalsy();
-
-        expect(time.Before(t2, t1)).toBeFalsy();
-        expect(time.Before(t2, t3)).toBeFalsy();
-        expect(time.Before(t2, t4)).toBeFalsy();
-
-        expect(time.Before(t3, t1)).toBeTruthy();
-        expect(time.Before(t3, t2)).toBeTruthy();
-        expect(time.Before(t3, t4)).toBeFalsy();
-
-        expect(time.Before(t4, t1)).toBeTruthy();
-        expect(time.Before(t4, t2)).toBeTruthy();
-        expect(time.Before(t4, t3)).toBeFalsy();
-    });
-
-});

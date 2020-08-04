@@ -158,16 +158,27 @@ module.exports = (
         trs_Unix_time = "http://dbpedia.org/resource/Unix_time",
         _trs = new Map([[trs_Unix_time, trs_Unix_time]]),
         //
-        time = {}
+        time = {},
+        equalityTolerance = Number.EPSILON
         ; // const
 
-    //region fn
+    //#region fn
 
     function properLeftRight(left, right) {
         return ((left instanceof Instant) || (left instanceof ProperInterval))
             && ((right instanceof Instant) || (right instanceof ProperInterval));
         // return true;
     } // properLeftRight
+
+    function assertTimeArguments(...args) {
+        if (!args.every(value =>
+            (value instanceof Instant) || (value instanceof ProperInterval)
+        )) throw new Error("arguments must be temporal entities");
+    } // assertTimeArguments
+
+    function isNearlyEqual(x, y) {
+        return x >= y - equalityTolerance && x <= y + equalityTolerance;
+    } // isNearlyEqual
 
     function buildDate(value) {
         let result = undefined;
@@ -252,12 +263,12 @@ module.exports = (
         return [Math.floor((value / divisor)), (value % divisor)];
     }
 
-    ////region TEST
+    ////#region TEST
     //let grunz = moduloAndRest(8, 3);
     //grunz = moduloAndRest((dayInMilliseconds * 3) + 100, dayInMilliseconds);
     //grunz = 0;
     //throw new Error();
-    ////endregion TEST
+    ////#endregion TEST
 
     function padZero(value) {
         return ((value === undefined) ? "00" : ((value < 10) ? `0${value}` : `${value}`));
@@ -298,9 +309,9 @@ module.exports = (
         return (isLeapYear(year) ?  /** 337 + 29 */ 365 : /** 337 + 28 */ 366) * dayInSeconds;
     } // function yearInSeconds
 
-    //endregion fn
+    //#endregion fn
 
-    //region helper
+    //#region helper
 
     function getTemporalEntity(parameter) {
         let temporalEntity;
@@ -467,9 +478,9 @@ module.exports = (
         return result;
     } // getNumberOfLeapDaysFromInterval()
 
-    //endregion helper
+    //#endregion helper
 
-    //region individuals
+    //#region individuals
 
     function now() {
         //return new Instant((new Date).toISOString());
@@ -747,7 +758,7 @@ module.exports = (
     //    return result;
     //} // InsideCalendaryWeek()
 
-    //endregion individuals
+    //#endregion individuals
 
     function Instant(dateTimeStamp) {
 
@@ -922,25 +933,151 @@ module.exports = (
         }
     }); // Object.defineProperties(ProperInterval['prototype'])
 
-    //region binary operators
+    //#region binary operators
 
     function Before(i, j) {
-        if (!properLeftRight(i, j))
-            throw new Error();
+        assertTimeArguments(i, j);
         return (
-            i['end']
-            <
-            j['beginning']
+            i['end'] < j['beginning'] &&
+            !isNearlyEqual(i['end'], j['beginning'])
         );
     } // function Before()
+
     Object.defineProperties(Before, {
-        '@id': {
-            value:
-                `${prefix}:Before`
-        }
+        '@id': { value: `${prefix}:Before` }
     });
 
-    //endregion binary operators
+    function After(i, j) {
+        return Before(j, i);
+    } // function After()
+
+    Object.defineProperties(After, {
+        '@id': { value: `${prefix}:After` }
+    });
+
+    function Meets(i, j) {
+        assertTimeArguments(i, j);
+        return (
+            i['end'] === j['beginning'] ||
+            isNearlyEqual(i['end'], j['beginning'])
+        );
+    } // function Meets()
+
+    Object.defineProperties(Meets, {
+        '@id': { value: `${prefix}:Meets` }
+    });
+
+    function MetBy(i, j) {
+        return Meets(j, i);
+    } // function MetBy()
+
+    Object.defineProperties(MetBy, {
+        '@id': { value: `${prefix}:MetBy` }
+    });
+
+    function Overlaps(i, j) {
+        assertTimeArguments(i, j);
+        return (
+            i['beginning'] < j['beginning'] &&
+            !isNearlyEqual(i['beginning'], j['beginning']) &&
+            i['end'] > j['beginning'] &&
+            !isNearlyEqual(i['end'], j['beginning'])
+        );
+    } // function Overlaps()
+
+    Object.defineProperties(Overlaps, {
+        '@id': { value: `${prefix}:Overlaps` }
+    });
+
+    function OverlappedBy(i, j) {
+        return Overlaps(j, i);
+    } // function OverlappedBy()
+
+    Object.defineProperties(OverlappedBy, {
+        '@id': { value: `${prefix}:OverlappedBy` }
+    });
+
+    function Starts(i, j) {
+        assertTimeArguments(i, j);
+        return (
+            (i['beginning'] === j['beginning'] ||
+                isNearlyEqual(i['beginning'], j['beginning'])) &&
+            i['end'] < j['end'] &&
+            !isNearlyEqual(i['end'], j['end'])
+        );
+    } // function Starts()
+
+    Object.defineProperties(Starts, {
+        '@id': { value: `${prefix}:Starts` }
+    });
+
+    function StartedBy(i, j) {
+        return Starts(j, i);
+    } // function StartedBy()
+
+    Object.defineProperties(StartedBy, {
+        '@id': { value: `${prefix}:StartedBy` }
+    });
+
+    function During(i, j) {
+        assertTimeArguments(i, j);
+        return (
+            i['beginning'] > j['beginning'] &&
+            !isNearlyEqual(i['beginning'], j['beginning']) &&
+            i['end'] < j['end'] &&
+            !isNearlyEqual(i['end'], j['end'])
+        );
+    } // function During()
+
+    Object.defineProperties(During, {
+        '@id': { value: `${prefix}:During` }
+    });
+
+    function Contains(i, j) {
+        return During(j, i);
+    } // function Contains()
+
+    Object.defineProperties(Contains, {
+        '@id': { value: `${prefix}:Contains` }
+    });
+
+    function Finishes(i, j) {
+        assertTimeArguments(i, j);
+        return (
+            (i['end'] === j['end'] ||
+                isNearlyEqual(i['end'], j['end'])) &&
+            i['beginning'] > j['beginning'] &&
+            !isNearlyEqual(i['beginning'], j['beginning'])
+        );
+    } // function Finishes()
+
+    Object.defineProperties(Finishes, {
+        '@id': { value: `${prefix}:Finishes` }
+    });
+
+    function FinishedBy(i, j) {
+        return Finishes(j, i);
+    } // function FinishedBy()
+
+    Object.defineProperties(FinishedBy, {
+        '@id': { value: `${prefix}:FinishedBy` }
+    });
+
+    function Equals(i, j) {
+        assertTimeArguments(i, j);
+        return (
+            (i['beginning'] === j['beginning'] ||
+                isNearlyEqual(i['beginning'], j['beginning'])) &&
+            (i['end'] === j['end'] ||
+                isNearlyEqual(i['end'], j['end']))
+        );
+    } // function Equals()
+
+    Object.defineProperties(Equals, {
+        '@id': { value: `${prefix}:Equals` }
+    });
+
+    //#endregion binary operators
 
     Object.defineProperties(time, {
         '$minuteInSeconds': { enumerable: true, value: minuteInSeconds },
@@ -967,18 +1104,18 @@ module.exports = (
         'ProperInterval': { enumerable: true, value: ProperInterval },
         // operators
         'Before': { enumerable: false, value: Before },
-        //'After':                  {enumerable: false, value: After},
-        //'Meets':                  {enumerable: false, value: Meets},
-        //'MetBy':                  {enumerable: false, value: MetBy},
-        //'Overlaps':               {enumerable: false, value: Overlaps},
-        //'OverlappedBy':           {enumerable: false, value: OverlappedBy},
-        //'Starts':                 {enumerable: false, value: Starts},
-        //'StartedBy':              {enumerable: false, value: StartedBy},
-        //'During':                 {enumerable: false, value: During},
-        //'Contains':               {enumerable: false, value: Contains},
-        //'Finishes':               {enumerable: false, value: Finishes},
-        //'FinishedBy':             {enumerable: false, value: FinishedBy},
-        //'Equals':                 {enumerable: false, value: Equals},
+        'After': { enumerable: false, value: After },
+        'Meets': { enumerable: false, value: Meets },
+        'MetBy': { enumerable: false, value: MetBy },
+        'Overlaps': { enumerable: false, value: Overlaps },
+        'OverlappedBy': { enumerable: false, value: OverlappedBy },
+        'Starts': { enumerable: false, value: Starts },
+        'StartedBy': { enumerable: false, value: StartedBy },
+        'During': { enumerable: false, value: During },
+        'Contains': { enumerable: false, value: Contains },
+        'Finishes': { enumerable: false, value: Finishes },
+        'FinishedBy': { enumerable: false, value: FinishedBy },
+        'Equals': { enumerable: false, value: Equals },
         //'In':                     {enumerable: false, value: In},
         //'Disjoint':               {enumerable: false, value: Disjoint},
         // helper
