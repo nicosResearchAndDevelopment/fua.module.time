@@ -1,3 +1,30 @@
+const
+    $time = Symbol("time"),
+    $beginning = Symbol("beginning"),
+    $end = Symbol("end");
+
+/**
+ * @param {*} value 
+ * @param {String} errMsg 
+ * @param {Class<Error>} errType 
+ * @throws {Error}
+ */
+function assert(value, errMsg = "", errType = Error) {
+    if (!value) {
+        const err = new errType(errMsg);
+        Error.captureStackTrace(`module.time : ${err}`, assert);
+        throw err;
+    }
+} // assert
+
+/**
+ * @param {Object} obj 
+ * @param {String|Symbol} key 
+ */
+function lockProp(obj, key) {
+    Object.defineProperty(obj, key, { configurable: false });
+} // lockProp
+
 /**
  * A temporal reference system, such as a temporal coordinate system (with an origin, direction, and scale), 
  * a calendar-clock combination, or a (possibly hierarchical) ordinal system. 
@@ -13,7 +40,7 @@ class TimeReferenceSystem {
         this.step = param.step;
         this.calendar = param.calendar;
     }
-}
+} // TimeReferenceSystem
 
 Object.assign(TimeReferenceSystem, {
     '@id': "time:TRS",
@@ -75,33 +102,105 @@ Object.assign(TimeReferenceSystem, {
  * @class 
  * @extends { "rdf:type": "owl:Restriction", "owl:cardinality": "1", "owl:onProperty": "time:hasTRS" }
  */
-class TemporalPosition { }
+class TemporalPosition { } // TemporalPosition
 
-class TimePosition extends TemporalPosition { }
+class TimePosition extends TemporalPosition { } // TimePosition
 
-class GeneralDateTimeDescription extends TemporalPosition { }
+class GeneralDateTimeDescription extends TemporalPosition { } // GeneralDateTimeDescription
 
-class DateTimeDescription extends GeneralDateTimeDescription { }
+class DateTimeDescription extends GeneralDateTimeDescription { } // DateTimeDescription
 
-class TemporalDuration { }
+class TemporalDuration { } // TemporalDuration
 
-class Duration extends TemporalDuration { }
+class Duration extends TemporalDuration { } // Duration
 
-class GeneralDurationDescription extends TemporalDuration { }
+class GeneralDurationDescription extends TemporalDuration { } // GeneralDurationDescription
 
-class DurationDescription extends GeneralDurationDescription { }
+class DurationDescription extends GeneralDurationDescription { } // DurationDescription
 
-class TemporalUnit extends TemporalDuration { }
+class TemporalUnit extends TemporalDuration { } // TemporalUnit
 
-class TemporalEntity { }
+class TemporalEntity {
 
-class Instant extends TemporalEntity { }
+    constructor() {
+        assert(new.target !== TemporalEntity, "TemporalEntity#constructor : abstract class");
+    }
 
-class Interval extends TemporalEntity { }
+    after(entity) {
+        assert(entity instanceof TemporalEntity, "TemporalEntity#after : invalid @param {TemporalEntity} entity");
+        const T1 = (this instanceof Instant) ? this[$time] : this[$beginning];
+        const T2 = (entity instanceof Instant) ? entity[$time] : entity[$end];
+        return T1 > T2;
+    }
 
-class ProperInterval extends Interval { }
+    before(entity) {
+        assert(entity instanceof TemporalEntity, "TemporalEntity#before : invalid @param {TemporalEntity} entity");
+        const T1 = (this instanceof Instant) ? this[$time] : this[$end];
+        const T2 = (entity instanceof Instant) ? entity[$time] : entity[$beginning];
+        return T1 < T2;
+    }
 
-class DateTimeInterval extends ProperInterval { }
+    hasBeginning() {
+        const T1 = (this instanceof Instant) ? this[$time] : this[$beginning];
+        return new Instant(T1);
+    }
+
+    hasEnd() {
+        const T1 = (this instanceof Instant) ? this[$time] : this[$end];
+        return new Instant(T1);
+    }
+
+    hasDuration() {
+        const T1 = (this instanceof Instant) ? this[$time] : this[$beginning];
+        const T2 = (this instanceof Instant) ? this[$time] : this[$end];
+        return new Duration(T2 - T1);
+    }
+
+} // TemporalEntity
+
+class Instant extends TemporalEntity {
+
+    constructor(time) {
+        super();
+        time = new Date(time);
+        assert(!isNaN(time.valueOf()), "Instant#constructor : invalid @param {Date} date");
+
+        /** @type {Date} */
+        this[$time] = time;
+        lockProp(this, $time);
+    }
+
+} // Instant
+
+class Interval extends TemporalEntity {
+
+    constructor(beginning, end) {
+        super();
+        beginning = new Date(beginning);
+        end = new Date(end);
+        assert(!isNaN(beginning.valueOf()), "Interval#constructor : invalid @param {Date} beginning");
+        assert(!isNaN(end.valueOf()), "Interval#constructor : invalid @param {Date} end");
+
+        /** @type {Date} */
+        this[$beginning] = beginning;
+        lockProp(this, $beginning);
+        /** @type {Date} */
+        this[$end] = end;
+        lockProp(this, $end);
+    }
+
+} // Interval
+
+class ProperInterval extends Interval {
+
+    constructor(beginning, end) {
+        super(beginning, end);
+        assert(this[$beginning] < this[$end], "ProperInterval#constructor : expected end to come after beginning");
+    }
+
+} // ProperInterval
+
+class DateTimeInterval extends ProperInterval { } // DateTimeInterval
 
 module.exports = {
     TimeReferenceSystem,
