@@ -186,6 +186,7 @@ module.exports = (
             case "string":
                 //value^^xsd:dateTemeStamp
                 result = new Date(value);
+                if (isNaN(result.valueOf())) result = undefined;
                 break;
             case "number":
                 //value^^xsd:second
@@ -201,7 +202,9 @@ module.exports = (
             default:
                 break; // default
         } // switch ()
-        return result;
+
+        return isNaN(result.valueOf())
+            ? undefined : result;
     } // buildDate()
 
     function buildDuration(value) {
@@ -855,37 +858,76 @@ module.exports = (
         }
     }); // Object.defineProperties(Instant)
 
-    function ProperInterval(beginning, end, duration) {
+    /**
+     * @param {Date|Duration|Date} beginning 
+     * @param {Date|Date|Duration} end 
+     */
+    function ProperInterval(beginning, end /*, duration*/) {
         this['@type'] = `${prefix}:ProperInterval`;
 
-        beginning = buildDate(beginning);
-        end = buildDate(end);
-        duration = buildDuration(duration);
+        // beginning = buildDate(beginning);
+        // end = buildDate(end);
+        // duration = buildDuration(duration);
+
+        if (typeof beginning === "string" && beginning.startsWith("P")) {
+            let duration = xsdDuration2durationArray(beginning);
+            end = buildDate(end);
+            if (end && duration && duration[0] === "+") {
+                const [sign, years, months, days, hours, minutes, seconds] = duration;
+                beginning = new Date(Date.UTC(
+                    end.getUTCFullYear() - years,
+                    end.getUTCMonth() - months,
+                    end.getUTCDate() - days,
+                    end.getUTCHours() - hours,
+                    end.getUTCMinutes() - minutes,
+                    end.getUTCSeconds() + 1e-3 * end.getUTCMilliseconds() - seconds
+                ));
+            }
+        } else if (typeof end === "string" && end.startsWith("P")) {
+            let duration = xsdDuration2durationArray(end);
+            beginning = buildDate(beginning);
+            if (beginning && duration && duration[0] === "+") {
+                const [sign, years, months, days, hours, minutes, seconds] = duration;
+                end = new Date(Date.UTC(
+                    beginning.getUTCFullYear() + years,
+                    beginning.getUTCMonth() + months,
+                    beginning.getUTCDate() + days,
+                    beginning.getUTCHours() + hours,
+                    beginning.getUTCMinutes() + minutes,
+                    beginning.getUTCSeconds() + 1e-3 * beginning.getUTCMilliseconds() + seconds
+                ));
+            }
+        } else {
+            beginning = buildDate(beginning);
+            end = buildDate(end);
+        }
 
         if (
-            (!beginning && !end) ||
-            (!beginning && !duration) ||
-            (!end && !duration)
+            !(beginning && end)
+            // (!beginning && !end) ||
+            // (!beginning && !duration) ||
+            // (!end && !duration)
         ) { // error first!!!
             throw new Error("invalid arguments");
-        } else if (beginning && end && !duration) {
+        } else /* if (beginning && end && !duration) */ {
             if (beginning.valueOf() >= end.valueOf()) throw new Error("the end must come after the beginning");
             this['dateBeginning'] = beginning;
             this['dateEnd'] = end;
-        } else if (beginning && !end && duration) {
-            throw Error("not implemented yet");
-            switch (typeof duration) {
-                case "string":
-                    break; // string
-                case "number":
-                    break; // number
-                default:
-                    throw new Error();
-                    break; // default
-            } // switch()
-        } else if (!beginning && end && duration) {
-            throw Error("not implemented yet");
-        } // if ()
+        }
+        // else if (beginning && !end && duration) {
+        //     throw Error("not implemented yet");
+        //     switch (typeof duration) {
+        //         case "string":
+        //             break; // string
+        //         case "number":
+        //             break; // number
+        //         default:
+        //             throw new Error();
+        //             break; // default
+        //     } // switch()
+        // } else if (!beginning && end && duration) {
+        //     throw Error("not implemented yet");
+        // } // if ()
 
         this['beginning'] = dateToSeconds(this['dateBeginning']);
         this['end'] = dateToSeconds(this['dateEnd']);

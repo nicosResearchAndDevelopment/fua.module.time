@@ -6,7 +6,8 @@ const
     }),
     time = require("../src/module.time.js")({
         uuid
-    });
+    }),
+    maxDateTS = 8640000000000000e-3;
 
 describe("$buildDate should", () => {
 
@@ -15,7 +16,7 @@ describe("$buildDate should", () => {
         test("a number.", () => {
             expect(time.$buildDate(1337)).toBeInstanceOf(Date);
             expect(time.$buildDate(0)).toBeInstanceOf(Date);
-            expect(time.$buildDate(Number.MAX_SAFE_INTEGER)).toBeInstanceOf(Date);
+            expect(time.$buildDate(maxDateTS)).toBeInstanceOf(Date);
             expect(time.$buildDate(-Math.PI)).toBeInstanceOf(Date);
         });
 
@@ -47,7 +48,7 @@ describe("time.Instant should", () => {
             expect(() => new time.Instant(1337)).not.toThrow();
             expect(() => new time.Instant(Math.PI)).not.toThrow();
             expect(() => new time.Instant(-42)).not.toThrow();
-            expect(() => new time.Instant(Number.MAX_SAFE_INTEGER)).not.toThrow();
+            expect(() => new time.Instant(maxDateTS)).not.toThrow();
         });
 
         test("a date.", () => {
@@ -96,14 +97,26 @@ describe("time.ProperInterval should", () => {
             expect(() => new time.ProperInterval(0, 1)).not.toThrow();
             expect(() => new time.ProperInterval(1337, 1338)).not.toThrow();
             expect(() => new time.ProperInterval(Math.PI, 0)).toThrow();
-            expect(() => new time.ProperInterval(-42, Number.MAX_SAFE_INTEGER)).not.toThrow();
+            expect(() => new time.ProperInterval(-42, maxDateTS)).not.toThrow();
         });
 
         test("two ascending dates.", () => {
             expect(() => new time.ProperInterval(new Date(0), new Date(1))).not.toThrow();
             expect(() => new time.ProperInterval(new Date(1337), new Date(1338))).not.toThrow();
             expect(() => new time.ProperInterval(new Date(Math.PI), new Date(0))).toThrow();
-            expect(() => new time.ProperInterval(new Date(-42), new Date(Number.MAX_SAFE_INTEGER))).not.toThrow();
+            expect(() => new time.ProperInterval(new Date(-42), new Date(maxDateTS))).not.toThrow();
+        });
+
+        test("a date and a duration.", () => {
+            expect(() => new time.ProperInterval(new Date(), "PT34383600S")).not.toThrow();
+            expect(() => new time.ProperInterval(new Date(), "P1Y2M3DT5H20M30.123S")).not.toThrow();
+            expect(() => new time.ProperInterval("PT34383600S", "P1Y2M3DT5H20M30.123S")).toThrow();
+        });
+
+        test("a duration and a date.", () => {
+            expect(() => new time.ProperInterval("PT34383600S", new Date())).not.toThrow();
+            expect(() => new time.ProperInterval("P1Y2M3DT5H20M30.123S", new Date())).not.toThrow();
+            expect(() => new time.ProperInterval("PT34383600S", "P1Y2M3DT5H20M30.123S")).toThrow();
         });
 
     });
