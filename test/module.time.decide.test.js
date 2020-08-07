@@ -1,11 +1,11 @@
 const
-    crypto = require("crypto"),
-    uuid = require("../../core.uuid/src/core.uuid.js")({
-        mode: "local",
-        parameter: { crypto }
-    }),
+    // crypto = require("crypto"),
+    // uuid = require("../../core.uuid/src/core.uuid.js")({
+    //     mode: "local",
+    //     parameter: { crypto }
+    // }),
     time = require("../src/module.time.js")({
-        uuid
+        // uuid
     }),
     {
         Instant, ProperInterval,
