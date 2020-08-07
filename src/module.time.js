@@ -1119,6 +1119,28 @@ module.exports = (
         '@id': { value: `${prefix}:Equals` }
     });
 
+    function In(i, j) {
+        assertTimeArguments(i, j);
+        return (
+            (i['beginning'] > j['beginning'] ||
+                isNearlyEqual(i['beginning'], j['beginning'])) &&
+            (i['end'] < j['end'] ||
+                isNearlyEqual(i['end'], j['end']))
+        );
+    } // function In()
+
+    Object.defineProperties(In, {
+        '@id': { value: `${prefix}:In` }
+    });
+
+    function Disjoint(i, j) {
+        return Before(i, j) || Before(j, i);
+    } // function Disjoint()
+
+    Object.defineProperties(Disjoint, {
+        '@id': { value: `${prefix}:Disjoint` }
+    });
+
     //#endregion binary operators
 
     Object.defineProperties(time, {
@@ -1158,8 +1180,8 @@ module.exports = (
         'Finishes': { enumerable: false, value: Finishes },
         'FinishedBy': { enumerable: false, value: FinishedBy },
         'Equals': { enumerable: false, value: Equals },
-        //'In':                     {enumerable: false, value: In},
-        //'Disjoint':               {enumerable: false, value: Disjoint},
+        'In': { enumerable: false, value: In },
+        'Disjoint': { enumerable: false, value: Disjoint },
         // helper
         //'dayOfWeek':      {enumerable: false, value: dayOfWeek},
         // individuals

@@ -10,7 +10,7 @@ const
     {
         Instant, ProperInterval,
         Before, After, Meets, MetBy, Overlaps, OverlappedBy,
-        Starts, StartedBy, During, Contains, Finishes, FinishedBy, Equals
+        Starts, StartedBy, During, Contains, Finishes, FinishedBy, Equals, In, Disjoint
     } = time;
 
 const
@@ -195,13 +195,6 @@ describe("time.StartedBy should", () => {
 
 });
 
-/***********************************
- |  |<-A1->|<--A2-->| |<-A3->|     |
- | |<-B1->|  |<-B2->|<---B3--->|   |
- |    |<-C1->|   C2>*   |<-C3->|   |
- | |<---D1--->|  |<---D2--->| *<D3 |
- ***********************************/
-
 describe("time.During should", () => {
 
     test("accept exactly 2 temporal entites as arguments.", () => {
@@ -306,3 +299,52 @@ describe("time.Equals should", () => {
     });
 
 });
+
+describe("time.In should", () => {
+
+    test("accept exactly 2 temporal entites as arguments.", () => {
+        expect(() => In(A1, A2)).not.toThrow();
+        expect(() => In("Hello World!", B2)).toThrow();
+        expect(() => In(C1, C2)).not.toThrow();
+        expect(() => In()).toThrow();
+    });
+
+    test("return true if left argument fits somewhere on the right argument.", () => {
+        expect(In(B2, A2)).toBeTruthy();
+        expect(In(A3, B3)).toBeTruthy();
+        expect(In(C2, B2)).toBeTruthy();
+
+        expect(In(A1, B1)).toBeFalsy();
+        expect(In(B1, C1)).toBeFalsy();
+        expect(In(D2, C2)).toBeFalsy();
+    });
+
+});
+
+describe("time.Disjoint should", () => {
+
+    test("accept exactly 2 temporal entites as arguments.", () => {
+        expect(() => Disjoint(A1, A2)).not.toThrow();
+        expect(() => Disjoint("Hello World!", B2)).toThrow();
+        expect(() => Disjoint(C1, C2)).not.toThrow();
+        expect(() => Disjoint()).toThrow();
+    });
+
+    test("return true if left argument does not touch the right argument.", () => {
+        expect(Disjoint(A2, B1)).toBeTruthy();
+        expect(Disjoint(D3, A3)).toBeTruthy();
+        expect(Disjoint(B3, D1)).toBeTruthy();
+
+        expect(Disjoint(C2b, D2)).toBeFalsy();
+        expect(Disjoint(C2, B2)).toBeFalsy();
+        expect(Disjoint(A2, B3)).toBeFalsy();
+    });
+
+});
+
+/***********************************
+ |  |<-A1->|<--A2-->| |<-A3->|     |
+ | |<-B1->|  |<-B2->|<---B3--->|   |
+ |    |<-C1->|   C2>*   |<-C3->|   |
+ | |<---D1--->|  |<---D2--->| *<D3 |
+ ***********************************/
