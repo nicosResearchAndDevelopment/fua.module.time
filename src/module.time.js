@@ -524,6 +524,32 @@ module.exports = (
         return new Instant(new Date);
     } // function now()
 
+    //region stamp
+
+    function stamp(dateTimestamp, to) {
+        let result;
+        dateTimestamp = (dateTimestamp || now()); // Instant
+        to            = (to || "xsd:dateTimestamp");
+        switch (to) {
+            case "time:dateTime":
+                result = dateTimestamp['$serialize']()['inDateTime'];
+                break;
+            case "xsd:dateTimestamp":
+            case "dateTimestamp":
+            default:
+                result = dateTimestamp['$serialize']()['inXSDDateTimeStamp'];
+                break; // default
+        } // switch(to)
+        return result;
+    } // function stamp
+
+    Object.defineProperties(stamp, {
+        '@id': {value: `${prefix}:stamp`},
+        'xsd:dateTimestamp': {get: `${prefix}:stamp`},
+    });
+
+    //endregion stamp
+
     class Year {
 
         #year     = null;
@@ -1221,6 +1247,7 @@ module.exports = (
         //'dayOfWeek':      {enumerable: false, value: dayOfWeek},
         // individuals
         'now':                               {enumerable: false, value: now},
+        'stamp':                             {enumerable: false, value: stamp},
         'Year':                              {enumerable: true, value: Year},
         '$isLeapYear':                       {enumerable: true, value: isLeapYear},
         //extension

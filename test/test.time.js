@@ -21,6 +21,7 @@ let
     pit,
     pit_yesterday,
     now, // pit
+    stamp,
     pit_tomorrow,
     properInterval,
     xsdDuration
@@ -38,6 +39,8 @@ function correct(wanted, given) {
 //endregion fn
 
 now                    = f_time['now']();
+
+
 const
     leapYearInteger    = 2020,
     nonLeapYearInteger = 2021,
@@ -52,8 +55,15 @@ pit_tomorrow  = new f_time['Instant'](new Date(now['date'].getTime() + f_time['$
 //REM: get an instant from an instant... something like a copy ;-)
 pit = new f_time['Instant'](now);
 
+// now
 probe = now['$time']();
 probe = now['$serialize']();
+
+//stamp
+stamp                    = f_time['stamp'];
+probe = stamp(); // xsd:dateTimestamp
+probe = stamp(undefined, "time:dateTime");
+probe = null;
 
 probe = f_time['$xsdDuration2durationArray']("P0Y");
 probe = f_time['$durationArray2xsdDuration'](probe);
