@@ -38,8 +38,7 @@ function correct(wanted, given) {
 
 //endregion fn
 
-now                    = f_time['now']();
-
+now = f_time['now']();
 
 const
     leapYearInteger    = 2020,
@@ -60,7 +59,7 @@ probe = now['$time']();
 probe = now['$serialize']();
 
 //stamp
-stamp                    = f_time['stamp'];
+stamp = f_time['stamp'];
 probe = stamp(); // xsd:dateTimestamp
 probe = stamp(undefined, "time:dateTime");
 probe = stamp['inXsdDateTimestamp']();
