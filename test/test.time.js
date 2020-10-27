@@ -63,6 +63,21 @@ probe = now['$serialize']();
 stamp                    = f_time['stamp'];
 probe = stamp(); // xsd:dateTimestamp
 probe = stamp(undefined, "time:dateTime");
+probe = stamp['inXsdDateTimestamp']();
+
+probe = stamp['inMilliseconds']();
+probe = stamp['inMilliseconds'](undefined, /** floor */ true);
+probe = stamp['inSeconds']();
+probe = stamp['inSeconds'](undefined, /** floor */ true);
+//probe = stamp['inMinutes']();
+probe = stamp['inMinutes'](undefined, /** floor */ true);
+probe = stamp['inHours']();
+probe = stamp['inHours'](undefined, /** floor */ true);
+probe = stamp['inDays']();
+probe = stamp['inDays'](undefined, /** floor */ true);
+
+probe = stamp['inTimeDatetimeDescription'](undefined);
+
 probe = null;
 
 probe = f_time['$xsdDuration2durationArray']("P0Y");

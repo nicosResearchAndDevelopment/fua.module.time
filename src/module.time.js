@@ -526,26 +526,58 @@ module.exports = (
 
     //region stamp
 
-    function stamp(dateTimestamp, to) {
-        let result;
-        dateTimestamp = (dateTimestamp || now()); // Instant
-        to            = (to || "xsd:dateTimestamp");
+    function stamp(dateTimestamp, to, floor) {
+        dateTimestamp = (dateTimestamp || /** Instant */ now());
+        to            = (to || "xsd:dateTimestamp").toLowerCase();
         switch (to) {
-            case "time:dateTime":
-                result = dateTimestamp['$serialize']()['inDateTime'];
+
+            case "inmilliseconds":
+            case "milliseconds":
+            case "ms":
+                return ((floor) ? Math.floor((dateTimestamp['beginning'] * 1000.0)) : (dateTimestamp['beginning'] * 1000.0));
                 break;
-            case "xsd:dateTimestamp":
-            case "dateTimestamp":
+            case "insseconds":
+            case "seconds":
+            case "sec":
+                return ((floor) ? Math.floor(dateTimestamp['beginning']) : dateTimestamp['beginning']);
+                break;
+            case "inminutes":
+            case "minutes":
+            case "min":
+                return ((floor) ? Math.floor((dateTimestamp['beginning'] / minuteInSeconds)) : (dateTimestamp['beginning'] / minuteInSeconds));
+                break;
+            case "inhours":
+            case "hours":
+            case "h":
+                return ((floor) ? Math.floor((dateTimestamp['beginning'] / hourInSeconds)) : (dateTimestamp['beginning'] / hourInSeconds));
+                break;
+            case "indays":
+            case "days":
+            case "d":
+                result = ((floor) ? Math.floor((dateTimestamp['beginning'] / dayInSeconds)) : (dateTimestamp['beginning'] / dayInSeconds));
+                break;
+
+            case "time:datetimedescription":
+                return dateTimestamp['$serialize']()['inDateTime'];
+                break;
+
+            case "xsd:datetimestamp":
+            case "datetimestamp":
             default:
-                result = dateTimestamp['$serialize']()['inXSDDateTimeStamp'];
+                return dateTimestamp['$serialize']()['inXSDDateTimeStamp'];
                 break; // default
         } // switch(to)
-        return result;
     } // function stamp
 
     Object.defineProperties(stamp, {
-        '@id': {value: `${prefix}:stamp`},
-        'xsd:dateTimestamp': {get: `${prefix}:stamp`},
+        '@id':                {value: `${prefix}:stamp`},
+        'inXsdDateTimestamp': {value: (dateTimestamp) => stamp(dateTimestamp, "xsd:dateTimestamp")},
+        'inMilliseconds':     {value: (dateTimestamp, floor) => stamp(dateTimestamp, "ms", floor)},
+        'inSeconds':          {value: (dateTimestamp, floor) => stamp(dateTimestamp, "sec", floor)},
+        'inMinutes':          {value: (dateTimestamp, floor) => stamp(dateTimestamp, "min", floor)},
+        'inHours':            {value: (dateTimestamp, floor) => stamp(dateTimestamp, "h", floor)},
+        'inDays':             {value: (dateTimestamp, floor) => stamp(dateTimestamp, "d", floor)},
+        'inTimeDatetimeDescription':     {value: (dateTimestamp) => stamp(dateTimestamp, "time:DateTimeDescription")}
     });
 
     //endregion stamp
@@ -903,14 +935,24 @@ module.exports = (
                     'inDateTime':         {
                         value: {
                             '@type':     "time:DateTimeDescription",
-                            'time:day':  {'@type': "xsd:gDay", '@value': `---${padZero(this['date'].getDay())}`},
-                            'time:hour': {'@type': "xsd:nonNegativeInteger", '@value': this['date'].getHours()}
-                        }
-                    }
-                });
+                            'time:minute': {'@type': "xsd:nonNegativeInteger", '@value': this['date'].getMinutes()},
+                            'time:hour': {'@type': "xsd:nonNegativeInteger", '@value': this['date'].getHours()},
+                            'time:day':  {'@type': "xsd:gDay", '@value': `---${padZero(this['date'].getDate())}`},
+                            //:dayOfWeek    :Wednesday ;
+                            //:dayOfYear    102 ;
+                            //:week         15 ;
+                            //:month        "--04"^^xsd:gMonth ;
+                            //:monthOfYear  greg:April ;
+                            //:timeZone     <https://www.timeanddate.com/time/zones/aest> ;
+                            'time:year':  {'@type': "xsd:gYear", '@value': `${this['date'].getFullYear()}`},
+                        } // value
+                    } // inDateTime
+                }); // Object.defineProperties(node)
+
                 return node;
-            }
-        },
+
+            } // value: function ()
+        }, // $serialize
         'xsd:gYear':  {
             get: function () {
                 return `${this['date'].getUTCFullYear()}`;
