@@ -9,7 +9,7 @@ module.exports = (
     }) => {
 
     const
-
+        fua                            = global['fua'],
         prefix                         = namespace, // "fua-t"
         //
         secondInMilliseconds           = 1000,
@@ -570,14 +570,14 @@ module.exports = (
     } // function stamp
 
     Object.defineProperties(stamp, {
-        '@id':                {value: `${prefix}:stamp`},
-        'inXsdDateTimestamp': {value: (dateTimestamp) => stamp(dateTimestamp, "xsd:dateTimestamp")},
-        'inMilliseconds':     {value: (dateTimestamp, floor) => stamp(dateTimestamp, "ms", floor)},
-        'inSeconds':          {value: (dateTimestamp, floor) => stamp(dateTimestamp, "sec", floor)},
-        'inMinutes':          {value: (dateTimestamp, floor) => stamp(dateTimestamp, "min", floor)},
-        'inHours':            {value: (dateTimestamp, floor) => stamp(dateTimestamp, "h", floor)},
-        'inDays':             {value: (dateTimestamp, floor) => stamp(dateTimestamp, "d", floor)},
-        'inTimeDatetimeDescription':     {value: (dateTimestamp) => stamp(dateTimestamp, "time:DateTimeDescription")}
+        '@id':                       {value: `${prefix}:stamp`},
+        'inXsdDateTimestamp':        {value: (dateTimestamp) => stamp(dateTimestamp, "xsd:dateTimestamp")},
+        'inMilliseconds':            {value: (dateTimestamp, floor) => stamp(dateTimestamp, "ms", floor)},
+        'inSeconds':                 {value: (dateTimestamp, floor) => stamp(dateTimestamp, "sec", floor)},
+        'inMinutes':                 {value: (dateTimestamp, floor) => stamp(dateTimestamp, "min", floor)},
+        'inHours':                   {value: (dateTimestamp, floor) => stamp(dateTimestamp, "h", floor)},
+        'inDays':                    {value: (dateTimestamp, floor) => stamp(dateTimestamp, "d", floor)},
+        'inTimeDatetimeDescription': {value: (dateTimestamp) => stamp(dateTimestamp, "time:DateTimeDescription")}
     });
 
     //endregion stamp
@@ -934,17 +934,17 @@ module.exports = (
                      */
                     'inDateTime':         {
                         value: {
-                            '@type':     "time:DateTimeDescription",
+                            '@type':       "time:DateTimeDescription",
                             'time:minute': {'@type': "xsd:nonNegativeInteger", '@value': this['date'].getMinutes()},
-                            'time:hour': {'@type': "xsd:nonNegativeInteger", '@value': this['date'].getHours()},
-                            'time:day':  {'@type': "xsd:gDay", '@value': `---${padZero(this['date'].getDate())}`},
+                            'time:hour':   {'@type': "xsd:nonNegativeInteger", '@value': this['date'].getHours()},
+                            'time:day':    {'@type': "xsd:gDay", '@value': `---${padZero(this['date'].getDate())}`},
                             //:dayOfWeek    :Wednesday ;
                             //:dayOfYear    102 ;
                             //:week         15 ;
                             //:month        "--04"^^xsd:gMonth ;
                             //:monthOfYear  greg:April ;
                             //:timeZone     <https://www.timeanddate.com/time/zones/aest> ;
-                            'time:year':  {'@type': "xsd:gYear", '@value': `${this['date'].getFullYear()}`},
+                            'time:year':   {'@type': "xsd:gYear", '@value': `${this['date'].getFullYear()}`}
                         } // value
                     } // inDateTime
                 }); // Object.defineProperties(node)
@@ -965,11 +965,8 @@ module.exports = (
      * @param {Date|Date|Duration} end
      */
     function ProperInterval(beginning, end /*, duration*/) {
-        this['@type'] = `${prefix}:ProperInterval`;
 
-        // beginning = buildDate(beginning);
-        // end = buildDate(end);
-        // duration = buildDuration(duration);
+        this['@type'] = `${prefix}:ProperInterval`;
 
         if (typeof beginning === "string" && beginning.startsWith("P")) {
             let duration = xsdDuration2durationArray(beginning);
@@ -1002,7 +999,7 @@ module.exports = (
         } else {
             beginning = buildDate(beginning);
             end       = buildDate(end);
-        }
+        } // if ()
 
         if (
             !(beginning && end)
@@ -1015,42 +1012,17 @@ module.exports = (
             if (beginning.valueOf() >= end.valueOf()) throw new Error("the end must come after the beginning");
             this['dateBeginning'] = beginning;
             this['dateEnd']       = end;
-        }
-        // else if (beginning && !end && duration) {
-        //     throw Error("not implemented yet");
-        //     switch (typeof duration) {
-        //         case "string":
-        //             break; // string
-        //         case "number":
-        //             break; // number
-        //         default:
-        //             throw new Error();
-        //             break; // default
-        //     } // switch()
-        // } else if (!beginning && end && duration) {
-        //     throw Error("not implemented yet");
-        // } // if ()
+        } // if ()
 
         this['beginning'] = dateToSeconds(this['dateBeginning']);
         this['end']       = dateToSeconds(this['dateEnd']);
         this['duration']  = (this['end'] - this['beginning']);
-        // TODO: getter!
-        //this['xsdDuration'] = durationFromDates2xsdDuration(this['dateBeginning'], this['dateEnd']);
 
-        //if (setInstanceId) this['@id'] =
-        //`${root}/time/instant/${xsdDateTimeStamp2id(this['dateBeginning']['toISOString']())}-${xsdDateTimeStamp2id(this['dateEnd']['toISOString']())}`
-        //;
-        //node = map.get(this['@id']);
-        //if (!node) {
-        //    node                = this;
-        //    node['beginning']   = dateToSeconds(node['dateBeginning']);
-        //    node['end']         = dateToSeconds(node['dateEnd']);
-        //    node['duration']    = (node['end'] - node['beginning']);
-        //    // TODO: getter!
-        //    node['xsdDuration'] = durationFromDates2xsdDuration(node['dateBeginning'], node['dateEnd']);
-        //    if (node['@id']) map.set(node['@id'], node);
-        //} //
-        //return node;
+        //// TODO: getter!
+        ////this['xsdDuration'] = durationFromDates2xsdDuration(this['dateBeginning'], this['dateEnd']);
+        //Object.defineProperties(this, {
+        //    'xsdDuration': {get: () => durationFromDates2xsdDuration(this['dateBeginning'], this['dateEnd'])}
+        //});
 
     } // ProperInterval()
     Object.defineProperties(ProperInterval, {
