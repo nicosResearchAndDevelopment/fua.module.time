@@ -187,11 +187,11 @@ module.exports = (
                 //value^^xsd:dateTemeStamp
                 result = new Date(value);
                 if (isNaN(result.valueOf())) result = undefined;
-                break;
+                break; // string
             case "number":
                 //value^^xsd:second
                 result = new Date((value * 1000));
-                break;
+                break; // number
             case "object":
                 if (value instanceof Date) {
                     result = value;
@@ -201,10 +201,10 @@ module.exports = (
                 break; // object
             default:
                 break; // default
-        } // switch ()
+        } // switch (typeof value)
 
-        return isNaN(result.valueOf())
-            ? undefined : result;
+        return ((isNaN(result.valueOf())) ? undefined : result);
+
     } // buildDate()
 
     function buildDuration(value) {
