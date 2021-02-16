@@ -113,7 +113,7 @@ module.exports = (
                     'short': {'en': "sep"}
                 }
                 ,
-                'next':                                                  9
+                'next': 9
             },
             9:  {
                 'days': 31, 'seconds': month31inSeconds, 'milliseconds': month31inMilliseconds,
@@ -122,7 +122,7 @@ module.exports = (
                     'short': {'en': "oct"}
                 }
                 ,
-                'next':                                                  10
+                'next': 10
             },
             10: {
                 'days': 30, 'seconds': month30inSeconds, 'milliseconds': month30inMilliseconds,
@@ -139,7 +139,7 @@ module.exports = (
                     'short': {'en': "dec"}
                 }
                 ,
-                'next':                                                  0
+                'next': 0
             }
         },
         leapYearInDays                 = 366, // 7 * 31 = 217, 4 * 30 = 120, 29
@@ -211,7 +211,7 @@ module.exports = (
         return undefined; // TODO
     } // buildDuration
 
-    // TODO: noch nicht benutzt und auch nic richtig
+    // TODO: noch nicht benutzt und auch nicht richtig
     function buildTemporalEntities(i, j, trs) {
         trs = trs || context['$trs'] || "marzipanhausen";
         let _i, _j;
@@ -260,7 +260,7 @@ module.exports = (
             });
         } // if ()
         return {'_i': _i, '_j': _j};
-    } // buildTemporalProperties()
+    } // buildTemporalEntities()
 
     function moduloAndRest(value, divisor) {
         return [Math.floor((value / divisor)), (value % divisor)];
@@ -376,15 +376,15 @@ module.exports = (
     } // function dayOfWeek()
 
     Object.defineProperties(dayOfWeek, {
-        '@id':       {value: `${prefix}:dayOfWeek`},
+        '@id': {value: `${prefix}:dayOfWeek`},
         //
-        0:           {value: 0},
-        1:           {value: 1},
-        2:           {value: 2},
-        3:           {value: 3},
-        4:           {value: 4},
-        5:           {value: 5},
-        6:           {value: 6},
+        0: {value: 0},
+        1: {value: 1},
+        2: {value: 2},
+        3: {value: 3},
+        4: {value: 4},
+        5: {value: 5},
+        6: {value: 6},
         //
         'sunday':    {value: 0},
         'sun':       {value: 0},
@@ -531,30 +531,35 @@ module.exports = (
         to            = (to || "xsd:dateTimestamp").toLowerCase();
         switch (to) {
 
+            case "in milliseconds":
             case "inmilliseconds":
             case "milliseconds":
             case "ms":
                 return ((floor) ? Math.floor((dateTimestamp['beginning'] * 1000.0)) : (dateTimestamp['beginning'] * 1000.0));
                 break;
-            case "insseconds":
+            case "in seconds":
+            case "inseconds":
             case "seconds":
             case "sec":
                 return ((floor) ? Math.floor(dateTimestamp['beginning']) : dateTimestamp['beginning']);
                 break;
+            case "in minutes":
             case "inminutes":
             case "minutes":
             case "min":
                 return ((floor) ? Math.floor((dateTimestamp['beginning'] / minuteInSeconds)) : (dateTimestamp['beginning'] / minuteInSeconds));
                 break;
+            case "in hours":
             case "inhours":
             case "hours":
             case "h":
                 return ((floor) ? Math.floor((dateTimestamp['beginning'] / hourInSeconds)) : (dateTimestamp['beginning'] / hourInSeconds));
                 break;
+            case "in days":
             case "indays":
             case "days":
             case "d":
-                result = ((floor) ? Math.floor((dateTimestamp['beginning'] / dayInSeconds)) : (dateTimestamp['beginning'] / dayInSeconds));
+                return ((floor) ? Math.floor((dateTimestamp['beginning'] / dayInSeconds)) : (dateTimestamp['beginning'] / dayInSeconds));
                 break;
 
             case "time:datetimedescription":
@@ -584,13 +589,15 @@ module.exports = (
 
     class Year {
 
-        #year     = null;
-        #isLeap   = null; // !!!
-        #months   = null; // !!!
+        #year   = null;
+        #isLeap = null; // !!!
+        //#months   = null; // !!!
+        #months   = "marzipan"; // !!!
         #quarters = null; // !!!
         #halfs    = null; // !!!
 
         constructor(year) {
+            this.#months = undefined;
             if (setInstanceId) this['@id'] = `${root}years/${year}/`
             this['@type']          = `${prefix}:Year`;
             //this['properInterval'] = new ProperInterval(new Instant(new Date(year, 0, 1)), new Instant(new Date(year, 11, 31)));
@@ -620,7 +627,7 @@ module.exports = (
         }
 
         get months() {
-            if (this.#months === null) {
+            if (!this.#months) {
                 this.#months = [];
                 let series   = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
                 series.map(i => {
@@ -733,6 +740,7 @@ module.exports = (
     class Month {
 
         #year  = null;
+        #index = null;
         #month = null;
         #days  = null; // !!!
 
@@ -742,14 +750,29 @@ module.exports = (
             //this['properInterval'] = new ProperInterval(new Instant(new Date(year, 0, 1)), new Instant(new Date(year, 11, 31)));
             this.#year             = year;
             this.#month            = month;
+            this.#index            = month + 1;
             this['xsd:gMonth']     = `--${padZero(month)}`;
-            this['xsd:duration']   = `P1M`;
-            this['properInterval'] = new ProperInterval(new Instant(new Date(year['year'], month, 1)), new Instant(new Date(((month === 11) ? (year['year'] + 1) : year['year']), ((month === 11) ? 0 : month), 1)));
+            // TODO: this['xsd:duration']   = `P1M` >>> P?D
+            //this['xsd:duration']   = `P1M`;
+            this['xsd:duration']   = `P${((this.#month === 1) ? ((this.#year['isLeap']) ? months[1]['29']['days'] : months[1]['29']['days']) : months[this.#month]['days'])}D`;
+            this['properInterval'] = new ProperInterval(
+                new Instant(new Date(year['year'], month, 1)),
+                new Instant(
+                    new Date(
+                        ((month === 11) ? (year['year'] + 1) : year['year']),
+                        ((month === 11) ? 0 : (month + 1)),
+                        1)
+                )
+            );
             //this['workingWeeks']   = [];
         } // constructor
 
         get year() {
             return this.#year;
+        }
+
+        get index() {
+            return this.#index;
         }
 
         get month() {
@@ -762,7 +785,7 @@ module.exports = (
 
         get days() {
             if (this.#days === null) {
-                let amount = ((this.#month === 1) ? ((this.#year['isLeap']) ? months[1]['29']['days'] : months[1]['29']['days']) : months[this.#month]['days']) + 1;
+                let amount = (((this.#month === 1) ? ((this.#year['isLeap']) ? months[1]['29']['days'] : months[1]['29']['days']) : months[this.#month]['days']) + 1);
                 this.#days = [];
                 for (let i = 1; i < amount; i++) {
                     this.#days.push(new Day(this, i));
@@ -932,7 +955,7 @@ module.exports = (
                      :year "2015"^^xsd:gYear ;
                      ] ;
                      */
-                    'inDateTime':         {
+                    'inDateTime': {
                         value: {
                             '@type':       "time:DateTimeDescription",
                             'time:minute': {'@type': "xsd:nonNegativeInteger", '@value': this['date'].getMinutes()},
@@ -944,7 +967,7 @@ module.exports = (
                             //:month        "--04"^^xsd:gMonth ;
                             //:monthOfYear  greg:April ;
                             //:timeZone     <https://www.timeanddate.com/time/zones/aest> ;
-                            'time:year':   {'@type': "xsd:gYear", '@value': `${this['date'].getFullYear()}`}
+                            'time:year': {'@type': "xsd:gYear", '@value': `${this['date'].getFullYear()}`}
                         } // value
                     } // inDateTime
                 }); // Object.defineProperties(node)
@@ -1029,7 +1052,7 @@ module.exports = (
         '@type': {value: "owl:Class"}
     }); // Object.defineProperties(ProperInterval)
     Object.defineProperties(ProperInterval['prototype'], {
-        '$serialize':   {
+        '$serialize': {
             value: function () {
                 let node = {};
                 return node;
@@ -1218,54 +1241,54 @@ module.exports = (
     //#endregion binary operators
 
     Object.defineProperties(time, {
-        '$minuteInSeconds':                  {enumerable: true, value: minuteInSeconds},
-        '$hourInSeconds':                    {enumerable: true, value: hourInSeconds},
-        '$dayInSeconds':                     {enumerable: true, value: dayInSeconds},
-        '$minuteInMilliseconds':             {enumerable: true, value: minuteInMilliseconds},
-        '$hourInMilliseconds':               {enumerable: true, value: hourInMilliseconds},
-        '$dayInMilliseconds':                {enumerable: true, value: dayInMilliseconds},
-        '$buildTemporalEntities':            {enumerable: true, value: buildTemporalEntities},
-        '$buildDate':                        {enumerable: true, value: buildDate},
+        '$minuteInSeconds':       {enumerable: true, value: minuteInSeconds},
+        '$hourInSeconds':         {enumerable: true, value: hourInSeconds},
+        '$dayInSeconds':          {enumerable: true, value: dayInSeconds},
+        '$minuteInMilliseconds':  {enumerable: true, value: minuteInMilliseconds},
+        '$hourInMilliseconds':    {enumerable: true, value: hourInMilliseconds},
+        '$dayInMilliseconds':     {enumerable: true, value: dayInMilliseconds},
+        '$buildTemporalEntities': {enumerable: true, value: buildTemporalEntities},
+        '$buildDate':             {enumerable: true, value: buildDate},
         // duration
         '$getNumberOfLeapDaysFromInterval':  {enumerable: true, value: getNumberOfLeapDaysFromInterval},
         '$durationZeroPeriod':               {enumerable: true, value: durationZeroPeriod},
         '$xsdDuration2durationArray':        {enumerable: true, value: xsdDuration2durationArray},
         '$durationArray2xsdDuration':        {enumerable: true, value: durationArray2xsdDuration},
         '$durationFromInstants2xsdDuration': {enumerable: true, value: durationFromInstants2xsdDuration},
-        // gMontDate
-        '$getGMonthDayFromDateTime':         {enumerable: true, value: getGMonthDayFromDateTime},
-        '$getTemporalEntity':                {enumerable: true, value: getTemporalEntity},
+        // gMonthDate
+        '$getGMonthDayFromDateTime': {enumerable: true, value: getGMonthDayFromDateTime},
+        '$getTemporalEntity':        {enumerable: true, value: getTemporalEntity},
         //
         //'TRS':                    {enumerable: true, value: TRS},
         //'TemporalEntity':         {enumerable: true, value: TemporalEntity},
-        'Instant':                           {enumerable: true, value: Instant},
+        'Instant': {enumerable: true, value: Instant},
         //'Interval':               {enumerable: true, value: Interval},
-        'ProperInterval':                    {enumerable: true, value: ProperInterval},
+        'ProperInterval': {enumerable: true, value: ProperInterval},
         // operators
-        'Before':                            {enumerable: false, value: Before},
-        'After':                             {enumerable: false, value: After},
-        'Meets':                             {enumerable: false, value: Meets},
-        'MetBy':                             {enumerable: false, value: MetBy},
-        'Overlaps':                          {enumerable: false, value: Overlaps},
-        'OverlappedBy':                      {enumerable: false, value: OverlappedBy},
-        'Starts':                            {enumerable: false, value: Starts},
-        'StartedBy':                         {enumerable: false, value: StartedBy},
-        'During':                            {enumerable: false, value: During},
-        'Contains':                          {enumerable: false, value: Contains},
-        'Finishes':                          {enumerable: false, value: Finishes},
-        'FinishedBy':                        {enumerable: false, value: FinishedBy},
-        'Equals':                            {enumerable: false, value: Equals},
-        'In':                                {enumerable: false, value: In},
-        'Disjoint':                          {enumerable: false, value: Disjoint},
+        'Before':       {enumerable: false, value: Before},
+        'After':        {enumerable: false, value: After},
+        'Meets':        {enumerable: false, value: Meets},
+        'MetBy':        {enumerable: false, value: MetBy},
+        'Overlaps':     {enumerable: false, value: Overlaps},
+        'OverlappedBy': {enumerable: false, value: OverlappedBy},
+        'Starts':       {enumerable: false, value: Starts},
+        'StartedBy':    {enumerable: false, value: StartedBy},
+        'During':       {enumerable: false, value: During},
+        'Contains':     {enumerable: false, value: Contains},
+        'Finishes':     {enumerable: false, value: Finishes},
+        'FinishedBy':   {enumerable: false, value: FinishedBy},
+        'Equals':       {enumerable: false, value: Equals},
+        'In':           {enumerable: false, value: In},
+        'Disjoint':     {enumerable: false, value: Disjoint},
         // helper
         //'dayOfWeek':      {enumerable: false, value: dayOfWeek},
         // individuals
-        'now':                               {enumerable: false, value: now},
-        'stamp':                             {enumerable: false, value: stamp},
-        'Year':                              {enumerable: true, value: Year},
-        '$isLeapYear':                       {enumerable: true, value: isLeapYear},
+        'now':         {enumerable: false, value: now},
+        'stamp':       {enumerable: false, value: stamp},
+        'Year':        {enumerable: true, value: Year},
+        '$isLeapYear': {enumerable: true, value: isLeapYear},
         //extension
-        'trs':                               {
+        'trs': {
             'set': (trs) => {
                 if ((trs['@type'] === TRS) && !_trs.get(trs['@id']))
                     _trs.set(trs['@id'], trs);

@@ -104,7 +104,7 @@ const
     nextYearProperInterval    = nextYear['properInterval']
 ;
 
-probe = f_time['$isLeapYear'](leapYearInteger);     // true
+probe = f_time['$isLeapYear'](leapYearInteger);     // true // time.test
 probe = f_time['$isLeapYear'](leapYearInteger + 1); // false
 probe = f_time['$isLeapYear'](leapYearInteger + 2); // false
 probe = f_time['$isLeapYear'](leapYearInteger + 3); // false
@@ -183,26 +183,26 @@ probe = new f_time['Year']((currentYearInteger + 5));
 
 probe = currentYear['inSeconds'];
 
-//region Month
+//region Months TODO
 probe = currentYear.months;
 probe = currentYear.months[0]['inSeconds']
-probe = currentYear.months[0]['label']("en"); // janurary
-//endregion Month
+//probe = currentYear.months[0]['label']("en"); // january
+//endregion Months
 
-//region Quaters (of a year)
+//region Quarters (of a year)
 // TODO: ERROR: 1/years/2020/q4/ >>> P92DT1H
 probe = currentYear.quarters;
 probe = probe[0]['quarter'];
-//endregion Quaters (of a year)
+//endregion Quarters (of a year)
 
 //region HalfYear
 //endregion HalfYear
 
-//region Day
-probe = currentYear.months;
-probe = currentYear.months[0].days;
-probe = currentYear.months[11].days;
-//endregion Month
+//region Days
+//probe = currentYear.months;
+//probe = currentYear.months[0].days;
+//probe = currentYear.months[11].days;
+//endregion Days
 
 console.log(`${app_name} : f_time.Before(${pit_yesterday['date']['toISOString']()}, ${now['date']['toISOString']()}) : ${correct(true, f_time.Before(pit_yesterday, now))}`);
 
