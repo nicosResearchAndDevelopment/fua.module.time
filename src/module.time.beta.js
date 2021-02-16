@@ -145,6 +145,7 @@ const
     durationZero                   = 0,
     durationZeroPeriod             = "P0Y",
     durationRegex                  = /^(-?)P(?=.)(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)D)?(?:T(?=.)(?:(\d+)H)?(?:(\d+)M)?(?:(\d*(?:\.\d+)?)S)?)?$/i,
+    regexXsdDateTimeStamp2id       = new RegExp(/[.:-]/, 'g'),
     //
     trs_Unix_time                  = "http://dbpedia.org/resource/Unix_time",
     _trs                           = new Map([[trs_Unix_time, trs_Unix_time]]),
@@ -158,7 +159,6 @@ const
 function properLeftRight(left, right) {
     return ((left instanceof Instant) || (left instanceof ProperInterval))
         && ((right instanceof Instant) || (right instanceof ProperInterval));
-    // return true;
 } // properLeftRight
 
 function assertTimeArguments(...args) {
@@ -197,10 +197,6 @@ function buildDate(value) {
     return ((isNaN(result.valueOf())) ? undefined : result);
 
 } // buildDate()
-
-function buildDuration(value) {
-    return undefined; // TODO
-} // buildDuration
 
 function buildTemporalEntities(i, j, trs) {
     trs = trs || context['$trs'] || "marzipanhausen";
@@ -285,7 +281,7 @@ function monthsInSeconds(year, months) {
     let
         result = 0
     ;
-    months.map(month => {
+    months.forEach(month => {
         result += daysInSeconds(daysOfMonth(month, year));
     });
     return result;
@@ -428,8 +424,6 @@ function durationFromDates2xsdDuration(beginning, end) {
 function durationFromInstants2xsdDuration(beginning, end) {
     return durationFromDates2xsdDuration(beginning['date'], end['date']);
 } // durationFromInstants2xsdDuration()
-
-const regexXsdDateTimeStamp2id = new RegExp(/[.:-]/, 'g');
 
 function xsdDateTimeStamp2id(value) {
     return value.replace(regexXsdDateTimeStamp2id, "_");
