@@ -1,6 +1,6 @@
 {
-  "name": "fua.module.time",
-  "version": "0.0.3",
+  "name": "@nrd/fua.module.time",
+  "version": "1.0.0",
   "description": "",
   "main": "src/module.time.js",
   "dependencies": {},

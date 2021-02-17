@@ -1,9 +1,7 @@
 const
     {describe, test}   = require('mocha'),
     expect             = require('expect'),
-    //time               = require('../src/module.time.js')({ }),
-    time               = require('../src/module.time.beta.js'),
-    //time               = require('../next/module.time.js'),
+    time               = require('../src/module.time.js'),
     leapYearInteger    = 2020,
     nonLeapYearInteger = 2021,
     maxDateTS          = 8640000000000000e-3; // 8,640,000,000,000,000 milliseconds => e-3 makes it to seconds

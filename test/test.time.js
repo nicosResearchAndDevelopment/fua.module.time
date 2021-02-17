@@ -9,9 +9,10 @@ const
     //    'parameter': {'crypto': crypto}
     //}),
     // ---------------------------------------
-    f_time   = require(`../src/module.time.js`)({
-        'namespace': "time" // fua-t
-    })
+    //f_time   = require(`../src/module.time.js`)({
+    //    'namespace': "time" // fua-t
+    //})
+    f_time   = require(`../src/module.time.js`)
 ; // const
 
 // REM: pit = point in time
@@ -206,6 +207,6 @@ probe = probe[0]['quarter'];
 
 console.log(`${app_name} : f_time.Before(${pit_yesterday['date']['toISOString']()}, ${now['date']['toISOString']()}) : ${correct(true, f_time.Before(pit_yesterday, now))}`);
 
-console.log(`${app_name} : uuid : ${uuid()}`);
+//console.log(`${app_name} : uuid : ${uuid()}`);
 
 throw new Error();
