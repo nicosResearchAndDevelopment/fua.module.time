@@ -10,54 +10,54 @@ method.now = function () {
 
 method.stamp = function (dateTimestamp, to, floor) {
     dateTimestamp = dateTimestamp || method.now();
-    to            = to || "xsd:dateTimestamp";
+    to            = to || 'xsd:dateTimestamp';
     switch (to.toLowerCase()) {
 
-        case "in milliseconds":
-        case "inmilliseconds":
-        case "milliseconds":
-        case "ms":
+        case 'in milliseconds':
+        case 'inmilliseconds':
+        case 'milliseconds':
+        case 'ms':
             return floor
                 ? Math.floor(dateTimestamp.beginning * C.secondInMilliseconds)
                 : dateTimestamp.beginning * C.secondInMilliseconds;
 
-        case "in seconds":
-        case "inseconds":
-        case "seconds":
-        case "sec":
+        case 'in seconds':
+        case 'inseconds':
+        case 'seconds':
+        case 'sec':
             return floor
                 ? Math.floor(dateTimestamp.beginning)
                 : dateTimestamp.beginning;
 
-        case "in minutes":
-        case "inminutes":
-        case "minutes":
-        case "min":
+        case 'in minutes':
+        case 'inminutes':
+        case 'minutes':
+        case 'min':
             return floor
                 ? Math.floor(dateTimestamp.beginning * C.secondInMinutes)
                 : dateTimestamp.beginning * C.secondInMinutes;
 
-        case "in hours":
-        case "inhours":
-        case "hours":
-        case "h":
+        case 'in hours':
+        case 'inhours':
+        case 'hours':
+        case 'h':
             return floor
                 ? Math.floor(dateTimestamp.beginning * C.secondInHours)
                 : dateTimestamp.beginning * C.secondInHours;
 
-        case "in days":
-        case "indays":
-        case "days":
-        case "d":
+        case 'in days':
+        case 'indays':
+        case 'days':
+        case 'd':
             return floor
                 ? Math.floor(dateTimestamp.beginning * C.secondInDays)
                 : dateTimestamp.beginning * C.secondInDays;
 
-        case "time:datetimedescription":
+        case 'time:datetimedescription':
             return dateTimestamp.$serialize().inDateTime;
 
-        case "xsd:datetimestamp":
-        case "datetimestamp":
+        case 'xsd:datetimestamp':
+        case 'datetimestamp':
         default:
             return dateTimestamp.$serialize().inXSDDateTimeStamp;
 

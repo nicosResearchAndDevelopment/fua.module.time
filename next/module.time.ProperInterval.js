@@ -60,16 +60,13 @@ class ProperInterval {
         this.end           = _.dateToSeconds(this.dateEnd);
         this.duration      = this.end - this.beginning;
 
-        // REM: lock the properties and make the instant immutable?
-        //_.lockProp(this, '@type', 'date', 'dateBeginning', 'dateEnd', 'beginning', 'end', 'duration');
+        _.lockProp(this, '@type', 'date', 'dateBeginning', 'dateEnd', 'beginning', 'end', 'duration');
     } // ProperInterval#constructor
-
-    // TODO: rethink interface
 
     $serialize() {
         const result = {};
-        return result;
         // TODO: unfinished
+        return result;
     } // ProperInterval#$serialize
 
     get 'xsd:duration'() {

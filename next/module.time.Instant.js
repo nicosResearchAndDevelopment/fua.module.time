@@ -17,11 +17,8 @@ class Instant {
         this.end           = this.beginning;
         this.duration      = C.durationZero;
 
-        // REM: lock the properties and make the instant immutable?
-        //_.lockProp(this, '@type', 'date', 'dateBeginning', 'dateEnd', 'beginning', 'end', 'duration');
+        _.lockProp(this, '@type', 'date', 'dateBeginning', 'dateEnd', 'beginning', 'end', 'duration');
     } // Instant#constructor
-
-    // TODO: rethink interface
 
     $time() {
         return _.getTimeFromDateTimeInSeconds(this.beginning);
