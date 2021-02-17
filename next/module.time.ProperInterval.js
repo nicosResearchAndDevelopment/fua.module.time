@@ -13,9 +13,8 @@ class ProperInterval {
             const duration = _.xsdDuration2durationArray(beginning);
             _.assert(duration, 'ProperInterval#constructor : invalid beginning duration', TypeError);
 
-            // TODO: should the check for sign really be "+" and not "-" here?
             const [sign, years, months, days, hours, minutes, seconds] = duration;
-            _.assert(sign === "+", 'ProperInterval#constructor : beginning duration must be positive', TypeError);
+            _.assert(sign === '+', 'ProperInterval#constructor : beginning duration must be positive', TypeError);
 
             beginning = new Date(Date.UTC(
                 end.getUTCFullYear() - years,
@@ -33,7 +32,7 @@ class ProperInterval {
             _.assert(duration, 'ProperInterval#constructor : invalid end duration', TypeError);
 
             const [sign, years, months, days, hours, minutes, seconds] = duration;
-            _.assert(sign === "+", 'ProperInterval#constructor : end duration must be positive', TypeError);
+            _.assert(sign === '+', 'ProperInterval#constructor : end duration must be positive', TypeError);
 
             end = new Date(Date.UTC(
                 beginning.getUTCFullYear() + years,
