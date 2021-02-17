@@ -1,5 +1,6 @@
 const
-    _    = require('./util.js'),
+    _    = require('./module.time.util.js'),
+    C    = require('./module.time.constants.js'),
     time = require('./module.time.js');
 
 class ProperInterval {
@@ -67,8 +68,14 @@ class ProperInterval {
     // TODO: rethink interface
 
     $serialize() {
+        const result = {};
+        return result;
         // TODO: unfinished
-    } // // ProperInterval#$serialize
+    } // ProperInterval#$serialize
+
+    get 'xsd:duration'() {
+        return _.durationFromDates2xsdDuration(this.dateBeginning, this.dateEnd);
+    }// ProperInterval#xsd:duration
 
 } // ProperInterval
 

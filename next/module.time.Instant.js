@@ -1,5 +1,6 @@
 const
-    _    = require('./util.js'),
+    _    = require('./module.time.util.js'),
+    C    = require('./module.time.constants.js'),
     time = require('./module.time.js');
 
 class Instant {
@@ -14,7 +15,7 @@ class Instant {
         this.dateEnd       = this.dateBeginning;
         this.beginning     = _.dateToSeconds(this.date);
         this.end           = this.beginning;
-        this.duration      = 0;
+        this.duration      = C.durationZero;
 
         // REM: lock the properties and make the instant immutable?
         //_.lockProp(this, '@type', 'date', 'dateBeginning', 'dateEnd', 'beginning', 'end', 'duration');
@@ -23,7 +24,7 @@ class Instant {
     // TODO: rethink interface
 
     $time() {
-        return getTimeFromDateTimeInSeconds(this.beginning);
+        return _.getTimeFromDateTimeInSeconds(this.beginning);
     } // Instant#$time
 
     $serialize() {
@@ -31,7 +32,7 @@ class Instant {
             '@type':            'time:Instant',
             inTimePosition:     {
                 '@type':         'time:TimePosition',
-                hasTRS:          _.UNIX_TIME,
+                hasTRS:          C.trsUnixTime,
                 numericPosition: {
                     '@type':  'xsd:decimal',
                     '@value': this.beginning
@@ -71,6 +72,10 @@ class Instant {
 
         return result;
     } // Instant#$serialize
+
+    get 'xsd:gYear'() {
+        return this.date.getUTCFullYear().toString();
+    } // Instant#xsd:gYear
 
 } // Instant
 

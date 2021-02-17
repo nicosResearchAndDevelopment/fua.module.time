@@ -1,58 +1,49 @@
 const
-    _      = require('./util.js'),
-    time   = exports,
-    decide = require('./module.time.decide');
+    time           = exports,
+    _              = require('./module.time.util.js'),
+    C              = require('./module.time.constants.js'),
+    op             = require('./module.time.operators.js'),
+    method         = require('./module.time.methods.js'),
+    Instant        = require('./module.time.Instant.js'),
+    ProperInterval = require('./module.time.ProperInterval.js'),
+    Year           = require('./module.time.Year.js');
 
-time.Instant        = require('./module.time.Instant.js');
-time.ProperInterval = require('./module.time.ProperInterval.js');
+time.Instant        = Instant;
+time.ProperInterval = ProperInterval;
+time.Year           = Year;
 
-time.Before = decide.Before;
-// TODO
+time.now   = method.now;
+time.stamp = method.stamp;
 
-time.$buildDate = _.buildDate;
-// TODO
+time.Before       = op.Before;
+time.After        = op.After;
+time.Meets        = op.Meets;
+time.MetBy        = op.MetBy;
+time.Overlaps     = op.Overlaps;
+time.OverlappedBy = op.OverlappedBy;
+time.Starts       = op.Starts;
+time.StartedBy    = op.StartedBy;
+time.During       = op.During;
+time.Contains     = op.Contains;
+time.Finishes     = op.Finishes;
+time.FinishedBy   = op.FinishedBy;
+time.Equals       = op.Equals;
+time.In           = op.In;
+time.Disjoint     = op.Disjoint;
 
-//Object.defineProperties(time, {
-//    '$minuteInSeconds':       {enumerable: true, value: minuteInSeconds},
-//    '$hourInSeconds':         {enumerable: true, value: hourInSeconds},
-//    '$dayInSeconds':          {enumerable: true, value: dayInSeconds},
-//    '$minuteInMilliseconds':  {enumerable: true, value: minuteInMilliseconds},
-//    '$hourInMilliseconds':    {enumerable: true, value: hourInMilliseconds},
-//    '$dayInMilliseconds':     {enumerable: true, value: dayInMilliseconds},
-//    '$buildTemporalEntities': {enumerable: true, value: buildTemporalEntities},
-//    '$buildDate':             {enumerable: true, value: buildDate},
-//    '$getNumberOfLeapDaysFromInterval':  {enumerable: true, value: getNumberOfLeapDaysFromInterval},
-//    '$durationZeroPeriod':               {enumerable: true, value: durationZeroPeriod},
-//    '$xsdDuration2durationArray':        {enumerable: true, value: xsdDuration2durationArray},
-//    '$durationArray2xsdDuration':        {enumerable: true, value: durationArray2xsdDuration},
-//    '$durationFromInstants2xsdDuration': {enumerable: true, value: durationFromInstants2xsdDuration},
-//    '$getGMonthDayFromDateTime': {enumerable: true, value: getGMonthDayFromDateTime},
-//    '$getTemporalEntity':        {enumerable: true, value: getTemporalEntity},
-//    'Instant': {enumerable: true, value: Instant},
-//    'ProperInterval': {enumerable: true, value: ProperInterval},
-//    'Before':       {enumerable: false, value: Before},
-//    'After':        {enumerable: false, value: After},
-//    'Meets':        {enumerable: false, value: Meets},
-//    'MetBy':        {enumerable: false, value: MetBy},
-//    'Overlaps':     {enumerable: false, value: Overlaps},
-//    'OverlappedBy': {enumerable: false, value: OverlappedBy},
-//    'Starts':       {enumerable: false, value: Starts},
-//    'StartedBy':    {enumerable: false, value: StartedBy},
-//    'During':       {enumerable: false, value: During},
-//    'Contains':     {enumerable: false, value: Contains},
-//    'Finishes':     {enumerable: false, value: Finishes},
-//    'FinishedBy':   {enumerable: false, value: FinishedBy},
-//    'Equals':       {enumerable: false, value: Equals},
-//    'In':           {enumerable: false, value: In},
-//    'Disjoint':     {enumerable: false, value: Disjoint},
-//    'now':         {enumerable: false, value: now},
-//    'stamp':       {enumerable: false, value: stamp},
-//    'Year':        {enumerable: true, value: Year},
-//    '$isLeapYear': {enumerable: true, value: isLeapYear},
-//    'trs': {
-//        'set': (trs) => {
-//            if ((trs['@type'] === TRS) && !_trs.get(trs['@id']))
-//                _trs.set(trs['@id'], trs);
-//        } // set
-//    }
-//});
+time.$minuteInSeconds      = C.minuteInSeconds;
+time.$hourInSeconds        = C.hourInSeconds;
+time.$dayInSeconds         = C.dayInSeconds;
+time.$minuteInMilliseconds = C.minuteInMilliseconds;
+time.$hourInMilliseconds   = C.hourInMilliseconds;
+time.$dayInMilliseconds    = C.dayInMilliseconds;
+time.$durationZeroPeriod   = C.durationZeroPeriod;
+
+time.$buildDate                        = _.buildDate;
+time.$getGMonthDayFromDateTime         = _.getGMonthDayFromDateTime;
+time.$getTemporalEntity                = _.getTemporalEntity;
+time.$getNumberOfLeapDaysFromInterval  = _.getNumberOfLeapDaysFromInterval;
+time.$xsdDuration2durationArray        = _.xsdDuration2durationArray;
+time.$durationArray2xsdDuration        = _.durationArray2xsdDuration;
+time.$durationFromInstants2xsdDuration = _.durationFromInstants2xsdDuration;
+time.$isLeapYear                       = _.isLeapYear;

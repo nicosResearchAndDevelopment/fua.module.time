@@ -3,6 +3,7 @@ const
     expect           = require('expect'),
     //time = require('../src/module.time.js')({ }),
     time             = require('../src/module.time.beta.js'),
+    //time             = require('../next/module.time.js'),
     {
         Instant, ProperInterval,
         Before, After, Meets, MetBy, Overlaps, OverlappedBy,
@@ -10,9 +11,9 @@ const
     }                = time;
 
 const
-    A1                                                                  = new ProperInterval(1, 8), A2                                   = new ProperInterval(8, 17), A3   = new ProperInterval(19, 26),
+    A1                                                                  = new ProperInterval(1, 8), A2                                   = new ProperInterval(8, 17), A3 = new ProperInterval(19, 26),
     B1                                                                  = new ProperInterval(0, 7), B2 = new ProperInterval(10, 17), B3 = new ProperInterval(17, 28),
-    C1                                                                  = new ProperInterval(3, 10), C2                                  = new Instant(17), C3            = new ProperInterval(21, 28),
+    C1                                                                  = new ProperInterval(3, 10), C2                                  = new Instant(17), C3 = new ProperInterval(21, 28),
     D1 = new ProperInterval(0, 11), D2 = new ProperInterval(14, 25), D3 = new Instant(27),
     C2b                                                                 = new Instant(16.6 + .2 + .1 + .1);
 
