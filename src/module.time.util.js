@@ -98,7 +98,8 @@ _.getTemporalEntity = function (parameter) {
             } else if (parameter['@type'] === 'xsd:dateTimeStamp') {
                 return new time.Instant(parameter['@value']);
             } else if (parameter['@type'] === "time:ProperInterval") {
-                return new time.ProperInterval(parameter['@value']['hasBeginning'], parameter['@value']['hasEnd']);
+                //return new time.ProperInterval(parameter['@value']['hasBeginning'], parameter['@value']['hasEnd']);
+                return new time.ProperInterval(parameter['hasBeginning']['@value'], parameter['hasEnd']['@value']);
             } else {
                 return;
             } // if ()
