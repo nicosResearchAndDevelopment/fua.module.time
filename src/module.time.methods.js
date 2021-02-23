@@ -8,6 +8,48 @@ method.now = function () {
     return new time.Instant(new Date);
 }; // method.now
 
+method.today = function () {
+    let
+        _date_ = new Date
+    ;
+    return new time.ProperInterval(
+        `${_date_.getUTCFullYear()}-${(_date_.getUTCMonth() + 1)}-${_date_.getDate()}`,
+        `P1D`
+    );
+}; // method.today
+
+method.tomorrow = function () {
+    let
+        _date_ = new Date
+    ;
+    _date_.setDate(_date_.getDate() + 1);
+    //let that = new time.ProperInterval(
+    //    `${now.getUTCFullYear()}-${(now.getUTCMonth() + 1)}-${now.getDate()}`,
+    //    `P1D`
+    //);
+    //return that;
+    return new time.ProperInterval(
+        `${_date_.getUTCFullYear()}-${(_date_.getUTCMonth() + 1)}-${_date_.getDate()}`,
+        `P1D`
+    );
+}; // method.tomorrow
+
+method.yesterday = function () {
+    let
+        _date_ = new Date
+    ;
+    _date_.setDate(_date_.getDate() - 1);
+    //let that = new time.ProperInterval(
+    //    `${now.getUTCFullYear()}-${(now.getUTCMonth() + 1)}-${now.getDate()}`,
+    //    `P1D`
+    //);
+    //return that;
+    return new time.ProperInterval(
+        `${_date_.getUTCFullYear()}-${(_date_.getUTCMonth() + 1)}-${_date_.getDate()}`,
+        `P1D`
+    );
+}; // method.yesterday
+
 method.stamp = function (dateTimestamp, to, floor) {
     dateTimestamp = dateTimestamp || method.now();
     to            = to || 'xsd:dateTimestamp';

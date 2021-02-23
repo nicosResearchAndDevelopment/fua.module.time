@@ -12,8 +12,11 @@ time.Instant        = Instant;
 time.ProperInterval = ProperInterval;
 time.Year           = Year;
 
-time.now   = method.now;
-time.stamp = method.stamp;
+time.now       = method.now;
+time.today     = method.today;
+time.tomorrow  = method.tomorrow;
+time.yesterday = method.yesterday;
+time.stamp     = method.stamp;
 
 time.Before       = op.Before;
 time.After        = op.After;
