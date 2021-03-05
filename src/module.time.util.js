@@ -126,6 +126,13 @@ _.getGMonthDayFromDateTime = function (dateTime, resultType) {
     } // switch
 };
 
+_.getDayOfWeek = function (date) {
+    date = ((date) ? _.buildDate(date) : Date.now());
+    return date.getDay();
+    //return ((date) ? _.buildDate(date) : Date.now()).getDay();
+}
+
+
 _.isLeapYear = function (year) {
     return ((year % 4 === 0) && (year % 100 !== 0))
         || (year % 400 === 0);
