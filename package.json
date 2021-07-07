@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "src/module.time.js",
-  "dependencies": {},
+  "files": [
+    "src/*"
+  ],
   "devDependencies": {
     "mocha": "^8.2.1",
     "expect": "^26.6.2"
