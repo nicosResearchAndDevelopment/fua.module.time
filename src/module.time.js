@@ -4,10 +4,12 @@ const
     C              = require('./module.time.constants.js'),
     op             = require('./module.time.operators.js'),
     method         = require('./module.time.methods.js'),
+    Time           = require('./module.time.time.js'),
     Instant        = require('./module.time.Instant.js'),
     ProperInterval = require('./module.time.ProperInterval.js'),
     Year           = require('./module.time.Year.js');
 
+time.Time           = Time;
 time.Instant        = Instant;
 time.ProperInterval = ProperInterval;
 time.Year           = Year;
