@@ -209,4 +209,12 @@ console.log(`${app_name} : f_time.Before(${pit_yesterday['date']['toISOString'](
 
 //console.log(`${app_name} : uuid : ${uuid()}`);
 
-throw new Error();
+const
+    myTime     = new f_time.Time(),
+    myInterval = myTime.buildTemporalEntity(0, 1e6),
+    myInstant  = myTime.buildTemporalEntity(2e6);
+
+console.log(myInterval, myInstant, f_time.Before(myInterval, myInstant));
+
+debugger;
+throw new Error('end of test script');
