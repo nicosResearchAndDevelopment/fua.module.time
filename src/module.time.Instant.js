@@ -26,8 +26,8 @@ class Instant {
 
     $serialize() {
         const result = {
-            '@type':            'time:Instant',
-            inTimePosition:     {
+            '@type':        'time:Instant',
+            inTimePosition: {
                 '@type':         'time:TimePosition',
                 hasTRS:          C.trsUnixTime,
                 numericPosition: {
@@ -35,11 +35,13 @@ class Instant {
                     '@value': this.beginning
                 }
             },
-            duration:           {
+            // TODO : thsi is MAYBE not correct (so flipped to 'hasDuration'...) duration:           {
+            hasDuration:        {
                 '@type':         'time:Duration',
                 numericDuration: 0,
                 unitType:        'time:unitSecond'
             },
+            hasXSDDuration:     {'@type': "xsd:duration", '@value': "P0Y"},
             inXSDDateTimeStamp: this.date.toISOString(),
             inXSDgYear:         this.date.getFullYear(),
             inXSDgYearMonth:    this.date.getFullYear().toString() + '-' + (this.date.getMonth() + 1).toString().padStart(2, '0'),

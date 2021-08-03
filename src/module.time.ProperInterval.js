@@ -64,7 +64,16 @@ class ProperInterval {
     } // ProperInterval#constructor
 
     $serialize() {
-        const result = {};
+        const result = {
+            '@type': 'time:ProperInterval'
+            //// TODO : thsi is MAYBE not correct (so flipped to 'hasDuration'...) duration:           {
+            //'hasDuration':    {
+            //    '@type':           'time:Duration',
+            //    'numericDuration': 0,
+            //    'unitType':        'time:unitSecond'
+            //},
+            //'hasXSDDuration': {'@type': "xsd:duration", '@value': "P0Y"}
+        };
         // TODO: unfinished
         return result;
     } // ProperInterval#$serialize
