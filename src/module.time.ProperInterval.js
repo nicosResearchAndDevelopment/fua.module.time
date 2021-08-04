@@ -3,7 +3,15 @@ const
     C    = require('./module.time.constants.js'),
     time = require('./module.time.js');
 
+// TODO : class ProperInterval extends Interval extends TemporalEntity
 class ProperInterval {
+
+    #duration               = undefined;
+    #xsdDuration            = undefined;
+    #hasBeginning           = undefined;
+    #hasBeginningSerialized = undefined;
+    #hasEndSerialized       = undefined;
+    #hasEnd                 = undefined;
 
     constructor(beginning, end) {
         if (_.isString(beginning) && beginning.startsWith("P")) {
@@ -42,10 +50,10 @@ class ProperInterval {
                 beginning.getUTCMinutes() + minutes,
                 beginning.getUTCSeconds() + 1e-3 * beginning.getUTCMilliseconds() + seconds
             ));
+            end = _.buildDate(end);
         } else {
             beginning = _.buildDate(beginning);
             _.assert(beginning, 'ProperInterval#constructor : invalid beginning', TypeError);
-
             end = _.buildDate(end);
             _.assert(end, 'ProperInterval#constructor : invalid end', TypeError);
         } // if ()
@@ -58,30 +66,63 @@ class ProperInterval {
         this.dateEnd       = end;
         this.beginning     = _.dateToSeconds(this.dateBeginning);
         this.end           = _.dateToSeconds(this.dateEnd);
-        this.duration      = this.end - this.beginning;
+
+        this.#duration = this.end - this.beginning;
+        // TODO : this.#xsdDuration :: das ist bislang auf Millisekunden gerundet "P1.042S" ist das korrekt?
+        this.#xsdDuration = _.durationFromDates2xsdDuration(this.dateBeginning, this.dateEnd);
 
         _.lockProp(this, '@type', 'date', 'dateBeginning', 'dateEnd', 'beginning', 'end', 'duration');
     } // ProperInterval#constructor
 
     $serialize() {
+
         const result = {
-            '@type': 'time:ProperInterval'
-            //// TODO : thsi is MAYBE not correct (so flipped to 'hasDuration'...) duration:           {
-            //'hasDuration':    {
-            //    '@type':           'time:Duration',
-            //    'numericDuration': 0,
-            //    'unitType':        'time:unitSecond'
-            //},
-            //'hasXSDDuration': {'@type': "xsd:duration", '@value': "P0Y"}
+            '@context':       [],
+            '@type':          'time:Instant',
+            'hasDuration':    this['hasDuration'],
+            'hasXSDDuration': this['hasXSDDuration']
         };
-        // TODO: unfinished
+
+        this.#hasBeginningSerialized = (this.#hasBeginningSerialized || this['hasBeginning']['$serialize']());
+        this.#hasEndSerialized       = (this.#hasEndSerialized || this['hasEnd']['$serialize']());
+        result['hasBeginning']       = this.#hasBeginningSerialized;
+        result['hasEnd']             = this.#hasEndSerialized;
+
         return result;
     } // ProperInterval#$serialize
 
-    get 'xsd:duration'() {
-        return _.durationFromDates2xsdDuration(this.dateBeginning, this.dateEnd);
-    }// ProperInterval#xsd:duration
+    get 'hasBeginning'() {
+        this.#hasBeginning = (this.#hasBeginning || new time.Instant(this.beginning));
+        return this.#hasBeginning;
+    }
 
-} // ProperInterval
+    get 'duration'() {
+        return this.#duration;
+    }
+
+    get 'hasDuration'() {
+        return {
+            '@type':           'time:Duration',
+            'numericDuration': {'@type': "xsd:decimal", '@value': this.#duration},
+            'unitType':        'time:unitSecond'
+        };
+    }
+
+    get 'xsd:duration'() {
+        return this.#xsdDuration;
+    }
+
+    get 'hasXSDDuration'() {
+        return {'@type': "xsd:duration", '@value': this['xsd:duration']};
+    }
+
+    get 'hasEnd'() {
+        this.#hasEnd = (this.#hasEnd || new time.Instant(this.end));
+        return this.#hasEnd;
+    }
+
+} // class ProperInterval
 
 module.exports = ProperInterval;
+
+// EOF
