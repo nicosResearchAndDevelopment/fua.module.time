@@ -8,26 +8,23 @@ method.now = function () {
     return new time.Instant(new Date);
 }; // method.now
 
-method.from = function ({temporalEntity = new time.Instant(new Date), duration = "P0Y"}) {
+method.from = function ({temporalEntity = new time.Instant(new Date), offset = "P0Y"}) {
     let
         interval,
         result
     ;
     switch (temporalEntity['@type']) {
         case "time:Instant":
-            interval = new time.ProperInterval(
-                temporalEntity.date,
-                duration
-            );
-            result       = new time.Instant(interval.dateEnd);
+            result = new time.ProperInterval(temporalEntity.date, offset);
+            result = result.hasEnd;
             //debugger;
             break;
         default: // Intervall
             interval = new time.ProperInterval(
                 temporalEntity.dateBeginning,
-                duration
+                offset
             );
-            result = new time.ProperInterval(
+            result   = new time.ProperInterval(
                 interval.dateEnd,
                 temporalEntity.hasXSDDuration['@value']
             );
@@ -38,18 +35,12 @@ method.from = function ({temporalEntity = new time.Instant(new Date), duration =
 
 method.today = function () {
     let
-        _date_ = new Date,
-        result
+        _date_ = new Date
     ;
     return new time.ProperInterval(
         `${_date_.getUTCFullYear()}-${(_date_.getUTCMonth() + 1)}-${_date_.getDate()}`,
         `P1D`
     );
-    //result =  new time.ProperInterval(
-    //    `${_date_.getUTCFullYear()}-${(_date_.getUTCMonth() + 1)}-${_date_.getDate()}`,
-    //    `P1D`
-    //);
-    //return result;
 }; // method.today
 
 method.tomorrow = function () {
@@ -57,11 +48,6 @@ method.tomorrow = function () {
         _date_ = new Date
     ;
     _date_.setDate(_date_.getDate() + 1);
-    //let that = new time.ProperInterval(
-    //    `${now.getUTCFullYear()}-${(now.getUTCMonth() + 1)}-${now.getDate()}`,
-    //    `P1D`
-    //);
-    //return that;
     return new time.ProperInterval(
         `${_date_.getUTCFullYear()}-${(_date_.getUTCMonth() + 1)}-${_date_.getDate()}`,
         `P1D`
@@ -73,11 +59,6 @@ method.yesterday = function () {
         _date_ = new Date
     ;
     _date_.setDate(_date_.getDate() - 1);
-    //let that = new time.ProperInterval(
-    //    `${now.getUTCFullYear()}-${(now.getUTCMonth() + 1)}-${now.getDate()}`,
-    //    `P1D`
-    //);
-    //return that;
     return new time.ProperInterval(
         `${_date_.getUTCFullYear()}-${(_date_.getUTCMonth() + 1)}-${_date_.getDate()}`,
         `P1D`

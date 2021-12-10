@@ -1,7 +1,8 @@
 const
     _    = require('./module.time.util.js'),
     C    = require('./module.time.constants.js'),
-    time = require('./module.time.js');
+    time = require('./module.time.js')
+;
 
 // TODO : extends TemporalEntity
 class Instant {
@@ -53,8 +54,12 @@ class Instant {
 
     $serialize() {
 
-        const result = {
-            '@context':       [],
+        const result        = {
+            '@context':       [{
+                [time.XSD_PREFIX]:       time.XSD_URI,
+                [time.PREFIX]:           time.URI,
+                [time.GREGORIAN_PREFIX]: time.GREGORIAN_URI
+            }],
             '@type':          'time:Instant',
             'inTimePosition': this.#inTimePosition,
             // TODO : thsi is MAYBE not correct (so flipped to 'hasDuration'...) duration:           {
@@ -65,11 +70,11 @@ class Instant {
             'inXSDgYearMonth':    this['inXSDgYearMonth'],
             'inDateTime':         this['inDateTime']
         };
-        result.hasBeginning      = {
+        result.hasBeginning = {
             '@type':            "time:Instant",
             inXSDDateTimeStamp: this['inXSDDateTimeStamp']
         };
-        result.hasEnd            = {
+        result.hasEnd       = {
             '@type':            "time:Instant",
             inXSDDateTimeStamp: this['inXSDDateTimeStamp']
         };

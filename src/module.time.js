@@ -21,6 +21,12 @@ time.tomorrow  = method.tomorrow;
 time.yesterday = method.yesterday;
 time.stamp     = method.stamp;
 
+time.PREFIX = "time";
+time.URI    = "http://www.w3.org/2006/time#";
+
+time.XSD_PREFIX = "xsd";
+time.XSD_URI    = "http://www.w3.org/2001/XMLSchema#";
+
 time.GREGORIAN_PREFIX        = "greg";
 time.GREGORIAN_URI           = "https://www.w3.org/ns/time/gregorian#";
 time.XsdgMonthGregorianMonth = {

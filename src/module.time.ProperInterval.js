@@ -78,42 +78,29 @@ class ProperInterval {
     $serialize() {
 
         const result = {
-            '@context':       [/** TODO set context (time) */],
+            '@context':       [{
+                [time.XSD_PREFIX]:       time.XSD_URI,
+                [time.PREFIX]:           time.URI,
+                [time.GREGORIAN_PREFIX]: time.GREGORIAN_URI
+            }],
             '@type':          'time:ProperInterval',
             'hasDuration':    this['hasDuration'],
             'hasXSDDuration': this['hasXSDDuration']
         };
 
-        let serialized;
-
         if (!this.#hasBeginningSerialized) {
-            serialized = this['hasBeginning']['$serialize']();
-            //delete serialized.hasBeginning;
-            //delete serialized.hasEnd;
-            serialized.hasBeginning      = {
-                '@type':            "time:Instant",
-                inXSDDateTimeStamp: serialized.inXSDDateTimeStamp
+            this.#hasBeginningSerialized = this['hasBeginning']['$serialize']();
+            this.#hasBeginningSerialized = {
+                "@type":              "time:Instant",
+                "inXSDDateTimeStamp": this.#hasBeginningSerialized['inXSDDateTimeStamp']
             };
-            serialized.hasEnd            = {
-                '@type':            "time:Instant",
-                inXSDDateTimeStamp: serialized.inXSDDateTimeStamp
-            };
-            this.#hasBeginningSerialized = serialized;
-
         } // if ()
-
         if (!this.#hasEndSerialized) {
-            serialized = this['hasEnd']['$serialize']();
-            delete serialized.hasBeginning;
-            delete serialized.hasEnd;
-            serialized.hasBeginning = {
-                inXSDDateTimeStamp: serialized.inXSDDateTimeStamp
+            this.#hasEndSerialized = this['hasEnd']['$serialize']();
+            this.#hasEndSerialized = {
+                "@type":              "time:Instant",
+                "inXSDDateTimeStamp": this.#hasEndSerialized['inXSDDateTimeStamp']
             };
-            serialized.hasEnd       = {
-                inXSDDateTimeStamp: serialized.inXSDDateTimeStamp
-            };
-            this.#hasEndSerialized  = serialized;
-
         } // if ()
 
         result['hasBeginning'] = this.#hasBeginningSerialized;
