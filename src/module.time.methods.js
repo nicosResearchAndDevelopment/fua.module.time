@@ -8,14 +8,48 @@ method.now = function () {
     return new time.Instant(new Date);
 }; // method.now
 
+method.from = function ({temporalEntity = new time.Instant(new Date), duration = "P0Y"}) {
+    let
+        interval,
+        result
+    ;
+    switch (temporalEntity['@type']) {
+        case "time:Instant":
+            interval = new time.ProperInterval(
+                temporalEntity.date,
+                duration
+            );
+            result       = new time.Instant(interval.dateEnd);
+            //debugger;
+            break;
+        default: // Intervall
+            interval = new time.ProperInterval(
+                temporalEntity.dateBeginning,
+                duration
+            );
+            result = new time.ProperInterval(
+                interval.dateEnd,
+                temporalEntity.hasXSDDuration['@value']
+            );
+            break;
+    } // switch()
+    return result;
+}; // method.from
+
 method.today = function () {
     let
-        _date_ = new Date
+        _date_ = new Date,
+        result
     ;
     return new time.ProperInterval(
         `${_date_.getUTCFullYear()}-${(_date_.getUTCMonth() + 1)}-${_date_.getDate()}`,
         `P1D`
     );
+    //result =  new time.ProperInterval(
+    //    `${_date_.getUTCFullYear()}-${(_date_.getUTCMonth() + 1)}-${_date_.getDate()}`,
+    //    `P1D`
+    //);
+    //return result;
 }; // method.today
 
 method.tomorrow = function () {

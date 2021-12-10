@@ -8,6 +8,7 @@ class Instant {
 
     #year             = undefined;
     #month            = undefined;
+    #week             = undefined;
     #day              = undefined;
     #hour             = undefined;
     #minute           = undefined;
@@ -64,18 +65,25 @@ class Instant {
             'inXSDgYearMonth':    this['inXSDgYearMonth'],
             'inDateTime':         this['inDateTime']
         };
-
-        result['hasBeginning'] = result;
-        result['hasEnd']       = result;
+        result.hasBeginning      = {
+            '@type':            "time:Instant",
+            inXSDDateTimeStamp: this['inXSDDateTimeStamp']
+        };
+        result.hasEnd            = {
+            '@type':            "time:Instant",
+            inXSDDateTimeStamp: this['inXSDDateTimeStamp']
+        };
+        //result['hasBeginning'] = result;
+        //result['hasEnd']       = result;
 
         return result;
     } // Instant#$serialize
 
-    get 'inTimePosition'() {
+    get inTimePosition() {
         return this.#inTimePosition;
     }
 
-    get 'numericPosition'() {
+    get numericPosition() {
         return this.#numericPosition;
     }
 
@@ -84,20 +92,29 @@ class Instant {
         return this.#year;
     }
 
-    get 'inXSDgYear'() {
+    get inXSDgYear() {
         return {'@type': "xsd:gYear", '@value': this['xsd:gYear']}
     }
 
-    get 'year'() {
+    get year() {
         return {'@type': "xsd:gYear", '@value': this['xsd:gYear']};
     }
 
+    get month() {
+        return {'@type': "xsd:gMonth", '@value': this['xsd:gMonth']};
+    }
+
+    get week() {
+        this.#week = (this.#week || _.getWeekOfYear(this.date))
+        return this.#week;
+    }
+
     get 'xsd:gMonth'() {
-        this.#month = (this.#month || (this.date.getMonth() + 1).toString().padStart(2, '0'));
+        this.#month = (this.#month || `--${(this.date.getMonth() + 1).toString().padStart(2, '0')}`);
         return this.#month;
     }
 
-    get 'inXSDgYearMonth'() {
+    get inXSDgYearMonth() {
         return {'@type': "xsd:gYearMonth", '@value': this['xsd:gMonth']};
     }
 
@@ -106,40 +123,38 @@ class Instant {
         return this.#xsdDateTimeStamp;
     }
 
-    get 'inXSDDateTimeStamp'() {
+    get inXSDDateTimeStamp() {
         return {'@type': "xsd:dateTimeStamp", '@value': this['xsd:dateTimeStamp']};
     }
 
     get 'xsd:gDay'() {
-        this.#day = (this.#day || this.date.getDate().toString().padStart(2, '0'));
-        return `---${this.#day}`;
+        this.#day = (this.#day || `---${this.date.getDate().toString().padStart(2, '0')}`);
+        return this.#day;
     }
 
-    get 'inDateTime'() {
-        return {
-            '@type':  'time:DateTimeDescription',
-            'minute': this['minute'],
-            'hour':   this['hour'],
-            'day':    this['day'],
-            'year':   this['year']
-        };
-    }
-
-    get 'day'() {
+    get day() {
         return {'@type': "xsd:gDay", '@value': this['xsd:gDay']};
     }
 
-    get 'hour'() {
+    get dayOfYear() {
+        return _.getDayOfYear(this.date);
+    }
+
+    get dayOfWeek() {
+        return time.dayOfWeekToTimeWeek[_.getDayOfWeek(this.date)];
+    }
+
+    get hour() {
         this.#hour = (this.#hour || this.date.getHours().toString());
         return {'@type': "xsd:nonNegativeInteger", '@value': this.#hour};
     }
 
-    get 'minute'() {
+    get minute() {
         this.#minute = (this.#minute || this.date.getHours().toString());
         return {'@type': "xsd:nonNegativeInteger", '@value': this.#minute};
     }
 
-    get 'hasDuration'() {
+    get hasDuration() {
         return this.#hasDuration;
     }
 
@@ -147,9 +162,29 @@ class Instant {
         return this.#xsdDuration;
     }
 
-    get 'hasXSDDuration'() {
+    get hasXSDDuration() {
         return {'@type': "xsd:duration", '@value': this.#xsdDuration};
     }
+
+    get inDateTime() {
+        // TODO: is this format correct?!? aligned to time-ontology?
+        return {
+            '@type': 'time:DateTimeDescription',
+            // TODO: timeZone:    "https://www.timeanddate.com/time/zones/aest",
+            unitType:    'unitMinute',
+            year:        this['year'],
+            month:       this['month'],
+            monthOfYear: time.XsdgMonthGregorianMonth[this['month']['@value']],
+            week:        this['week'],
+            day:         this['day'],
+            dayOfWeek:   this['dayOfWeek'],
+            dayOfYear:   this['dayOfYear'],
+            hour:        this['hour'],
+            minute:      this['minute']
+            // TODO: second
+        };
+    } // get inDateTime
+
 } // Instant
 
 Object.defineProperties(Instant, {
@@ -159,5 +194,5 @@ Object.defineProperties(Instant, {
     }],
     '@id':      {value: "time:Instant"}
 });
-module
-    .exports = Instant;
+
+module.exports = Instant;

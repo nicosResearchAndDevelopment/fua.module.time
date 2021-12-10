@@ -77,14 +77,15 @@ _.getTimeFromDateTimeInSeconds = function (dateTimeInSeconds) {
 _.moduloAndRest = function (value, divisor) {
     const
         result = Math.floor(value / divisor),
-        rest   = value - result;
+        //rest   = value - result;
+        rest   = value - (result * divisor)
+    ;
 
     return [result, rest];
 };
 
 _.getTemporalEntity = function (parameter) {
     switch (typeof parameter) {
-
         case 'object':
             if (!parameter) {
                 return;
@@ -103,11 +104,11 @@ _.getTemporalEntity = function (parameter) {
             } else {
                 return;
             } // if ()
-
+            break; // object
         case 'string':
         default:
             return new time.Instant(parameter);
-
+            break; // default
     } // switch
 };
 
@@ -126,12 +127,43 @@ _.getGMonthDayFromDateTime = function (dateTime, resultType) {
     } // switch
 };
 
+_.getWeekOfYear = function (date) {
+    let
+        d      = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())),
+        dayNum = d.getUTCDay() || 7,
+        yearStart
+    ;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+}
+
 _.getDayOfWeek = function (date) {
     date = ((date) ? _.buildDate(date) : Date.now());
     return date.getDay();
     //return ((date) ? _.buildDate(date) : Date.now()).getDay();
 }
 
+// TODO: _.getDayOfYear :: has to be tested an hardend
+_.getDayOfYear = function (date) {
+    date = (date || new Date());
+
+    /**
+
+     https://stackoverflow.com/questions/8619879/javascript-calculate-the-day-of-the-year-1-366
+     var now = new Date();
+     var start = new Date(now.getFullYear(), 0, 0);
+     var diff = (now - start) + ((start.getTimezoneOffset() - now.getTimezoneOffset()) * 60 * 1000);
+     var oneDay = 1000 * 60 * 60 * 24;
+     var day = Math.floor(diff / oneDay);
+     console.log('Day of year: ' + day);
+
+     OR >>>
+
+     */
+
+    return Math.floor((date - new Date(date.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
+}
 
 _.isLeapYear = function (year) {
     return ((year % 4 === 0) && (year % 100 !== 0))
@@ -200,4 +232,8 @@ _.durationFromDates2xsdDuration = function (beginning, end) {
 
 _.durationFromInstants2xsdDuration = function (beginning, end) {
     return _.durationFromDates2xsdDuration(beginning.date, end.date);
+};
+
+_.gregorianMonthFromXsdgMonth = function (month) {
+    return
 };

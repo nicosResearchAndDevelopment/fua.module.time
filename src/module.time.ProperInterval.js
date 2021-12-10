@@ -67,40 +67,71 @@ class ProperInterval {
         this.beginning     = _.dateToSeconds(this.dateBeginning);
         this.end           = _.dateToSeconds(this.dateEnd);
 
-        this.#duration = this.end - this.beginning;
+        this.#duration    = this.end - this.beginning;
         // TODO : this.#xsdDuration :: das ist bislang auf Millisekunden gerundet "P1.042S" ist das korrekt?
         this.#xsdDuration = _.durationFromDates2xsdDuration(this.dateBeginning, this.dateEnd);
 
-        _.lockProp(this, '@type', 'date', 'dateBeginning', 'dateEnd', 'beginning', 'end', 'duration');
+        //_.lockProp(this, '@type', 'date', 'dateBeginning', 'dateEnd', 'beginning', 'end', 'duration');
+        _.lockProp(this, '@type', 'date', 'dateBeginning', 'dateEnd', 'beginning', 'end');
     } // ProperInterval#constructor
 
     $serialize() {
 
         const result = {
-            '@context':       [],
-            '@type':          'time:Instant',
+            '@context':       [/** TODO set context (time) */],
+            '@type':          'time:ProperInterval',
             'hasDuration':    this['hasDuration'],
             'hasXSDDuration': this['hasXSDDuration']
         };
 
-        this.#hasBeginningSerialized = (this.#hasBeginningSerialized || this['hasBeginning']['$serialize']());
-        this.#hasEndSerialized       = (this.#hasEndSerialized || this['hasEnd']['$serialize']());
-        result['hasBeginning']       = this.#hasBeginningSerialized;
-        result['hasEnd']             = this.#hasEndSerialized;
+        let serialized;
+
+        if (!this.#hasBeginningSerialized) {
+            serialized = this['hasBeginning']['$serialize']();
+            //delete serialized.hasBeginning;
+            //delete serialized.hasEnd;
+            serialized.hasBeginning      = {
+                '@type':            "time:Instant",
+                inXSDDateTimeStamp: serialized.inXSDDateTimeStamp
+            };
+            serialized.hasEnd            = {
+                '@type':            "time:Instant",
+                inXSDDateTimeStamp: serialized.inXSDDateTimeStamp
+            };
+            this.#hasBeginningSerialized = serialized;
+
+        } // if ()
+
+        if (!this.#hasEndSerialized) {
+            serialized = this['hasEnd']['$serialize']();
+            delete serialized.hasBeginning;
+            delete serialized.hasEnd;
+            serialized.hasBeginning = {
+                inXSDDateTimeStamp: serialized.inXSDDateTimeStamp
+            };
+            serialized.hasEnd       = {
+                inXSDDateTimeStamp: serialized.inXSDDateTimeStamp
+            };
+            this.#hasEndSerialized  = serialized;
+
+        } // if ()
+
+        result['hasBeginning'] = this.#hasBeginningSerialized;
+        result['hasEnd']       = this.#hasEndSerialized;
 
         return result;
     } // ProperInterval#$serialize
 
-    get 'hasBeginning'() {
+    get hasBeginning() {
         this.#hasBeginning = (this.#hasBeginning || new time.Instant(this.beginning));
         return this.#hasBeginning;
     }
 
-    get 'duration'() {
+    get duration() {
         return this.#duration;
     }
 
-    get 'hasDuration'() {
+    get hasDuration() {
         return {
             '@type':           'time:Duration',
             'numericDuration': {'@type': "xsd:decimal", '@value': this.#duration},
@@ -112,11 +143,11 @@ class ProperInterval {
         return this.#xsdDuration;
     }
 
-    get 'hasXSDDuration'() {
+    get hasXSDDuration() {
         return {'@type': "xsd:duration", '@value': this['xsd:duration']};
     }
 
-    get 'hasEnd'() {
+    get hasEnd() {
         this.#hasEnd = (this.#hasEnd || new time.Instant(this.end));
         return this.#hasEnd;
     }
