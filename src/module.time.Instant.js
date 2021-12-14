@@ -62,22 +62,25 @@ class Instant {
             }],
             '@type':          'time:Instant',
             'inTimePosition': this.#inTimePosition,
-            // TODO : thsi is MAYBE not correct (so flipped to 'hasDuration'...) duration:           {
-            'hasDuration':        this.#hasDuration,
-            'hasXSDDuration':     this['hasXSDDuration'],
+            // TODO : this is MAYBE not correct (so flipped to 'hasDuration'...) duration:           {
+            //'hasDuration':        this.#hasDuration,      // REM: dropped, it's useless
+            //'hasXSDDuration':     this['hasXSDDuration'], // REM: dropped, it's useless
             'inXSDDateTimeStamp': this['inXSDDateTimeStamp'],
             'inXSDgYear':         this['inXSDgYear'],
             'inXSDgYearMonth':    this['inXSDgYearMonth'],
             'inDateTime':         this['inDateTime']
         };
-        result.hasBeginning = {
-            '@type':            "time:Instant",
-            inXSDDateTimeStamp: this['inXSDDateTimeStamp']
-        };
-        result.hasEnd       = {
-            '@type':            "time:Instant",
-            inXSDDateTimeStamp: this['inXSDDateTimeStamp']
-        };
+        // REM: dropped, it's useless
+        //result.hasBeginning = {
+        //    '@type':            "time:Instant",
+        //    inXSDDateTimeStamp: this['inXSDDateTimeStamp']
+        //};
+        // REM: dropped, it's useless
+        //result.hasEnd       = {
+        //    '@type':            "time:Instant",
+        //    inXSDDateTimeStamp: this['inXSDDateTimeStamp']
+        //};
+        // REM: dropped, it's BAD!!!
         //result['hasBeginning'] = result;
         //result['hasEnd']       = result;
 
