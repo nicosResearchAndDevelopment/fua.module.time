@@ -33,6 +33,71 @@ method.from = function ({temporalEntity = new time.Instant(new Date), offset = "
     return result;
 }; // method.from
 
+method.fromXsdLiteral = function (literal) {
+    let xsdValue = '', xsdType = '';
+    if (_.isString(literal)) {
+        const match = /^["']([0-9\-.:+TZ]+)["']\^\^(?:xsd?:|http:\/\/www\.w3\.org\/2001\/XMLSchema#)(\w+)$/.exec(literal);
+        _.assert(match, 'fromXsdLiteral : invalid string pattern');
+        xsdValue = match[1];
+        xsdType  = match[2];
+    } else if (_.isObject(literal)) {
+        if (literal['@value'] && literal['@type']) literal = {value: literal['@value'], datatype: literal['@type']};
+        _.assert(_.isString(literal.value) && /^[0-9\-.:+TZ]+$/.test(literal.value), 'fromXsdLiteral : invalid literal value');
+        _.assert(_.isString(literal.datatype), 'fromXsdLiteral : invalid literal datatype');
+        const match = /^(?:xsd?:|http:\/\/www\.w3\.org\/2001\/XMLSchema#)(\w+)$/.exec(literal.datatype);
+        _.assert(match, 'fromXsdLiteral : invalid literal datatype');
+        xsdValue = literal.value;
+        xsdType  = match[1];
+    }
+
+    _.assert(xsdValue && xsdType, 'fromXsdLiteral : invalid xsd data');
+    let result = null, now = new Date(), temp = {};
+
+    switch (xsdType) {
+
+        case 'time':
+            // SEE https://www.data2type.de/xml-xslt-xslfo/xml-schema/datentypen-referenz/xs-time
+            temp.match = /^(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9](?:\.[0-9]+)?)(?:([+-])(1[0-2]|0[0-9]):([0-5][0-9])|(Z))?$/.exec(xsdValue);
+            _.assert(temp.match, 'fromXsdLiteral : invalid xsd:time format');
+            if (temp.match[4] || temp.match[7]) {
+                temp.utc  = true;
+                temp.YYYY = now.getUTCFullYear();
+                temp.MM   = now.getUTCMonth();
+                temp.DD   = now.getUTCDate();
+            } else {
+                temp.utc  = false;
+                temp.YYYY = now.getFullYear();
+                temp.MM   = now.getMonth();
+                temp.DD   = now.getDate();
+            }
+            temp.hh = parseInt(temp.match[1]);
+            temp.mm = parseInt(temp.match[2]);
+            temp.ss = parseInt(temp.match[3]);
+            temp.ms = 1000 * (parseFloat(temp.match[3]) - temp.ss);
+            if (temp.match[4] === '+') {
+                temp.hh += parseInt(temp.match[5]);
+                temp.mm += parseInt(temp.match[6]);
+            } else if (temp.match[4] === '-') {
+                temp.hh -= parseInt(temp.match[5]);
+                temp.mm -= parseInt(temp.match[6]);
+            }
+            if (temp.utc) {
+                temp.utc  = Date.UTC(temp.YYYY, temp.MM, temp.DD, temp.hh, temp.mm, temp.ss, temp.ms);
+                temp.date = new Date(temp.utc);
+            } else {
+                temp.date = new Date(temp.YYYY, temp.MM, temp.DD, temp.hh, temp.mm, temp.ss, temp.ms);
+            }
+            result = new time.Instant(temp.date);
+            break; // case 'time'
+
+        default:
+            _.assert(false, 'fromXsdLiteral : unknown type xsd:' + xsdType);
+
+    } // switch
+
+    return result;
+}; // method.fromXsdLiteral
+
 method.today = function () {
     let
         _date_ = new Date

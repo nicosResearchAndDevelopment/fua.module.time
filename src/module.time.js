@@ -14,12 +14,13 @@ time.Instant        = Instant;
 time.ProperInterval = ProperInterval;
 time.Year           = Year;
 
-time.now       = method.now;
-time.from      = method.from;
-time.today     = method.today;
-time.tomorrow  = method.tomorrow;
-time.yesterday = method.yesterday;
-time.stamp     = method.stamp;
+time.now            = method.now;
+time.from           = method.from;
+time.fromXsdLiteral = method.fromXsdLiteral;
+time.today          = method.today;
+time.tomorrow       = method.tomorrow;
+time.yesterday      = method.yesterday;
+time.stamp          = method.stamp;
 
 time.PREFIX = "time";
 time.URI    = "http://www.w3.org/2006/time#";

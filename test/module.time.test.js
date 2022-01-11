@@ -158,3 +158,46 @@ describe('time.ProperInterval', () => {
 
 });
 
+describe('fromXsdLiteral', () => {
+
+    describe('xsd:time', () => {
+
+        test('return Instant from "13:00:00"^^xsd:time', () => {
+            const instant = time.fromXsdLiteral('"13:00:00"^^xsd:time');
+            expect(instant).toBeInstanceOf(time.Instant);
+            console.log(instant);
+        });
+
+        test('return Instant from "13:00:00Z"^^xsd:time', () => {
+            const instant = time.fromXsdLiteral('"13:00:00Z"^^xsd:time');
+            expect(instant).toBeInstanceOf(time.Instant);
+            console.log(instant);
+        });
+
+        test('return Instant from "13:00:00+12:00"^^xsd:time', () => {
+            const instant = time.fromXsdLiteral('"13:00:00+12:00"^^xsd:time');
+            expect(instant).toBeInstanceOf(time.Instant);
+            console.log(instant);
+        });
+
+        test('return Instant from "10:00:00-12:00"^^xsd:time', () => {
+            const instant = time.fromXsdLiteral('"10:00:00-12:00"^^xsd:time');
+            expect(instant).toBeInstanceOf(time.Instant);
+            console.log(instant);
+        });
+
+        test('return Instant from {value: "13:00:00", datatype: "xsd:time"}', () => {
+            const instant = time.fromXsdLiteral({value: "13:00:00", datatype: "xsd:time"});
+            expect(instant).toBeInstanceOf(time.Instant);
+            console.log(instant);
+        });
+
+        test('return Instant from {"@value": "13:00:00", "@type": "xsd:time"}', () => {
+            const instant = time.fromXsdLiteral({"@value": "13:00:00", "@type": "xsd:time"});
+            expect(instant).toBeInstanceOf(time.Instant);
+            console.log(instant);
+        });
+
+    });
+
+});

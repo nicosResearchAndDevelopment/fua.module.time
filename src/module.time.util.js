@@ -39,6 +39,10 @@ _.isString = function (value) {
     return typeof value === 'string';
 };
 
+_.isObject = function (value) {
+    return value && typeof value === 'object';
+};
+
 _.isDate = function (value) {
     return value && value instanceof Date
         && !isNaN(value.valueOf())
