@@ -160,6 +160,34 @@ describe('time.ProperInterval', () => {
 
 describe('fromXsdLiteral', () => {
 
+    describe('xsd:date', () => {
+
+        test('return ProperInterval from "2001-10-26"^^xsd:date', () => {
+            const interval = time.fromXsdLiteral('"2001-10-26"^^xsd:date');
+            expect(interval).toBeInstanceOf(time.ProperInterval);
+            console.log(interval);
+        });
+
+        test('return ProperInterval from "2001-01-26"^^xsd:date', () => {
+            const interval = time.fromXsdLiteral('"2001-01-26"^^xsd:date');
+            expect(interval).toBeInstanceOf(time.ProperInterval);
+            console.log(interval);
+        });
+
+        test('return ProperInterval from "2001-10-26Z"^^xsd:date', () => {
+            const interval = time.fromXsdLiteral('"2001-10-26Z"^^xsd:date');
+            expect(interval).toBeInstanceOf(time.ProperInterval);
+            console.log(interval);
+        });
+
+        test('return ProperInterval from "2001-10-26-06:00"^^xsd:date', () => {
+            const interval = time.fromXsdLiteral('"2001-10-26-06:00"^^xsd:date');
+            expect(interval).toBeInstanceOf(time.ProperInterval);
+            console.log(interval);
+        });
+
+    });
+
     describe('xsd:time', () => {
 
         test('return Instant from "13:00:00"^^xsd:time', () => {
@@ -196,6 +224,154 @@ describe('fromXsdLiteral', () => {
             const instant = time.fromXsdLiteral({"@value": "13:00:00", "@type": "xsd:time"});
             expect(instant).toBeInstanceOf(time.Instant);
             console.log(instant);
+        });
+
+    });
+
+    describe('xsd:dateTime', () => {
+
+        test('return Instant from "2001-10-26T21:32:52"^^xsd:dateTime', () => {
+            const instant = time.fromXsdLiteral('"2001-10-26T21:32:52"^^xsd:dateTime');
+            expect(instant).toBeInstanceOf(time.Instant);
+            console.log(instant);
+        });
+
+        test('return Instant from "2001-10-26T21:32:52+02:00"^^xsd:dateTime', () => {
+            const instant = time.fromXsdLiteral('"2001-10-26T21:32:52+02:00"^^xsd:dateTime');
+            expect(instant).toBeInstanceOf(time.Instant);
+            console.log(instant);
+        });
+
+        test('return Instant from "2001-10-26T21:32:52Z"^^xsd:dateTime', () => {
+            const instant = time.fromXsdLiteral('"2001-10-26T21:32:52Z"^^xsd:dateTime');
+            expect(instant).toBeInstanceOf(time.Instant);
+            console.log(instant);
+        });
+
+    });
+
+    describe('xsd:gDay', () => {
+
+        test('return Instant from "---01"^^xsd:gDay', () => {
+            const interval = time.fromXsdLiteral('"---01"^^xsd:gDay');
+            expect(interval).toBeInstanceOf(time.ProperInterval);
+            console.log(interval);
+        });
+
+        test('return Instant from "---01Z"^^xsd:gDay', () => {
+            const interval = time.fromXsdLiteral('"---01Z"^^xsd:gDay');
+            expect(interval).toBeInstanceOf(time.ProperInterval);
+            console.log(interval);
+        });
+
+        test('return Instant from "---01+02:00"^^xsd:gDay', () => {
+            const interval = time.fromXsdLiteral('"---01+02:00"^^xsd:gDay');
+            expect(interval).toBeInstanceOf(time.ProperInterval);
+            console.log(interval);
+        });
+
+    });
+
+    describe('xsd:gMonth', () => {
+
+        test('return Instant from "--05"^^xsd:gMonth', () => {
+            const interval = time.fromXsdLiteral('"--05"^^xsd:gMonth');
+            expect(interval).toBeInstanceOf(time.ProperInterval);
+            console.log(interval);
+        });
+
+        test('return Instant from "--11Z"^^xsd:gMonth', () => {
+            const interval = time.fromXsdLiteral('"--11Z"^^xsd:gMonth');
+            expect(interval).toBeInstanceOf(time.ProperInterval);
+            console.log(interval);
+        });
+
+        test('return Instant from "--11-04:00"^^xsd:gMonth', () => {
+            const interval = time.fromXsdLiteral('"--11-04:00"^^xsd:gMonth');
+            expect(interval).toBeInstanceOf(time.ProperInterval);
+            console.log(interval);
+        });
+
+    });
+
+    describe('xsd:gMonthDay', () => {
+
+        test('return Instant from "--05-01"^^xsd:gMonthDay', () => {
+            const interval = time.fromXsdLiteral('"--05-01"^^xsd:gMonthDay');
+            expect(interval).toBeInstanceOf(time.ProperInterval);
+            console.log(interval);
+        });
+
+        test('return Instant from "--11-01Z"^^xsd:gMonthDay', () => {
+            const interval = time.fromXsdLiteral('"--11-01Z"^^xsd:gMonthDay');
+            expect(interval).toBeInstanceOf(time.ProperInterval);
+            console.log(interval);
+        });
+
+        test('return Instant from "--11-01+02:00"^^xsd:gMonthDay', () => {
+            const interval = time.fromXsdLiteral('"--11-01+02:00"^^xsd:gMonthDay');
+            expect(interval).toBeInstanceOf(time.ProperInterval);
+            console.log(interval);
+        });
+
+    });
+
+    describe('xsd:gYear', () => {
+
+        test('return Instant from "2001"^^xsd:gYear', () => {
+            const interval = time.fromXsdLiteral('"2001"^^xsd:gYear');
+            expect(interval).toBeInstanceOf(time.ProperInterval);
+            console.log(interval);
+        });
+
+        test('return Instant from "2001Z"^^xsd:gYear', () => {
+            const interval = time.fromXsdLiteral('"2001Z"^^xsd:gYear');
+            expect(interval).toBeInstanceOf(time.ProperInterval);
+            console.log(interval);
+        });
+
+        test('return Instant from "-2001+02:00"^^xsd:gYear', () => {
+            const interval = time.fromXsdLiteral('"-2001+02:00"^^xsd:gYear');
+            expect(interval).toBeInstanceOf(time.ProperInterval);
+            console.log(interval);
+        });
+
+    });
+
+    describe('xsd:gYearMonth', () => {
+
+        test('return Instant from "2001-11"^^xsd:gYearMonth', () => {
+            const interval = time.fromXsdLiteral('"2001-11"^^xsd:gYearMonth');
+            expect(interval).toBeInstanceOf(time.ProperInterval);
+            console.log(interval);
+        });
+
+        test('return Instant from "2001-10Z"^^xsd:gYearMonth', () => {
+            const interval = time.fromXsdLiteral('"2001-10Z"^^xsd:gYearMonth');
+            expect(interval).toBeInstanceOf(time.ProperInterval);
+            console.log(interval);
+        });
+
+        test('return Instant from "2001-10+02:00"^^xsd:gYearMonth', () => {
+            const interval = time.fromXsdLiteral('"2001-10+02:00"^^xsd:gYearMonth');
+            expect(interval).toBeInstanceOf(time.ProperInterval);
+            console.log(interval);
+        });
+
+    });
+
+    describe('xsd:duration', () => {
+
+        test('return Instant from "P1Y"^^xsd:duration', () => {
+            const interval = time.fromXsdLiteral('"P1Y"^^xsd:duration');
+            expect(interval).toBeInstanceOf(time.ProperInterval);
+            console.log(interval);
+        });
+
+        test('return Instant from "P1M2DT3H"^^xsd:duration', () => {
+            const interval = time.fromXsdLiteral('"P1M2DT3H"^^xsd:duration');
+            expect(interval).toBeInstanceOf(time.ProperInterval);
+            console.log(interval);
         });
 
     });
