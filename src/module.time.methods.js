@@ -349,9 +349,10 @@ method.fromXsdLiteral = function (literal) {
 
         case 'duration':
             // SEE https://www.data2type.de/xml-xslt-xslfo/xml-schema/datentypen-referenz/xs-duration
-            // temp.match = xsdRegExp.duration.exec(xsdValue);
-            // _.assert(temp.match, 'fromXsdLiteral : invalid xsd:duration format');
-            result = new time.ProperInterval(now, xsdValue);
+            temp.match = xsdRegExp.duration.exec(xsdValue);
+            _.assert(temp.match, 'fromXsdLiteral : invalid xsd:duration format');
+            if (xsdValue.startsWith('-')) result = new time.ProperInterval(xsdValue.substr(1), now);
+            else result = new time.ProperInterval(now, xsdValue);
             break; // case 'duration'
 
         default:

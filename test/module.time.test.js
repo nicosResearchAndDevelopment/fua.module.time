@@ -368,8 +368,8 @@ describe('fromXsdLiteral', () => {
             console.log(interval);
         });
 
-        test('return Instant from "P1M2DT3H"^^xsd:duration', () => {
-            const interval = time.fromXsdLiteral('"P1M2DT3H"^^xsd:duration');
+        test('return Instant from "-P1M2DT3H"^^xsd:duration', () => {
+            const interval = time.fromXsdLiteral('"-P1M2DT3H"^^xsd:duration');
             expect(interval).toBeInstanceOf(time.ProperInterval);
             console.log(interval);
         });
