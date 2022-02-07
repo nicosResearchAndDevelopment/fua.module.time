@@ -214,8 +214,12 @@ describe('fromXsdLiteral', () => {
             console.log(instant);
         });
 
-        test('return Instant from {value: "13:00:00", datatype: "xsd:time"}', () => {
-            const instant = time.fromXsdLiteral({value: "13:00:00", datatype: "xsd:time"});
+        test('return Instant from {value: "13:00:00", datatype: {value: "xsd:time"}', () => {
+            const instant = time.fromXsdLiteral({
+                termType: "Literal",
+                value:    "13:00:00",
+                datatype: {termType: 'NamedNode', value: "xsd:time"}
+            });
             expect(instant).toBeInstanceOf(time.Instant);
             console.log(instant);
         });

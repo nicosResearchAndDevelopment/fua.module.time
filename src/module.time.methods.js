@@ -58,8 +58,8 @@ method.fromXsdLiteral = function (literal) {
     } else if (_.isObject(literal)) {
         if (literal['@value'] && literal['@type']) literal = {value: literal['@value'], datatype: literal['@type']};
         _.assert(_.isString(literal.value) && xsdRegExp.literalValue.test(literal.value), 'fromXsdLiteral : invalid literal value');
-        _.assert(_.isString(literal.datatype), 'fromXsdLiteral : invalid literal datatype');
-        const match = xsdRegExp.literalType.exec(literal.datatype);
+        _.assert(_.isString(literal.datatype?.value), 'fromXsdLiteral : invalid literal datatype');
+        const match = xsdRegExp.literalType.exec(literal.datatype.value);
         _.assert(match, 'fromXsdLiteral : invalid literal datatype');
         xsdValue = literal.value;
         xsdType  = match[1];
