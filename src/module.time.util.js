@@ -104,7 +104,14 @@ _.getTemporalEntity = function (parameter) {
                 return new time.Instant(parameter['@value']);
             } else if (parameter['@type'] === "time:ProperInterval") {
                 //return new time.ProperInterval(parameter['@value']['hasBeginning'], parameter['@value']['hasEnd']);
-                return new time.ProperInterval(parameter['hasBeginning']['@value'], parameter['hasEnd']['@value']);
+                let from, to;
+                from = (parameter['hasBeginning']['@value'] || parameter['hasBeginning']['inXSDDateTimeStamp']);
+                from = ((from['@value']) ? from['@value'] : from)
+                to   = (parameter['hasEnd']['@value'] || parameter['hasEnd']['inXSDDateTimeStamp']);
+                to = ((to['@value']) ? to['@value'] : to)
+                return new time.ProperInterval(from,to);
+                //>>>>>>>>>>>>>>>>>>>> return new time.ProperInterval(parameter['hasBeginning']['@value'], parameter['hasEnd']['@value']);
+
             } else {
                 return;
             } // if ()
