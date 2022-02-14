@@ -1,0 +1,68 @@
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix greg: <http://www.w3.org/ns/time/gregorian/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://www.w3.org/ns/time/gregorian>
+    rdf:type owl:Ontology ;
+    owl:imports <http://www.w3.org/2006/time> ;
+.
+greg:April
+    rdf:type time:MonthOfYear ;
+    rdfs:subClassOf [
+                 rdf:type owl:Restriction ;
+                 owl:hasValue time:unitMonth ;
+                 owl:onProperty time:unitType ;
+             ] ;
+    time:month "--04"^^xsd:gMonth ;
+    time:unitType time:unitMonth ;
+.
+greg:August
+    rdf:type time:MonthOfYear ;
+    time:month "--08"^^xsd:gMonth ;
+    time:unitType time:unitMonth ;
+.
+greg:December
+    rdf:type time:MonthOfYear ;
+    time:month "--12"^^xsd:gMonth ;
+.
+greg:February
+    rdf:type time:MonthOfYear ;
+    time:month "--02"^^xsd:gMonth ;
+.
+greg:January
+    rdf:type time:MonthOfYear ;
+    time:month "--01"^^xsd:gMonth ;
+.
+greg:July
+    rdf:type time:MonthOfYear ;
+    time:month "--07"^^xsd:gMonth ;
+.
+greg:June
+    rdf:type time:MonthOfYear ;
+    time:month "--06"^^xsd:gMonth ;
+.
+greg:March
+    rdf:type time:MonthOfYear ;
+    time:month "--03"^^xsd:gMonth ;
+.
+greg:May
+    rdf:type time:MonthOfYear ;
+    time:month "--05"^^xsd:gMonth ;
+.
+greg:November
+    rdf:type time:MonthOfYear ;
+    time:month "--11"^^xsd:gMonth ;
+.
+greg:October
+    rdf:type time:MonthOfYear ;
+    time:month "--10"^^xsd:gMonth ;
+.
+greg:September
+    rdf:type time:MonthOfYear ;
+    time:month "--09"^^xsd:gMonth ;
+.

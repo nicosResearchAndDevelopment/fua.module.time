@@ -1,3 +1,5 @@
 const
     util  = require('./module.time.util.js'),
-    model = require('./model/index.js');
+    model = require('./module.time.model.js');
+
+exports.model = Object.freeze(model);
