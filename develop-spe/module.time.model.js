@@ -1,4 +1,6 @@
-exports.TRS      = require('./classes/TRS.js');
+exports._Entity = require('./classes/_Entity.js');
+
+exports.TRS       = require('./classes/TRS.js');
 exports.Gregorian = require('./individuals/Gregorian.js');
 
 exports.TimeZone = require('./classes/TimeZone.js');
@@ -29,7 +31,7 @@ exports.DateTimeInterval    = require('./classes/DateTimeInterval.js');
 exports.DateTimeDescription = require('./classes/DateTimeDescription.js');
 exports.DurationDescription = require('./classes/DurationDescription.js');
 
-exports.DayOfWeek   = require('./classes/DayOfWeek.js');
+exports.DayOfWeek = require('./classes/DayOfWeek.js');
 
 exports.Monday    = require('./individuals/Monday.js');
 exports.Tuesday   = require('./individuals/Tuesday.js');
