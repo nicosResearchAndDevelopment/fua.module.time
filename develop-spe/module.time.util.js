@@ -6,7 +6,9 @@ const
         timeIRI: (prop) => 'time:' + prop,
         timeURI: (prop) => 'http://www.w3.org/2006/time#' + prop,
         gregIRI: (prop) => 'greg:' + prop,
-        gregURI: (prop) => 'http://www.w3.org/ns/time/gregorian/' + prop
+        gregURI: (prop) => 'http://www.w3.org/ns/time/gregorian/' + prop,
+        xsdIRI:  (prop) => 'xsd:' + prop,
+        xsdURI:  (prop) => 'http://www.w3.org/2001/XMLSchema#' + prop
     };
 
 // util.DatatypeError = _util.createErrorClass('DatatypeError', 'FUA_ERROR_TIME_DATATYPE');
@@ -132,6 +134,34 @@ util.timeURI.week                   = util.timeURI('week');
 util.timeURI.weeks                  = util.timeURI('weeks');
 util.timeURI.year                   = util.timeURI('year');
 util.timeURI.years                  = util.timeURI('years');
+
+util.xsdIRI.string             = util.xsdIRI('string');
+util.xsdIRI.decimal            = util.xsdIRI('decimal');
+util.xsdIRI.nonNegativeInteger = util.xsdIRI('nonNegativeInteger');
+util.xsdIRI.date               = util.xsdIRI('date');
+util.xsdIRI.time               = util.xsdIRI('time');
+util.xsdIRI.dateTime           = util.xsdIRI('dateTime');
+util.xsdIRI.dateTimeStamp      = util.xsdIRI('dateTimeStamp');
+util.xsdIRI.duration           = util.xsdIRI('duration');
+util.xsdIRI.gDay               = util.xsdIRI('gDay');
+util.xsdIRI.gMonth             = util.xsdIRI('gMonth');
+util.xsdIRI.gYear              = util.xsdIRI('gYear');
+util.xsdIRI.gMonthDay          = util.xsdIRI('gMonthDay');
+util.xsdIRI.gYearMonth         = util.xsdIRI('gYearMonth');
+
+util.xsdURI.string             = util.xsdURI('string');
+util.xsdURI.decimal            = util.xsdURI('decimal');
+util.xsdURI.nonNegativeInteger = util.xsdURI('nonNegativeInteger');
+util.xsdURI.date               = util.xsdURI('date');
+util.xsdURI.time               = util.xsdURI('time');
+util.xsdURI.dateTime           = util.xsdURI('dateTime');
+util.xsdURI.dateTimeStamp      = util.xsdURI('dateTimeStamp');
+util.xsdURI.duration           = util.xsdURI('duration');
+util.xsdURI.gDay               = util.xsdURI('gDay');
+util.xsdURI.gMonth             = util.xsdURI('gMonth');
+util.xsdURI.gYear              = util.xsdURI('gYear');
+util.xsdURI.gMonthDay          = util.xsdURI('gMonthDay');
+util.xsdURI.gYearMonth         = util.xsdURI('gYearMonth');
 
 // util.getProperty = function (target, property, default_value = null) {
 //     if (!util.isObject(target)) return default_value;
