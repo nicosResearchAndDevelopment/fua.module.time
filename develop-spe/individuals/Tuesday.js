@@ -2,6 +2,8 @@ const
     util  = require('../module.time.util.js'),
     model = require('../module.time.model.js');
 
-const Tuesday = new model.DayOfWeek({});
+const Tuesday = new model.DayOfWeek({
+    '@id': 'http://www.w3.org/2006/time#Tuesday'
+});
 
 module.exports = Tuesday;
