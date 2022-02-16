@@ -5,8 +5,8 @@ const
 class TRS extends model._Entity {
 
     constructor(param) {
+        if (!param?.['@id']) throw new Error('param @id is mandatory for TRS');
         super(param);
-        util.assert(this.id, 'id is mandatory');
     } // TRS#constructor
 
 } // TRS

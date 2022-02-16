@@ -8,8 +8,8 @@ class TemporalPosition extends model._Entity {
 
     constructor(param) {
         super(param);
-        this.#hasTRS = util.getProperty(param, 'hasTRS') || this.#hasTRS;
-        util.assert(this.#hasTRS instanceof model.TRS, 'expected hasTRS to be a TRS');
+        const hasTRS = param[util.timeIRI.hasTRS] || param[util.timeURI.hasTRS];
+        if (hasTRS) this.#hasTRS = model.TRS.from(hasTRS);
     } // TemporalPosition#constructor
 
     get hasTRS() {
@@ -17,10 +17,9 @@ class TemporalPosition extends model._Entity {
     }
 
     toJSON() {
-        return util.cleanupProperties({
-            ...super.toJSON(),
-            [util.timeIRI('hasTRS')]: this.#hasTRS
-        });
+        const result                = super.toJSON();
+        result[util.timeIRI.hasTRS] = this.#hasTRS;
+        return result;
     } // TemporalPosition#toJSON
 
 } // TemporalPosition

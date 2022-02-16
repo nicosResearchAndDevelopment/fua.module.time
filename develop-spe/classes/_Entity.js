@@ -4,18 +4,30 @@ const
 
 class _Entity {
 
-    static id() {
-        return util.timeIRI(this.constructor.name);
+    static from(param) {
+        if (this === _Entity)
+            throw new Error('abstract class cannot be constructed');
+        if (param instanceof this) return param;
+        if (param instanceof _Entity)
+            throw new Error('expected param to be an instance of ' + this.name + ', but got instance of ' + param.type);
+        return new this(param);
     }
 
     #id   = '';
     #type = '';
 
     constructor(param) {
-        util.assert(new.target !== _Entity, 'abstract class');
-        this.#id = util.getProperty(param, 'id') || this.#id;
-        util.assert(!this.#id || util.isIRIString(id), 'expected id to be an iri string');
-        this.#type = new.target.name || this.#type;
+        if (new.target === _Entity)
+            throw new Error('abstract class cannot be constructed');
+        if (!util.isObject(param))
+            throw new Error('expected param to be an object');
+        if (param['@type'] && param['@type'] !== util.timeIRI(new.target.name))
+            throw new Error('expected param @type to be ' + util.timeIRI(new.target.name));
+        if (param['@id'] && !util.isIRIString(param['@id']))
+            throw new Error('expected param @id to be an iri string');
+
+        this.#id   = param['@id'] || '';
+        this.#type = new.target.name;
     } // _Entity#constructor
 
     get id() {
@@ -27,10 +39,9 @@ class _Entity {
     }
 
     toJSON() {
-        return util.cleanupProperties({
-            '@id':   this.#id,
-            '@type': util.timeIRI(this.#type)
-        });
+        const result = {'@type': util.timeIRI(this.#type)};
+        if (this.#id) result['@id'] = this.#id;
+        return result;
     } // _Entity#toJSON
 
 } // _Entity

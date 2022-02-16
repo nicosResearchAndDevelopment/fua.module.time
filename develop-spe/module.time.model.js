@@ -55,3 +55,5 @@ exports.September = require('./individuals/September.js');
 exports.October   = require('./individuals/October.js');
 exports.November  = require('./individuals/November.js');
 exports.December  = require('./individuals/December.js');
+
+delete exports._Entity;

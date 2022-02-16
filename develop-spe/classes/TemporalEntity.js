@@ -4,42 +4,36 @@ const
 
 class TemporalEntity extends model._Entity {
 
-    // #after               = new Set();
-    // #before              = new Set();
     #hasBeginning        = null;
     #hasEnd              = null;
     #hasTemporalDuration = null;
     #hasXSDDuration      = '';
 
+    #after  = new Set();
+    #before = new Set();
+
     constructor(param) {
         super(param);
-        // const after = util.getProperty(param, 'after');
-        // if (after) for (let entity of util.toArray(param.after)) {
-        //     util.assert(entity instanceof model.TemporalEntity, 'expected param after to be a TemporalEntity');
-        //     this.#after.add(entity);
-        // }
-        // if (param?.before) for (let before of util.toArray(param.before)) {
-        //     util.assert(param.before instanceof model.TemporalEntity, 'expected param before to be a TemporalEntity');
-        //     this.#before.add(before);
-        // }
-        this.#hasBeginning = util.getProperty(param, 'hasBeginning') || this.#hasBeginning;
-        util.assert(!this.#hasBeginning || this.#hasBeginning instanceof model.Instant, 'expected hasBeginning to be an Instant');
-        this.#hasEnd = util.getProperty(param, 'hasEnd') || this.#hasEnd;
-        util.assert(!this.#hasEnd || this.#hasEnd instanceof model.Instant, 'expected hasEnd to be an Instant');
-        this.#hasTemporalDuration = util.getProperty(param, 'hasTemporalDuration') || this.#hasTemporalDuration;
-        util.assert(!this.#hasTemporalDuration || this.#hasTemporalDuration instanceof model.TemporalDuration, 'expected hasTemporalDuration to be an Instant');
-        this.#hasXSDDuration = util.getProperty(param, 'hasXSDDuration') || this.#hasXSDDuration;
-        util.assert(!this.#hasXSDDuration || util.isXsdDuration(param.hasXSDDuration), 'expected hasXSDDuration to be an xsd:duration');
-
+        const hasBeginning = param[util.timeIRI.hasBeginning] || param[util.timeURI.hasBeginning];
+        if (hasBeginning) this.#hasBeginning = model.Instant.from(hasBeginning);
+        const hasEnd = param[util.timeIRI.hasEnd] || param[util.timeURI.hasEnd];
+        if (hasEnd) this.#hasEnd = model.Instant.from(hasEnd);
+        const hasTemporalDuration = param[util.timeIRI.hasTemporalDuration] || param[util.timeURI.hasTemporalDuration];
+        if (hasTemporalDuration) this.#hasTemporalDuration = model.TemporalDuration.from(hasTemporalDuration);
+        const hasXSDDuration = param[util.timeIRI.hasXSDDuration] || param[util.timeURI.hasXSDDuration];
+        if (hasXSDDuration) {
+            if (!util.isXsdDuration(hasXSDDuration)) throw new Error('expected param hasXSDDuration to be an xsd:duration string');
+            this.#hasXSDDuration = hasXSDDuration;
+        }
+        const after = param[util.timeIRI.after] || param[util.timeURI.after];
+        if (after) for (let entity of util.toArray(param.after)) {
+            this.#after.add(model.TemporalEntity.from(after));
+        }
+        const before = param[util.timeIRI.before] || param[util.timeURI.before];
+        if (before) for (let entity of util.toArray(param.before)) {
+            this.#before.add(model.TemporalEntity.from(before));
+        }
     } // TemporalEntity#constructor
-
-    // get after() {
-    //     return Array.from(this.#after);
-    // }
-    //
-    // get before() {
-    //     return Array.from(this.#before);
-    // }
 
     get hasBeginning() {
         return this.#hasBeginning;
@@ -57,14 +51,23 @@ class TemporalEntity extends model._Entity {
         return this.#hasXSDDuration;
     }
 
+    get after() {
+        return Array.from(this.#after);
+    }
+
+    get before() {
+        return Array.from(this.#before);
+    }
+
     toJSON() {
-        return util.cleanupProperties({
-            ...super.toJSON(),
-            [util.timeIRI('hasBeginning')]:        this.#hasBeginning,
-            [util.timeIRI('hasEnd')]:              this.#hasEnd,
-            [util.timeIRI('hasTemporalDuration')]: this.#hasTemporalDuration,
-            [util.timeIRI('hasXSDDuration')]:      this.#hasXSDDuration
-        });
+        const result = super.toJSON();
+        if (this.#after.size > 0) result[util.timeIRI.after] = Array.from(this.#after);
+        if (this.#before.size > 0) result[util.timeIRI.before] = Array.from(this.#before);
+        if (this.#hasBeginning) result[util.timeIRI.hasBeginning] = this.#hasBeginning;
+        if (this.#hasEnd) result[util.timeIRI.hasEnd] = this.#hasEnd;
+        if (this.#hasTemporalDuration) result[util.timeIRI.hasTemporalDuration] = this.#hasTemporalDuration;
+        if (this.#hasXSDDuration) result[util.timeIRI.hasXSDDuration] = this.#hasXSDDuration;
+        return result;
     } // TemporalEntity#toJSON
 
 } // TemporalEntity
