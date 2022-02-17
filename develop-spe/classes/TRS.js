@@ -5,8 +5,8 @@ const
 class TRS extends model._Class {
 
     constructor(param) {
-        if (!param?.['@id']) throw new Error('param @id is mandatory for TRS');
         super(param);
+        if (!this.id) throw new Error('id is mandatory for TRS');
     } // TRS#constructor
 
 } // TRS

@@ -4,6 +4,11 @@ const
 
 class TemporalUnit extends model.TemporalDuration {
 
+    constructor(param) {
+        super(param);
+        if (!this.id) throw new Error('id is mandatory for TemporalUnit');
+    } // TemporalUnit#constructor
+
 } // TemporalUnit
 
 module.exports = TemporalUnit;

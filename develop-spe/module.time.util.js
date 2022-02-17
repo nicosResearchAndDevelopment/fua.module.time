@@ -11,6 +11,8 @@ const
         xsdURI:  (prop) => 'http://www.w3.org/2001/XMLSchema#' + prop
     };
 
+util.isIRIString = _util.StringValidator(/^[a-z][a-z0-9+.-]*:[^\s"<>\\^`{|}]*$/i);
+
 // util.DatatypeError = _util.createErrorClass('DatatypeError', 'FUA_ERROR_TIME_DATATYPE');
 // util.PatternError  = _util.createErrorClass('PatternError', 'FUA_ERROR_TIME_PATTERN');
 // util.RangeError    = _util.createErrorClass('RangeError', 'FUA_ERROR_TIME_RANGE');
@@ -135,46 +137,32 @@ util.timeURI.weeks                  = util.timeURI('weeks');
 util.timeURI.year                   = util.timeURI('year');
 util.timeURI.years                  = util.timeURI('years');
 
-util.xsdIRI.string             = util.xsdIRI('string');
-util.xsdIRI.decimal            = util.xsdIRI('decimal');
-util.xsdIRI.nonNegativeInteger = util.xsdIRI('nonNegativeInteger');
 util.xsdIRI.date               = util.xsdIRI('date');
-util.xsdIRI.time               = util.xsdIRI('time');
 util.xsdIRI.dateTime           = util.xsdIRI('dateTime');
 util.xsdIRI.dateTimeStamp      = util.xsdIRI('dateTimeStamp');
+util.xsdIRI.decimal            = util.xsdIRI('decimal');
 util.xsdIRI.duration           = util.xsdIRI('duration');
 util.xsdIRI.gDay               = util.xsdIRI('gDay');
 util.xsdIRI.gMonth             = util.xsdIRI('gMonth');
-util.xsdIRI.gYear              = util.xsdIRI('gYear');
 util.xsdIRI.gMonthDay          = util.xsdIRI('gMonthDay');
+util.xsdIRI.gYear              = util.xsdIRI('gYear');
 util.xsdIRI.gYearMonth         = util.xsdIRI('gYearMonth');
+util.xsdIRI.nonNegativeInteger = util.xsdIRI('nonNegativeInteger');
+util.xsdIRI.string             = util.xsdIRI('string');
+util.xsdIRI.time               = util.xsdIRI('time');
 
-util.xsdURI.string             = util.xsdURI('string');
-util.xsdURI.decimal            = util.xsdURI('decimal');
-util.xsdURI.nonNegativeInteger = util.xsdURI('nonNegativeInteger');
 util.xsdURI.date               = util.xsdURI('date');
-util.xsdURI.time               = util.xsdURI('time');
 util.xsdURI.dateTime           = util.xsdURI('dateTime');
 util.xsdURI.dateTimeStamp      = util.xsdURI('dateTimeStamp');
+util.xsdURI.decimal            = util.xsdURI('decimal');
 util.xsdURI.duration           = util.xsdURI('duration');
 util.xsdURI.gDay               = util.xsdURI('gDay');
 util.xsdURI.gMonth             = util.xsdURI('gMonth');
-util.xsdURI.gYear              = util.xsdURI('gYear');
 util.xsdURI.gMonthDay          = util.xsdURI('gMonthDay');
+util.xsdURI.gYear              = util.xsdURI('gYear');
 util.xsdURI.gYearMonth         = util.xsdURI('gYearMonth');
-
-util.isIRIString             = _util.StringValidator(/^[a-z][a-z0-9+.-]*:[^\s"<>\\^`{|}]*$/i);
-// util.isXsdDecimal            = _util.StringValidator(/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/);
-// util.isXsdNonNegativeInteger = _util.StringValidator(/^\+?\d+$/);
-// util.isXsdDuration           = _util.StringValidator(/^-?P(?=.)(?:\d+Y)?(?:\d+M)?(?:\d+D)?(?:T(?=.)(?:\d+H)?(?:\d+M)?(?:\d*(?:\.\d+)?S)?)?$/);
-// util.isXsdDate               = _util.StringValidator(/^-?[1-9][0-9]*-(?:1[0-2]|0[1-9])-(?:3[01]|[12][0-9]|0[1-9])(?:[+-](?:1[0-2]|0[0-9]):[0-5][0-9]|Z)?$/);
-// util.isXsdTime               = _util.StringValidator(/^(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9](?:\.[0-9]+)?(?:[+-](?:1[0-2]|0[0-9]):[0-5][0-9]|Z)?$/);
-// util.isXsdDateTime           = _util.StringValidator(/^-?[1-9][0-9]*-(?:1[0-2]|0[1-9])-(?:3[01]|[12][0-9]|0[1-9])T(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9](?:\.[0-9]+)?(?:[+-](?:1[0-2]|0[0-9]):[0-5][0-9]|Z)?$/);
-// util.isXsdDateTimeStamp      = _util.StringValidator(/^-?[1-9][0-9]*-(?:1[0-2]|0[1-9])-(?:3[01]|[12][0-9]|0[1-9])T(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9](?:\.[0-9]+)?Z$/);
-// util.isXsdGDay               = _util.StringValidator(/^---(?:3[01]|[12][0-9]|0[1-9])(?:[+-](?:1[0-2]|0[0-9]):[0-5][0-9]|Z)?$/);
-// util.isXsdGMonth             = _util.StringValidator(/^--(?:1[0-2]|0[1-9])(?:[+-](?:1[0-2]|0[0-9]):[0-5][0-9]|Z)?$/);
-// util.isXsdGMonthDay          = _util.StringValidator(/^--(?:1[0-2]|0[1-9])-(?:3[01]|[12][0-9]|0[1-9])(?:[+-](?:1[0-2]|0[0-9]):[0-5][0-9]|Z)?$/);
-// util.isXsdGYear              = _util.StringValidator(/^-?[1-9][0-9]*(?:[+-](?:1[0-2]|0[0-9]):[0-5][0-9]|Z)?$/);
-// util.isXsdGYearMonth         = _util.StringValidator(/^-?[1-9][0-9]*-(?:1[0-2]|0[1-9])(?:[+-](?:1[0-2]|0[0-9]):[0-5][0-9]|Z)?$/);
+util.xsdURI.nonNegativeInteger = util.xsdURI('nonNegativeInteger');
+util.xsdURI.string             = util.xsdURI('string');
+util.xsdURI.time               = util.xsdURI('time');
 
 module.exports = util;

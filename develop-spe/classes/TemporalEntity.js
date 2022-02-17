@@ -7,7 +7,7 @@ class TemporalEntity extends model._Class {
     #hasBeginning        = null;
     #hasEnd              = null;
     #hasTemporalDuration = null;
-    #hasXSDDuration      = '';
+    #hasXSDDuration      = null;
 
     #after  = new Set();
     #before = new Set();

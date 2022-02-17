@@ -2,7 +2,7 @@ const
     util  = require('../module.time.util.js'),
     model = require('../module.time.model.js');
 
-class TemporalDuration {
+class TemporalDuration extends model._Class {
 
 } // TemporalDuration
 
