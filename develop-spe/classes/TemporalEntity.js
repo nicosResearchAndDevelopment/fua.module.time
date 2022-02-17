@@ -2,7 +2,7 @@ const
     util  = require('../module.time.util.js'),
     model = require('../module.time.model.js');
 
-class TemporalEntity extends model._Entity {
+class TemporalEntity extends model._Class {
 
     #hasBeginning        = null;
     #hasEnd              = null;
@@ -21,7 +21,7 @@ class TemporalEntity extends model._Entity {
         const hasTemporalDuration = param[util.timeIRI.hasTemporalDuration] || param[util.timeURI.hasTemporalDuration];
         if (hasTemporalDuration) this.#hasTemporalDuration = model.TemporalDuration.from(hasTemporalDuration);
         const hasXSDDuration = param[util.timeIRI.hasXSDDuration] || param[util.timeURI.hasXSDDuration];
-        if (hasXSDDuration) this.#hasXSDDuration = model.duration(hasXSDDuration);
+        if (hasXSDDuration) this.#hasXSDDuration = model.duration.from(hasXSDDuration);
         const after = param[util.timeIRI.after] || param[util.timeURI.after];
         if (after) for (let entity of util.toArray(param.after)) {
             this.#after.add(model.TemporalEntity.from(after));

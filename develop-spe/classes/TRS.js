@@ -2,7 +2,7 @@ const
     util  = require('../module.time.util.js'),
     model = require('../module.time.model.js');
 
-class TRS extends model._Entity {
+class TRS extends model._Class {
 
     constructor(param) {
         if (!param?.['@id']) throw new Error('param @id is mandatory for TRS');

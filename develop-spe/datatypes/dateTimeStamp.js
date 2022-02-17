@@ -2,18 +2,14 @@ const
     util  = require('../module.time.util.js'),
     model = require('../module.time.model.js');
 
-function dateTimeStamp(param) {
-    if (util.isObject(param)) {
-        if (param['@type'] !== util.xsdIRI.dateTimeStamp && param['@type'] !== util.xsdURI.dateTimeStamp)
-            throw new Error('expected param to be an ' + util.xsdIRI.dateTimeStamp);
-        if (!util.isXsdDateTimeStamp(param['@value']))
-            throw new Error('expected param to be an ' + util.xsdIRI.dateTimeStamp);
-        return param['@value'];
-    } else {
-        if (!util.isXsdDateTimeStamp(param))
-            throw new Error('expected param to be an ' + util.xsdIRI.dateTimeStamp);
-        return param;
-    }
+class dateTimeStamp extends model._Datatype {
+
+    constructor(param) {
+        super(param);
+        if (!util.isXsdDateTimeStamp(this.value))
+            throw new Error('expected value to be an ' + util.xsdIRI.dateTimeStamp);
+    } // dateTimeStamp#constructor
+
 } // dateTimeStamp
 
 module.exports = dateTimeStamp;
