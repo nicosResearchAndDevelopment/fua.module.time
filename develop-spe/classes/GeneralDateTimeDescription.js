@@ -27,10 +27,9 @@ class GeneralDateTimeDescription extends model.TemporalPosition {
         if (timeZone) this.#timeZone = model.TimeZone.from(timeZone);
         const unitType = param[util.timeIRI.unitType] || param[util.timeURI.unitType];
         if (unitType) this.#unitType = model.TemporalUnit.from(unitType);
-        else throw new Error('unitType is mandatory for GeneralDateTimeDescription'); // TODO maybe detect
+        else throw new Error('unitType is mandatory for GeneralDateTimeDescription');
         const day = param[util.timeIRI.day] || param[util.timeURI.day];
-        // if (day) this.#day = model.string.from(day);
-        if (day) this.#day = day; // TODO convert somehow, maybe try catch with string
+        if (day) this.#day = day;
         const dayOfYear = param[util.timeIRI.dayOfYear] || param[util.timeURI.dayOfYear];
         if (dayOfYear) this.#dayOfYear = model.nonNegativeInteger.from(dayOfYear);
         const hour = param[util.timeIRI.hour] || param[util.timeURI.hour];
@@ -38,15 +37,13 @@ class GeneralDateTimeDescription extends model.TemporalPosition {
         const minute = param[util.timeIRI.minute] || param[util.timeURI.minute];
         if (minute) this.#minute = model.nonNegativeInteger.from(minute);
         const month = param[util.timeIRI.month] || param[util.timeURI.month];
-        // if (month) this.#month = model.string.from(month);
-        if (month) this.#month = month; // TODO convert somehow, maybe try catch with string
+        if (month) this.#month = month;
         const second = param[util.timeIRI.second] || param[util.timeURI.second];
         if (second) this.#second = model.decimal.from(second);
         const week = param[util.timeIRI.week] || param[util.timeURI.week];
         if (week) this.#week = model.nonNegativeInteger.from(week);
         const year = param[util.timeIRI.year] || param[util.timeURI.year];
-        // if (year) this.#year = model.string.from(year);
-        if (year) this.#year = year; // TODO convert somehow, maybe try catch with string
+        if (year) this.#year = year;
     } // GeneralDateTimeDescription#constructor
 
     get dayOfWeek() {
