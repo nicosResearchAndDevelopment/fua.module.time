@@ -13,8 +13,7 @@ class TimePosition extends model.TemporalPosition {
         if (nominalPosition) this.#nominalPosition = model.string.from(nominalPosition);
         const numericPosition = param[util.timeIRI.numericPosition] || param[util.timeURI.numericPosition];
         if (numericPosition) this.#numericPosition = model.decimal.from(numericPosition);
-        if (!(nominalPosition || numericPosition))
-            throw new Error('expected either nominalPosition or numericPosition');
+        else if (!nominalPosition) throw new Error('either nominalPosition or numericPosition is mandatory for TimePosition');
     } // TimePosition#constructor
 
     get nominalPosition() {

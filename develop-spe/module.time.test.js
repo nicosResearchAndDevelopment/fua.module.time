@@ -43,4 +43,37 @@ describe('develop-spe/module.time', function () {
         });
     });
 
+    test('DateTimeDescription', function () {
+        const ex1 = new time.model.DateTimeDescription({
+            '@id':           'ex:1',
+            'time:day':      '---12',
+            'time:month':    '--02',
+            'time:year':     '2008',
+            'time:unitType': time.model.unitDay
+        });
+        expect(JSON.parse(JSON.stringify(ex1))).toMatchObject({
+            '@type':         'time:DateTimeDescription',
+            '@id':           'ex:1',
+            'time:day':      {
+                '@type':  'xsd:gDay',
+                '@value': '---12'
+            },
+            'time:month':    {
+                '@type':  'xsd:gMonth',
+                '@value': '--02'
+            },
+            'time:year':     {
+                '@type':  'xsd:gYear',
+                '@value': '2008'
+            },
+            'time:hasTRS':   {
+                '@type': 'time:TRS',
+                '@id':   'http://www.opengis.net/def/uom/ISO-8601/0/Gregorian'
+            },
+            'time:unitType': {
+                '@id': 'time:unitDay'
+            }
+        });
+    });
+
 });
