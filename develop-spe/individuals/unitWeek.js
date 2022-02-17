@@ -3,7 +3,7 @@ const
     model = require('../module.time.model.js');
 
 const unitWeek = new model.TemporalUnit({
-    '@id':          'http://www.w3.org/2006/time#unitWeek',
+    '@id':          util.timeIRI('unitWeek'),
     'time:days':    {
         '@value': '0',
         '@type':  'xsd:decimal'

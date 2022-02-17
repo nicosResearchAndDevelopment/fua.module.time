@@ -3,7 +3,7 @@ const
     model = require('../module.time.model.js');
 
 const unitMonth = new model.TemporalUnit({
-    '@id':          'http://www.w3.org/2006/time#unitMonth',
+    '@id':          util.timeIRI('unitMonth'),
     'time:days':    {
         '@value': '0',
         '@type':  'xsd:decimal'

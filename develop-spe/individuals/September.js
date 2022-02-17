@@ -3,7 +3,7 @@ const
     model = require('../module.time.model.js');
 
 const September = new model.MonthOfYear({
-    '@id':           'http://www.w3.org/ns/time/gregorian/September',
+    '@id':           util.gregIRI('September'),
     'time:month':    {
         '@value': '--09',
         '@type':  'xsd:gMonth'

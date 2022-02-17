@@ -3,7 +3,7 @@ const
     model = require('../module.time.model.js');
 
 const March = new model.MonthOfYear({
-    '@id':           'http://www.w3.org/ns/time/gregorian/March',
+    '@id':           util.gregIRI('March'),
     'time:month':    {
         '@value': '--03',
         '@type':  'xsd:gMonth'

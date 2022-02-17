@@ -3,7 +3,7 @@ const
     model = require('../module.time.model.js');
 
 const Thursday = new model.DayOfWeek({
-    '@id': 'http://www.w3.org/2006/time#Thursday'
+    '@id': util.timeIRI('Thursday')
 });
 
 module.exports = Thursday;
