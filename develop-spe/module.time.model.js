@@ -1,5 +1,19 @@
 exports._Entity = require('./classes/_Entity.js');
 
+exports.string             = require('./datatypes/string.js');
+exports.decimal            = require('./datatypes/decimal.js');
+exports.nonNegativeInteger = require('./datatypes/nonNegativeInteger.js');
+exports.date               = require('./datatypes/date.js');
+exports.time               = require('./datatypes/time.js');
+exports.dateTime           = require('./datatypes/dateTime.js');
+exports.dateTimeStamp      = require('./datatypes/dateTimeStamp.js');
+exports.duration           = require('./datatypes/duration.js');
+exports.gDay               = require('./datatypes/gDay.js');
+exports.gMonth             = require('./datatypes/gMonth.js');
+exports.gYear              = require('./datatypes/gYear.js');
+exports.gMonthDay          = require('./datatypes/gMonthDay.js');
+exports.gYearMonth         = require('./datatypes/gYearMonth.js');
+
 exports.TRS       = require('./classes/TRS.js');
 exports.Gregorian = require('./individuals/Gregorian.js');
 

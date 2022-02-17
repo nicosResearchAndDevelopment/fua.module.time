@@ -163,42 +163,18 @@ util.xsdURI.gYear              = util.xsdURI('gYear');
 util.xsdURI.gMonthDay          = util.xsdURI('gMonthDay');
 util.xsdURI.gYearMonth         = util.xsdURI('gYearMonth');
 
-// util.getProperty = function (target, property, default_value = null) {
-//     if (!util.isObject(target)) return default_value;
-//     switch (property) {
-//         case 'id':
-//         case 'type':
-//         case 'value':
-//             return target[property] || target['@' + property] || default_value;
-//         default:
-//             return target[property] || target[util.timeIRI(property)] || target[util.timeURI(property)] || default_value;
-//     }
-// }; // getProperty
-
-// util.cleanupProperties = function (target) {
-//     if (!util.isObject(target)) return null;
-//     for (let key of Object.keys(target)) {
-//         if (!target[key]) delete target[key];
-//     }
-//     return target;
-// }; // cleanupProperties
-
-util.isIRIString   = new util.StringValidator(/^[a-z][a-z0-9+.-]*:[^\s"<>\\^`{|}]*$/i);
-util.isXsdDuration = _util.StringValidator(/^-?P(?=.)(?:\d+Y)?(?:\d+M)?(?:\d+D)?(?:T(?=.)(?:\d+H)?(?:\d+M)?(?:\d*(?:\.\d+)?S)?)?$/);
-
-// util.datePattern       = /^(-?[1-9][0-9]*)-(1[0-2]|0[1-9])-(3[01]|[12][0-9]|0[1-9])(?:([+-])(1[0-2]|0[0-9]):([0-5][0-9])|(Z))?$/;
-// util.timePattern       = /^(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9](?:\.[0-9]+)?)(?:([+-])(1[0-2]|0[0-9]):([0-5][0-9])|(Z))?$/;
-// util.dateTimePattern   = /^(-?[1-9][0-9]*)-(1[0-2]|0[1-9])-(3[01]|[12][0-9]|0[1-9])T(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9](?:\.[0-9]+)?)(?:([+-])(1[0-2]|0[0-9]):([0-5][0-9])|(Z))?$/;
-// util.gDayPattern       = /^---(3[01]|[12][0-9]|0[1-9])(?:([+-])(1[0-2]|0[0-9]):([0-5][0-9])|(Z))?$/;
-// util.gMonthPattern     = /^--(1[0-2]|0[1-9])(?:([+-])(1[0-2]|0[0-9]):([0-5][0-9])|(Z))?$/;
-// util.gMonthDayPattern  = /^--(1[0-2]|0[1-9])-(3[01]|[12][0-9]|0[1-9])(?:([+-])(1[0-2]|0[0-9]):([0-5][0-9])|(Z))?$/;
-// util.gYearPattern      = /^(-?[1-9][0-9]*)(?:([+-])(1[0-2]|0[0-9]):([0-5][0-9])|(Z))?$/;
-// util.gYearMonthPattern = /^(-?[1-9][0-9]*)-(1[0-2]|0[1-9])(?:([+-])(1[0-2]|0[0-9]):([0-5][0-9])|(Z))?$/;
-// util.durationPattern   = /^(-?)P(?=.)(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)D)?(?:T(?=.)(?:(\d+)H)?(?:(\d+)M)?(?:(\d*(?:\.\d+)?)S)?)?$/;
-
-// isIRIString:        new util.StringValidator(/^[a-z][a-z0-9+.-]*:[^\s"<>\\^`{|}]*$/i),
-// isPrefixString:     new util.StringValidator(/^[a-z][a-z0-9+.-]*$/i),
-// isIdentifierString: new util.StringValidator(/^\S+$/),
-// isLanguageString:   new util.StringValidator(/^[a-z]{1,3}(?:-[a-z0-9]{1,8})*$/i)
+util.isIRIString             = _util.StringValidator(/^[a-z][a-z0-9+.-]*:[^\s"<>\\^`{|}]*$/i);
+util.isXsdDecimal            = _util.StringValidator(/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/);
+util.isXsdNonNegativeInteger = _util.StringValidator(/^\+?\d+$/);
+util.isXsdDuration           = _util.StringValidator(/^-?P(?=.)(?:\d+Y)?(?:\d+M)?(?:\d+D)?(?:T(?=.)(?:\d+H)?(?:\d+M)?(?:\d*(?:\.\d+)?S)?)?$/);
+util.isXsdDate               = _util.StringValidator(/^-?[1-9][0-9]*-(?:1[0-2]|0[1-9])-(?:3[01]|[12][0-9]|0[1-9])(?:[+-](?:1[0-2]|0[0-9]):[0-5][0-9]|Z)?$/);
+util.isXsdTime               = _util.StringValidator(/^(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9](?:\.[0-9]+)?(?:[+-](?:1[0-2]|0[0-9]):[0-5][0-9]|Z)?$/);
+util.isXsdDateTime           = _util.StringValidator(/^-?[1-9][0-9]*-(?:1[0-2]|0[1-9])-(?:3[01]|[12][0-9]|0[1-9])T(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9](?:\.[0-9]+)?(?:[+-](?:1[0-2]|0[0-9]):[0-5][0-9]|Z)?$/);
+util.isXsdDateTimeStamp      = _util.StringValidator(/^-?[1-9][0-9]*-(?:1[0-2]|0[1-9])-(?:3[01]|[12][0-9]|0[1-9])T(?:2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9](?:\.[0-9]+)?Z$/);
+util.isXsdGDay               = _util.StringValidator(/^---(?:3[01]|[12][0-9]|0[1-9])(?:[+-](?:1[0-2]|0[0-9]):[0-5][0-9]|Z)?$/);
+util.isXsdGMonth             = _util.StringValidator(/^--(?:1[0-2]|0[1-9])(?:[+-](?:1[0-2]|0[0-9]):[0-5][0-9]|Z)?$/);
+util.isXsdGMonthDay          = _util.StringValidator(/^--(?:1[0-2]|0[1-9])-(?:3[01]|[12][0-9]|0[1-9])(?:[+-](?:1[0-2]|0[0-9]):[0-5][0-9]|Z)?$/);
+util.isXsdGYear              = _util.StringValidator(/^-?[1-9][0-9]*(?:[+-](?:1[0-2]|0[0-9]):[0-5][0-9]|Z)?$/);
+util.isXsdGYearMonth         = _util.StringValidator(/^-?[1-9][0-9]*-(?:1[0-2]|0[1-9])(?:[+-](?:1[0-2]|0[0-9]):[0-5][0-9]|Z)?$/);
 
 module.exports = util;

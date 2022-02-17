@@ -21,17 +21,7 @@ class TemporalEntity extends model._Entity {
         const hasTemporalDuration = param[util.timeIRI.hasTemporalDuration] || param[util.timeURI.hasTemporalDuration];
         if (hasTemporalDuration) this.#hasTemporalDuration = model.TemporalDuration.from(hasTemporalDuration);
         const hasXSDDuration = param[util.timeIRI.hasXSDDuration] || param[util.timeURI.hasXSDDuration];
-        if (hasXSDDuration) {
-            if (util.isObject(hasXSDDuration)) {
-                if (hasXSDDuration['@type'] !== util.xsdIRI.duration && hasXSDDuration['@type'] !== util.xsdURI.duration)
-                    throw new Error('expected param hasXSDDuration to be an xsd:duration');
-                if (!util.isXsdDuration(hasXSDDuration['@value'])) throw new Error('expected param hasXSDDuration to be an xsd:duration');
-                this.#hasXSDDuration = hasXSDDuration['@value'];
-            } else {
-                if (!util.isXsdDuration(hasXSDDuration)) throw new Error('expected param hasXSDDuration to be an xsd:duration string');
-                this.#hasXSDDuration = hasXSDDuration;
-            }
-        }
+        if (hasXSDDuration) this.#hasXSDDuration = model.duration(hasXSDDuration);
         const after = param[util.timeIRI.after] || param[util.timeURI.after];
         if (after) for (let entity of util.toArray(param.after)) {
             this.#after.add(model.TemporalEntity.from(after));
