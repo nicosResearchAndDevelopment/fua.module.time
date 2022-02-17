@@ -2,7 +2,7 @@ const
     util  = require('../module.time.util.js'),
     model = require('../module.time.model.js');
 
-class TemporalEntity extends model._Class {
+class TemporalEntity extends model._Object {
 
     #after                  = new Set();
     #before                 = new Set();

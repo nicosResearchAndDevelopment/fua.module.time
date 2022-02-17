@@ -2,7 +2,7 @@ const
     util  = require('../module.time.util.js'),
     model = require('../module.time.model.js');
 
-class TimeZone extends model._Class {
+class TimeZone extends model._Object {
 
     constructor(param) {
         super(param);

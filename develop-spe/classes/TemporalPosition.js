@@ -2,7 +2,7 @@ const
     util  = require('../module.time.util.js'),
     model = require('../module.time.model.js');
 
-class TemporalPosition extends model._Class {
+class TemporalPosition extends model._Object {
 
     #hasTRS = model.Gregorian;
 

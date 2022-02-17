@@ -2,17 +2,17 @@ const
     util  = require('../module.time.util.js'),
     model = require('../module.time.model.js');
 
-class _Class {
+class _Object {
 
     static get id() {
         return this.name;
     }
 
     static from(param) {
-        if (this === _Class)
+        if (this === _Object)
             throw new Error('abstract class cannot be constructed');
         if (param instanceof this) return param;
-        if (param instanceof _Class)
+        if (param instanceof _Object)
             throw new Error('expected param to be an instance of ' + this.id + ', but got instance of ' + param.type);
         return new this(param);
     }
@@ -21,7 +21,7 @@ class _Class {
     #id   = '';
 
     constructor(param) {
-        if (new.target === _Class)
+        if (new.target === _Object)
             throw new Error('abstract class cannot be constructed');
         if (!util.isObject(param))
             throw new Error('expected param to be an object');
@@ -32,7 +32,7 @@ class _Class {
 
         this.#type = new.target.id;
         this.#id   = param['@id'] || '';
-    } // _Class#constructor
+    } // _Object#constructor
 
     get type() {
         return this.#type;
@@ -46,8 +46,8 @@ class _Class {
         const result = {'@type': util.timeIRI(this.#type)};
         if (this.#id) result['@id'] = this.#id;
         return result;
-    } // _Class#toJSON
+    } // _Object#toJSON
 
-} // _Class
+} // _Object
 
-module.exports = _Class;
+module.exports = _Object;

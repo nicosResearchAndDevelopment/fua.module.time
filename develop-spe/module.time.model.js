@@ -1,5 +1,7 @@
-exports._Class    = require('./classes/_Class.js');
-exports._Datatype = require('./datatypes/_Datatype.js');
+exports._Object           = require('./classes/_Object.js');
+exports._ObjectProperty   = require('./classes/_ObjectProperty.js');
+exports._Datatype         = require('./datatypes/_Datatype.js');
+exports._DatatypeProperty = require('./datatypes/_DatatypeProperty.js');
 
 exports.string             = require('./datatypes/string.js');
 exports.decimal            = require('./datatypes/decimal.js');
@@ -70,6 +72,3 @@ exports.September = require('./individuals/September.js');
 exports.October   = require('./individuals/October.js');
 exports.November  = require('./individuals/November.js');
 exports.December  = require('./individuals/December.js');
-
-delete exports._Class;
-delete exports._Datatype;

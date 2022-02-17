@@ -2,7 +2,7 @@ const
     util  = require('../module.time.util.js'),
     model = require('../module.time.model.js');
 
-class DayOfWeek extends model._Class {
+class DayOfWeek extends model._Object {
 
     constructor(param) {
         super(param);

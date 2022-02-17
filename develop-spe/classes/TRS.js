@@ -2,7 +2,7 @@ const
     util  = require('../module.time.util.js'),
     model = require('../module.time.model.js');
 
-class TRS extends model._Class {
+class TRS extends model._Object {
 
     constructor(param) {
         super(param);
