@@ -9,8 +9,8 @@ class decimal extends model._Datatype {
 
     constructor(param) {
         super(param);
-        if (!pattern.test(this.value)) throw new Error('expected value to be an ' + util.xsdIRI.decimal);
-        this.#number = parseFloat(this.value);
+        if (!pattern.test(super.value)) throw new Error('expected value to be an ' + util.xsdIRI.decimal);
+        this.#number = parseFloat(super.value);
     } // decimal#constructor
 
     get number() {

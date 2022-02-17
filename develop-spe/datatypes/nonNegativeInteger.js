@@ -9,8 +9,8 @@ class nonNegativeInteger extends model._Datatype {
 
     constructor(param) {
         super(param);
-        if (!pattern.test(this.value)) throw new Error('expected value to be an ' + util.xsdIRI.nonNegativeInteger);
-        this.#number = parseInt(this.value);
+        if (!pattern.test(super.value)) throw new Error('expected value to be an ' + util.xsdIRI.nonNegativeInteger);
+        this.#number = parseInt(super.value);
     } // nonNegativeInteger#constructor
 
     get number() {

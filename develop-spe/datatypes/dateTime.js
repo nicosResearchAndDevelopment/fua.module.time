@@ -15,7 +15,7 @@ class dateTime extends model._Datatype {
 
     constructor(param) {
         super(param);
-        const [match, YYYY, MM, DD, hh, mm, ss_ms, tz_sign, tz_hh, tz_mm, utc_tag] = pattern.exec(this.value) || [];
+        const [match, YYYY, MM, DD, hh, mm, ss_ms, tz_sign, tz_hh, tz_mm, utc_tag] = pattern.exec(super.value) || [];
         if (!match) throw new Error('expected value to be an ' + util.xsdIRI.dateTime);
 
         this.#year        = parseInt(YYYY);

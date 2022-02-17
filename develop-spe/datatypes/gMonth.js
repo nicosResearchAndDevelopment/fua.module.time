@@ -11,7 +11,7 @@ class gMonth extends model._Datatype {
 
     constructor(param) {
         super(param);
-        const [match, MM, tz_sign, tz_hh, tz_mm, utc_tag] = pattern.exec(this.value) || [];
+        const [match, MM, tz_sign, tz_hh, tz_mm, utc_tag] = pattern.exec(super.value) || [];
         if (!match) throw new Error('expected value to be an ' + util.xsdIRI.gMonth);
 
         this.#month = parseInt(MM);

@@ -16,7 +16,7 @@ class duration extends model._Datatype {
 
     constructor(param) {
         super(param);
-        const [match, sign, YYYY, MM, DD, hh, mm, ss_ms] = pattern.exec(this.value) || [];
+        const [match, sign, YYYY, MM, DD, hh, mm, ss_ms] = pattern.exec(super.value) || [];
         if (!match) throw new Error('expected value to be an ' + util.xsdIRI.duration);
 
         if (sign === '-') this.#sign = -1;
