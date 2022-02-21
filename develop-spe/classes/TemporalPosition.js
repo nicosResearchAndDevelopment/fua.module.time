@@ -4,12 +4,13 @@ const
 
 class TemporalPosition extends model._Object {
 
-    #hasTRS = model.Gregorian;
+    /** @type {_ObjectProperty<TRS>} */
+    #hasTRS = new model._ObjectProperty(model.TRS, 1, 1, model.Gregorian);
 
     constructor(param) {
         super(param);
         const hasTRS = param[util.timeIRI.hasTRS] || param[util.timeURI.hasTRS];
-        if (hasTRS) this.#hasTRS = model.TRS.from(hasTRS);
+        if (hasTRS) this.#hasTRS.set(hasTRS);
     } // TemporalPosition#constructor
 
     get hasTRS() {
@@ -18,7 +19,7 @@ class TemporalPosition extends model._Object {
 
     toJSON() {
         const result                = super.toJSON();
-        result[util.timeIRI.hasTRS] = this.#hasTRS;
+        result[util.timeIRI.hasTRS] = this.#hasTRS.toJSON();
         return result;
     } // TemporalPosition#toJSON
 

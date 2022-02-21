@@ -9,8 +9,6 @@ class _Datatype {
     }
 
     static from(param) {
-        if (this === _Datatype)
-            throw new Error('abstract class cannot be constructed');
         if (param instanceof this) return param;
         if (param instanceof _Datatype)
             throw new Error('expected param to be an instance of ' + this.id + ', but got instance of ' + param.type);

@@ -10,7 +10,8 @@ class DateTimeDescription extends model.GeneralDateTimeDescription {
 
     constructor(param) {
         super(param);
-        if (super.hasTRS !== model.Gregorian && super.hasTRS.id !== model.Gregorian.id)
+        const hasTRS = super.hasTRS.get();
+        if (hasTRS !== model.Gregorian && hasTRS.id !== model.Gregorian.id)
             throw new Error('hasTRS must be Gregorian for DateTimeDescription');
         const day = param[util.timeIRI.day] || param[util.timeURI.day];
         if (day) this.#day = model.gDay.from(day);
