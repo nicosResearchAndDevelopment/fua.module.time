@@ -9,6 +9,10 @@ class TimeZone extends model._Object {
         if (!this.id) throw new Error('id is mandatory for TimeZone');
     } // TimeZone#constructor
 
+    equals(other) {
+        return (other instanceof TimeZone) && (this === other || this.id === other.id);
+    } // TimeZone#equals
+
 } // TimeZone
 
 module.exports = TimeZone;

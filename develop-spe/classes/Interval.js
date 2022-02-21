@@ -4,6 +4,8 @@ const
 
 class Interval extends model.TemporalEntity {
 
+    // TODO rework with object and datatype properties
+
     #inside = new Set();
 
     constructor(param) {

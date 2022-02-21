@@ -4,26 +4,24 @@ const
 
 class DateTimeDescription extends model.GeneralDateTimeDescription {
 
-    #day   = null;
-    #month = null;
-    #year  = null;
+    #day   = new model._DatatypeProperty(model.gDay, 0, 1);
+    #month = new model._DatatypeProperty(model.gMonth, 0, 1);
+    #year  = new model._DatatypeProperty(model.gYear, 0, 1);
 
     constructor(param) {
         super(param);
         const hasTRS = super.hasTRS.get();
-        if (hasTRS !== model.Gregorian && hasTRS.id !== model.Gregorian.id)
+        if (!model.Gregorian.equals(hasTRS))
             throw new Error('hasTRS must be Gregorian for DateTimeDescription');
+        if (hasTRS !== model.Gregorian) super.hasTRS.set(model.Gregorian);
+        super.hasTRS.lock();
         const day = param[util.timeIRI.day] || param[util.timeURI.day];
-        if (day) this.#day = model.gDay.from(day);
+        if (day) this.#day.set(day);
         const month = param[util.timeIRI.month] || param[util.timeURI.month];
-        if (month) this.#month = model.gMonth.from(month);
+        if (month) this.#month.set(month);
         const year = param[util.timeIRI.year] || param[util.timeURI.year];
-        if (year) this.#year = model.gYear.from(year);
+        if (year) this.#year.set(year);
     } // TemporalPosition#constructor
-
-    get hasTRS() {
-        return model.Gregorian;
-    }
 
     get day() {
         return this.#day;
@@ -37,12 +35,19 @@ class DateTimeDescription extends model.GeneralDateTimeDescription {
         return this.#year;
     }
 
+    lock() {
+        super.lock();
+        this.#day.lock();
+        this.#month.lock();
+        this.#year.lock();
+        return this;
+    } // TemporalPosition#lock
+
     toJSON() {
-        const result                = super.toJSON();
-        result[util.timeIRI.hasTRS] = model.Gregorian;
-        if (this.#day) result[util.timeIRI.day] = this.#day;
-        if (this.#month) result[util.timeIRI.month] = this.#month;
-        if (this.#year) result[util.timeIRI.year] = this.#year;
+        const result = super.toJSON();
+        if (!this.#day.empty) result[util.timeIRI.day] = this.#day.toJSON();
+        if (!this.#month.empty) result[util.timeIRI.month] = this.#month.toJSON();
+        if (!this.#year.empty) result[util.timeIRI.year] = this.#year.toJSON();
         return result;
     } // TemporalPosition#toJSON
 

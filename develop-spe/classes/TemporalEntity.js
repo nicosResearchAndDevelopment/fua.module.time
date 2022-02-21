@@ -4,6 +4,8 @@ const
 
 class TemporalEntity extends model._Object {
 
+    // TODO rework with object and datatype properties
+
     #after                  = new Set();
     #before                 = new Set();
     #hasBeginning           = null;

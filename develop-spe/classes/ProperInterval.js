@@ -4,6 +4,8 @@ const
 
 class ProperInterval extends model.Interval {
 
+    // TODO rework with object and datatype properties
+
     #intervalAfter        = new Set();
     #intervalBefore       = new Set();
     #intervalContains     = new Set();

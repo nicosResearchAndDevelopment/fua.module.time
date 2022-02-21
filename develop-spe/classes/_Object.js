@@ -5,6 +5,7 @@ const
 class _Object {
 
     static get id() {
+        if (this === _Object) return '';
         return this.name;
     }
 
@@ -15,8 +16,9 @@ class _Object {
         return new this(param);
     }
 
-    #type = '';
-    #id   = '';
+    #type   = '';
+    #id     = '';
+    #locked = false;
 
     constructor(param) {
         if (new.target === _Object)
@@ -32,6 +34,10 @@ class _Object {
         this.#id   = param['@id'] || '';
     } // _Object#constructor
 
+    get locked() {
+        return this.#locked;
+    } // _ObjectProperty#locked
+
     get type() {
         return this.#type;
     }
@@ -39,6 +45,15 @@ class _Object {
     get id() {
         return this.#id;
     }
+
+    equals(other) {
+        return (other instanceof _Object) && (this === other || this.type === other.type && this.id && this.id === other.id);
+    } // _Object#equals
+
+    lock() {
+        this.#locked = true;
+        return this;
+    } // _Object#lock
 
     toJSON() {
         const result = {'@type': util.timeIRI(this.#type)};

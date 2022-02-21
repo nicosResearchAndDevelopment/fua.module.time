@@ -9,6 +9,10 @@ class TemporalUnit extends model.TemporalDuration {
         if (!this.id) throw new Error('id is mandatory for TemporalUnit');
     } // TemporalUnit#constructor
 
+    equals(other) {
+        return (other instanceof TemporalUnit) && (this === other || this.id === other.id);
+    } // TemporalUnit#equals
+
 } // TemporalUnit
 
 module.exports = TemporalUnit;

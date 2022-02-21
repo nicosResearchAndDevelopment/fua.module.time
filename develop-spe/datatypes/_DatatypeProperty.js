@@ -13,6 +13,7 @@ class _DatatypeProperty {
     #referenceType  = model._Datatype;
     #minCardinality = 0;
     #maxCardinality = Number.MAX_SAFE_INTEGER;
+    #locked         = false;
 
     /**
      * @param {typeof DatatypeClass} [referenceType=_Datatype]
@@ -53,6 +54,18 @@ class _DatatypeProperty {
         }
     } // _DatatypeProperty#constructor
 
+    get locked() {
+        return this.#locked;
+    } // _DatatypeProperty#locked
+
+    get empty() {
+        return this.#references.size === 0;
+    } // _DatatypeProperty#empty
+
+    get size() {
+        return this.#references.size
+    } // _DatatypeProperty#size
+
     /**
      * @returns {DatatypeClass|Array<DatatypeClass>|null}
      */
@@ -73,6 +86,8 @@ class _DatatypeProperty {
      * @returns {DatatypeClass|Array<DatatypeClass>|null}
      */
     set(target) {
+        if (this.#locked)
+            throw new Error('this property has been locked');
         if (util.isArray(target)) {
             if (target.length < this.#minCardinality)
                 throw new Error('expected target to have a length of >= ' + this.#minCardinality);
@@ -111,6 +126,8 @@ class _DatatypeProperty {
      * @returns {DatatypeClass}
      */
     add(target) {
+        if (this.#locked)
+            throw new Error('this property has been locked');
         if (this.#references.size + 1 > this.#maxCardinality)
             throw new Error('expected to not have more entries than ' + this.#maxCardinality);
         target = this.#referenceType.from(target);
@@ -123,12 +140,19 @@ class _DatatypeProperty {
      * @returns {DatatypeClass}
      */
     remove(target) {
+        if (this.#locked)
+            throw new Error('this property has been locked');
         if (this.#references.size - 1 < this.#minCardinality)
             throw new Error('expected to not have less entries than ' + this.#minCardinality);
         target = this.#referenceType.from(target);
         this.#references.delete(target);
         return target;
     } // _DatatypeProperty#remove
+
+    lock() {
+        this.#locked = true;
+        return this;
+    } // _DatatypeProperty#lock
 
     /**
      * @returns {DatatypeClass|Array<DatatypeClass>|null}

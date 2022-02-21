@@ -6,19 +6,12 @@ class DurationDescription extends model.GeneralDurationDescription {
 
     constructor(param) {
         super(param);
-        if (super.hasTRS !== model.Gregorian && super.hasTRS.id !== model.Gregorian.id)
+        const hasTRS = super.hasTRS.get();
+        if (!model.Gregorian.equals(hasTRS))
             throw new Error('hasTRS must be Gregorian for DurationDescription');
+        if (hasTRS !== model.Gregorian) super.hasTRS.set(model.Gregorian);
+        super.hasTRS.lock();
     } // DurationDescription#constructor
-
-    get hasTRS() {
-        return model.Gregorian;
-    }
-
-    toJSON() {
-        const result                = super.toJSON();
-        result[util.timeIRI.hasTRS] = model.Gregorian;
-        return result;
-    } // DurationDescription#toJSON
 
 } // DurationDescription
 

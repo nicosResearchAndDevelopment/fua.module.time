@@ -13,6 +13,7 @@ class _ObjectProperty {
     #referenceType  = model._Object;
     #minCardinality = 0;
     #maxCardinality = Number.MAX_SAFE_INTEGER;
+    #locked         = false;
 
     /**
      * @param {typeof ObjectClass} [referenceType=_Object]
@@ -53,6 +54,18 @@ class _ObjectProperty {
         }
     } // _ObjectProperty#constructor
 
+    get locked() {
+        return this.#locked;
+    } // _ObjectProperty#locked
+
+    get empty() {
+        return this.#references.size === 0;
+    } // _ObjectProperty#empty
+
+    get size() {
+        return this.#references.size
+    } // _ObjectProperty#size
+
     /**
      * @returns {ObjectClass|Array<ObjectClass>|null}
      */
@@ -73,6 +86,8 @@ class _ObjectProperty {
      * @returns {ObjectClass|Array<ObjectClass>|null}
      */
     set(target) {
+        if (this.#locked)
+            throw new Error('this property has been locked');
         if (util.isArray(target)) {
             if (target.length < this.#minCardinality)
                 throw new Error('expected target to have a length of >= ' + this.#minCardinality);
@@ -111,6 +126,8 @@ class _ObjectProperty {
      * @returns {ObjectClass}
      */
     add(target) {
+        if (this.#locked)
+            throw new Error('this property has been locked');
         if (this.#references.size + 1 > this.#maxCardinality)
             throw new Error('expected to not have more entries than ' + this.#maxCardinality);
         target = this.#referenceType.from(target);
@@ -123,12 +140,19 @@ class _ObjectProperty {
      * @returns {ObjectClass}
      */
     remove(target) {
+        if (this.#locked)
+            throw new Error('this property has been locked');
         if (this.#references.size - 1 < this.#minCardinality)
             throw new Error('expected to not have less entries than ' + this.#minCardinality);
         target = this.#referenceType.from(target);
         this.#references.delete(target);
         return target;
     } // _ObjectProperty#remove
+
+    lock() {
+        this.#locked = true;
+        return this;
+    } // _ObjectProperty#lock
 
     /**
      * @returns {ObjectClass|Array<ObjectClass>|null}

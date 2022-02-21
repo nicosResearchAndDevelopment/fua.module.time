@@ -4,6 +4,8 @@ const
 
 class GeneralDurationDescription extends model.TemporalDuration {
 
+    // TODO rework with object and datatype properties
+
     #hasTRS  = model.Gregorian;
     #days    = null;
     #hours   = null;

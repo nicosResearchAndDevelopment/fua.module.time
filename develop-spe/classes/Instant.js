@@ -4,6 +4,8 @@ const
 
 class Instant extends model.TemporalEntity {
 
+    // TODO rework with object and datatype properties
+
     #inDateTime         = null;
     #inTemporalPosition = null;
     #inTimePosition     = null;

@@ -4,7 +4,6 @@ const
 
 class TemporalPosition extends model._Object {
 
-    /** @type {_ObjectProperty<TRS>} */
     #hasTRS = new model._ObjectProperty(model.TRS, 1, 1, model.Gregorian);
 
     constructor(param) {

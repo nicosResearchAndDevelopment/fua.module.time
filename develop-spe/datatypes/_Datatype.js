@@ -5,6 +5,7 @@ const
 class _Datatype {
 
     static get id() {
+        if (this === _Datatype) return '';
         return this.name;
     }
 
@@ -19,10 +20,10 @@ class _Datatype {
     #value = '';
 
     constructor(param) {
-        if (new.target === _Datatype)
-            throw new Error('abstract class cannot be constructed');
+        // if (new.target === _Datatype)
+        //     throw new Error('abstract class cannot be constructed');
         if (util.isObject(param)) {
-            if (param['@type'] && ![util.xsdIRI(new.target.id), util.xsdURI(new.target.id)].includes(param['@type']))
+            if (param['@type'] && new.target.id && ![util.xsdIRI(new.target.id), util.xsdURI(new.target.id)].includes(param['@type']))
                 throw new Error('expected param @type to be ' + util.xsdIRI(new.target.id));
             param = param['@value'];
         }
@@ -41,15 +42,21 @@ class _Datatype {
         return this.#value;
     }
 
+    equals(other) {
+        return (other instanceof _Datatype) && (this === other || this.type === other.type && this.value === other.value);
+    } // _Datatype#equals
+
     valueOf() {
         return this.#value;
     } // _Datatype#valueOf
 
     toJSON() {
+        if (!this.#type) return {'@value': this.#value};
         return {
             '@type':  util.xsdIRI(this.#type),
             '@value': this.#value
         };
+
     } // _Datatype#toJSON
 
 } // _Datatype

@@ -4,6 +4,8 @@ const
 
 class TimePosition extends model.TemporalPosition {
 
+    // TODO rework with object and datatype properties
+
     #nominalPosition = null;
     #numericPosition = null;
 

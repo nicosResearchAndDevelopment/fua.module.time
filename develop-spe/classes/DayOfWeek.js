@@ -9,6 +9,10 @@ class DayOfWeek extends model._Object {
         if (!this.id) throw new Error('id is mandatory for DayOfWeek');
     } // DayOfWeek#constructor
 
+    equals(other) {
+        return (other instanceof DayOfWeek) && (this === other || this.id === other.id);
+    } // DayOfWeek#equals
+
 } // DayOfWeek
 
 module.exports = DayOfWeek;
