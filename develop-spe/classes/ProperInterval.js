@@ -4,165 +4,153 @@ const
 
 class ProperInterval extends model.Interval {
 
-    // TODO rework with object and datatype properties
-
-    #intervalAfter        = new Set();
-    #intervalBefore       = new Set();
-    #intervalContains     = new Set();
-    #intervalDisjoint     = new Set();
-    #intervalDuring       = new Set();
-    #intervalEquals       = new Set();
-    #intervalFinishedBy   = new Set();
-    #intervalFinishes     = new Set();
-    #intervalIn           = new Set();
-    #intervalMeets        = new Set();
-    #intervalMetBy        = new Set();
-    #intervalOverlappedBy = new Set();
-    #intervalOverlaps     = new Set();
-    #intervalStartedBy    = new Set();
-    #intervalStarts       = new Set();
+    #intervalAfter        = new model._ObjectProperty(model.ProperInterval);
+    #intervalBefore       = new model._ObjectProperty(model.ProperInterval);
+    #intervalContains     = new model._ObjectProperty(model.ProperInterval);
+    #intervalDisjoint     = new model._ObjectProperty(model.ProperInterval);
+    #intervalDuring       = new model._ObjectProperty(model.ProperInterval);
+    #intervalEquals       = new model._ObjectProperty(model.ProperInterval);
+    #intervalFinishedBy   = new model._ObjectProperty(model.ProperInterval);
+    #intervalFinishes     = new model._ObjectProperty(model.ProperInterval);
+    #intervalIn           = new model._ObjectProperty(model.ProperInterval);
+    #intervalMeets        = new model._ObjectProperty(model.ProperInterval);
+    #intervalMetBy        = new model._ObjectProperty(model.ProperInterval);
+    #intervalOverlappedBy = new model._ObjectProperty(model.ProperInterval);
+    #intervalOverlaps     = new model._ObjectProperty(model.ProperInterval);
+    #intervalStartedBy    = new model._ObjectProperty(model.ProperInterval);
+    #intervalStarts       = new model._ObjectProperty(model.ProperInterval);
 
     constructor(param) {
         super(param);
         const intervalAfter = param[util.timeIRI.intervalAfter] || param[util.timeURI.intervalAfter];
-        if (intervalAfter) for (let entity of util.toArray(param.intervalAfter)) {
-            this.#intervalAfter.add(model.ProperInterval.from(intervalAfter));
-        }
+        if (intervalAfter) this.#intervalAfter.set(intervalAfter);
         const intervalBefore = param[util.timeIRI.intervalBefore] || param[util.timeURI.intervalBefore];
-        if (intervalBefore) for (let entity of util.toArray(param.intervalBefore)) {
-            this.#intervalBefore.add(model.ProperInterval.from(intervalBefore));
-        }
+        if (intervalBefore) this.#intervalBefore.set(intervalBefore);
         const intervalContains = param[util.timeIRI.intervalContains] || param[util.timeURI.intervalContains];
-        if (intervalContains) for (let entity of util.toArray(param.intervalContains)) {
-            this.#intervalContains.add(model.ProperInterval.from(intervalContains));
-        }
+        if (intervalContains) this.#intervalContains.set(intervalContains);
         const intervalDisjoint = param[util.timeIRI.intervalDisjoint] || param[util.timeURI.intervalDisjoint];
-        if (intervalDisjoint) for (let entity of util.toArray(param.intervalDisjoint)) {
-            this.#intervalDisjoint.add(model.ProperInterval.from(intervalDisjoint));
-        }
+        if (intervalDisjoint) this.#intervalDisjoint.set(intervalDisjoint);
         const intervalDuring = param[util.timeIRI.intervalDuring] || param[util.timeURI.intervalDuring];
-        if (intervalDuring) for (let entity of util.toArray(param.intervalDuring)) {
-            this.#intervalDuring.add(model.ProperInterval.from(intervalDuring));
-        }
+        if (intervalDuring) this.#intervalDuring.set(intervalDuring);
         const intervalEquals = param[util.timeIRI.intervalEquals] || param[util.timeURI.intervalEquals];
-        if (intervalEquals) for (let entity of util.toArray(param.intervalEquals)) {
-            this.#intervalEquals.add(model.ProperInterval.from(intervalEquals));
-        }
+        if (intervalEquals) this.#intervalEquals.set(intervalEquals);
         const intervalFinishedBy = param[util.timeIRI.intervalFinishedBy] || param[util.timeURI.intervalFinishedBy];
-        if (intervalFinishedBy) for (let entity of util.toArray(param.intervalFinishedBy)) {
-            this.#intervalFinishedBy.add(model.ProperInterval.from(intervalFinishedBy));
-        }
+        if (intervalFinishedBy) this.#intervalFinishedBy.set(intervalFinishedBy);
         const intervalFinishes = param[util.timeIRI.intervalFinishes] || param[util.timeURI.intervalFinishes];
-        if (intervalFinishes) for (let entity of util.toArray(param.intervalFinishes)) {
-            this.#intervalFinishes.add(model.ProperInterval.from(intervalFinishes));
-        }
+        if (intervalFinishes) this.#intervalFinishes.set(intervalFinishes);
         const intervalIn = param[util.timeIRI.intervalIn] || param[util.timeURI.intervalIn];
-        if (intervalIn) for (let entity of util.toArray(param.intervalIn)) {
-            this.#intervalIn.add(model.ProperInterval.from(intervalIn));
-        }
+        if (intervalIn) this.#intervalIn.set(intervalIn);
         const intervalMeets = param[util.timeIRI.intervalMeets] || param[util.timeURI.intervalMeets];
-        if (intervalMeets) for (let entity of util.toArray(param.intervalMeets)) {
-            this.#intervalMeets.add(model.ProperInterval.from(intervalMeets));
-        }
+        if (intervalMeets) this.#intervalMeets.set(intervalMeets);
         const intervalMetBy = param[util.timeIRI.intervalMetBy] || param[util.timeURI.intervalMetBy];
-        if (intervalMetBy) for (let entity of util.toArray(param.intervalMetBy)) {
-            this.#intervalMetBy.add(model.ProperInterval.from(intervalMetBy));
-        }
+        if (intervalMetBy) this.#intervalMetBy.set(intervalMetBy);
         const intervalOverlappedBy = param[util.timeIRI.intervalOverlappedBy] || param[util.timeURI.intervalOverlappedBy];
-        if (intervalOverlappedBy) for (let entity of util.toArray(param.intervalOverlappedBy)) {
-            this.#intervalOverlappedBy.add(model.ProperInterval.from(intervalOverlappedBy));
-        }
+        if (intervalOverlappedBy) this.#intervalOverlappedBy.set(intervalOverlappedBy);
         const intervalOverlaps = param[util.timeIRI.intervalOverlaps] || param[util.timeURI.intervalOverlaps];
-        if (intervalOverlaps) for (let entity of util.toArray(param.intervalOverlaps)) {
-            this.#intervalOverlaps.add(model.ProperInterval.from(intervalOverlaps));
-        }
+        if (intervalOverlaps) this.#intervalOverlaps.set(intervalOverlaps);
         const intervalStartedBy = param[util.timeIRI.intervalStartedBy] || param[util.timeURI.intervalStartedBy];
-        if (intervalStartedBy) for (let entity of util.toArray(param.intervalStartedBy)) {
-            this.#intervalStartedBy.add(model.ProperInterval.from(intervalStartedBy));
-        }
+        if (intervalStartedBy) this.#intervalStartedBy.set(intervalStartedBy);
         const intervalStarts = param[util.timeIRI.intervalStarts] || param[util.timeURI.intervalStarts];
-        if (intervalStarts) for (let entity of util.toArray(param.intervalStarts)) {
-            this.#intervalStarts.add(model.ProperInterval.from(intervalStarts));
-        }
+        if (intervalStarts) this.#intervalStarts.set(intervalStarts);
     } // ProperInterval#constructor
 
     get intervalAfter() {
-        return Array.from(this.#intervalAfter);
+        return this.#intervalAfter;
     }
 
     get intervalBefore() {
-        return Array.from(this.#intervalBefore);
+        return this.#intervalBefore;
     }
 
     get intervalContains() {
-        return Array.from(this.#intervalContains);
+        return this.#intervalContains;
     }
 
     get intervalDisjoint() {
-        return Array.from(this.#intervalDisjoint);
+        return this.#intervalDisjoint;
     }
 
     get intervalDuring() {
-        return Array.from(this.#intervalDuring);
+        return this.#intervalDuring;
     }
 
     get intervalEquals() {
-        return Array.from(this.#intervalEquals);
+        return this.#intervalEquals;
     }
 
     get intervalFinishedBy() {
-        return Array.from(this.#intervalFinishedBy);
+        return this.#intervalFinishedBy;
     }
 
     get intervalFinishes() {
-        return Array.from(this.#intervalFinishes);
+        return this.#intervalFinishes;
     }
 
     get intervalIn() {
-        return Array.from(this.#intervalIn);
+        return this.#intervalIn;
     }
 
     get intervalMeets() {
-        return Array.from(this.#intervalMeets);
+        return this.#intervalMeets;
     }
 
     get intervalMetBy() {
-        return Array.from(this.#intervalMetBy);
+        return this.#intervalMetBy;
     }
 
     get intervalOverlappedBy() {
-        return Array.from(this.#intervalOverlappedBy);
+        return this.#intervalOverlappedBy;
     }
 
     get intervalOverlaps() {
-        return Array.from(this.#intervalOverlaps);
+        return this.#intervalOverlaps;
     }
 
     get intervalStartedBy() {
-        return Array.from(this.#intervalStartedBy);
+        return this.#intervalStartedBy;
     }
 
     get intervalStarts() {
-        return Array.from(this.#intervalStarts);
+        return this.#intervalStarts;
     }
+
+    lock() {
+        super.lock();
+        this.#intervalAfter.lock();
+        this.#intervalBefore.lock();
+        this.#intervalContains.lock();
+        this.#intervalDisjoint.lock();
+        this.#intervalDuring.lock();
+        this.#intervalEquals.lock();
+        this.#intervalFinishedBy.lock();
+        this.#intervalFinishes.lock();
+        this.#intervalIn.lock();
+        this.#intervalMeets.lock();
+        this.#intervalMetBy.lock();
+        this.#intervalOverlappedBy.lock();
+        this.#intervalOverlaps.lock();
+        this.#intervalStartedBy.lock();
+        this.#intervalStarts.lock();
+        return this;
+    } // ProperInterval#lock
 
     toJSON() {
         const result = super.toJSON();
-        if (this.#intervalAfter.size > 0) result[util.timeIRI.intervalAfter] = Array.from(this.#intervalAfter);
-        if (this.#intervalBefore.size > 0) result[util.timeIRI.intervalBefore] = Array.from(this.#intervalBefore);
-        if (this.#intervalContains.size > 0) result[util.timeIRI.intervalContains] = Array.from(this.#intervalContains);
-        if (this.#intervalDisjoint.size > 0) result[util.timeIRI.intervalDisjoint] = Array.from(this.#intervalDisjoint);
-        if (this.#intervalDuring.size > 0) result[util.timeIRI.intervalDuring] = Array.from(this.#intervalDuring);
-        if (this.#intervalEquals.size > 0) result[util.timeIRI.intervalEquals] = Array.from(this.#intervalEquals);
-        if (this.#intervalFinishedBy.size > 0) result[util.timeIRI.intervalFinishedBy] = Array.from(this.#intervalFinishedBy);
-        if (this.#intervalFinishes.size > 0) result[util.timeIRI.intervalFinishes] = Array.from(this.#intervalFinishes);
-        if (this.#intervalIn.size > 0) result[util.timeIRI.intervalIn] = Array.from(this.#intervalIn);
-        if (this.#intervalMeets.size > 0) result[util.timeIRI.intervalMeets] = Array.from(this.#intervalMeets);
-        if (this.#intervalMetBy.size > 0) result[util.timeIRI.intervalMetBy] = Array.from(this.#intervalMetBy);
-        if (this.#intervalOverlappedBy.size > 0) result[util.timeIRI.intervalOverlappedBy] = Array.from(this.#intervalOverlappedBy);
-        if (this.#intervalOverlaps.size > 0) result[util.timeIRI.intervalOverlaps] = Array.from(this.#intervalOverlaps);
-        if (this.#intervalStartedBy.size > 0) result[util.timeIRI.intervalStartedBy] = Array.from(this.#intervalStartedBy);
-        if (this.#intervalStarts.size > 0) result[util.timeIRI.intervalStarts] = Array.from(this.#intervalStarts);
+        if (!this.#intervalAfter.empty) result[util.timeIRI.intervalAfter] = this.#intervalAfter.toJSON();
+        if (!this.#intervalBefore.empty) result[util.timeIRI.intervalBefore] = this.#intervalBefore.toJSON();
+        if (!this.#intervalContains.empty) result[util.timeIRI.intervalContains] = this.#intervalContains.toJSON();
+        if (!this.#intervalDisjoint.empty) result[util.timeIRI.intervalDisjoint] = this.#intervalDisjoint.toJSON();
+        if (!this.#intervalDuring.empty) result[util.timeIRI.intervalDuring] = this.#intervalDuring.toJSON();
+        if (!this.#intervalEquals.empty) result[util.timeIRI.intervalEquals] = this.#intervalEquals.toJSON();
+        if (!this.#intervalFinishedBy.empty) result[util.timeIRI.intervalFinishedBy] = this.#intervalFinishedBy.toJSON();
+        if (!this.#intervalFinishes.empty) result[util.timeIRI.intervalFinishes] = this.#intervalFinishes.toJSON();
+        if (!this.#intervalIn.empty) result[util.timeIRI.intervalIn] = this.#intervalIn.toJSON();
+        if (!this.#intervalMeets.empty) result[util.timeIRI.intervalMeets] = this.#intervalMeets.toJSON();
+        if (!this.#intervalMetBy.empty) result[util.timeIRI.intervalMetBy] = this.#intervalMetBy.toJSON();
+        if (!this.#intervalOverlappedBy.empty) result[util.timeIRI.intervalOverlappedBy] = this.#intervalOverlappedBy.toJSON();
+        if (!this.#intervalOverlaps.empty) result[util.timeIRI.intervalOverlaps] = this.#intervalOverlaps.toJSON();
+        if (!this.#intervalStartedBy.empty) result[util.timeIRI.intervalStartedBy] = this.#intervalStartedBy.toJSON();
+        if (!this.#intervalStarts.empty) result[util.timeIRI.intervalStarts] = this.#intervalStarts.toJSON();
         return result;
     } // ProperInterval#toJSON
 

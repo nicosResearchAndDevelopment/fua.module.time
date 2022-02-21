@@ -50,6 +50,10 @@ class _Datatype {
         return this.#value;
     } // _Datatype#valueOf
 
+    toString() {
+        return this.#value;
+    } // _Datatype#valueOf
+
     toJSON() {
         if (!this.#type) return {'@value': this.#value};
         return {

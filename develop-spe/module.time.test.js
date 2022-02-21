@@ -31,15 +31,15 @@ describe('develop-spe/module.time', function () {
     test('TemporalEntity', function () {
         const ex1 = new time.model.TemporalEntity({
             '@id':                 'ex:1',
-            'time:hasXSDDuration': 'P1Y'
+            'time:hasXSDDuration': ['P1Y']
         });
         expect(JSON.parse(JSON.stringify(ex1))).toMatchObject({
             '@type':               'time:TemporalEntity',
             '@id':                 'ex:1',
-            'time:hasXSDDuration': {
+            'time:hasXSDDuration': [{
                 '@type':  'xsd:duration',
                 '@value': 'P1Y'
-            }
+            }]
         });
     });
 

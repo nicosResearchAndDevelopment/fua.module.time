@@ -34,4 +34,5 @@ const unitWeek = new model.TemporalUnit({
     }
 });
 
+unitWeek.lock();
 module.exports = unitWeek;

@@ -34,4 +34,5 @@ const unitMonth = new model.TemporalUnit({
     }
 });
 
+unitMonth.lock();
 module.exports = unitMonth;

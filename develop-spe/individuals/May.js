@@ -11,4 +11,5 @@ const May = new model.MonthOfYear({
     'time:unitType': model.unitMonth
 });
 
+May.lock();
 module.exports = May;

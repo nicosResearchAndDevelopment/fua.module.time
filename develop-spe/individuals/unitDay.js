@@ -34,4 +34,5 @@ const unitDay = new model.TemporalUnit({
     }
 });
 
+unitDay.lock();
 module.exports = unitDay;

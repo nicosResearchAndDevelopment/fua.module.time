@@ -4,47 +4,41 @@ const
 
 class TemporalEntity extends model._Object {
 
-    // TODO rework with object and datatype properties
-
-    #after                  = new Set();
-    #before                 = new Set();
-    #hasBeginning           = null;
-    #hasDuration            = null;
-    #hasDurationDescription = null;
-    #hasEnd                 = null;
-    #hasTemporalDuration    = null;
-    #hasXSDDuration         = null;
+    #after                  = new model._ObjectProperty(model.TemporalEntity);
+    #before                 = new model._ObjectProperty(model.TemporalEntity);
+    #hasBeginning           = new model._ObjectProperty(model.Instant);
+    #hasDuration            = new model._ObjectProperty(model.Duration);
+    #hasDurationDescription = new model._ObjectProperty(model.GeneralDurationDescription);
+    #hasEnd                 = new model._ObjectProperty(model.Instant);
+    #hasTemporalDuration    = new model._ObjectProperty(model.TemporalDuration);
+    #hasXSDDuration         = new model._DatatypeProperty(model.duration);
 
     constructor(param) {
         super(param);
         const after = param[util.timeIRI.after] || param[util.timeURI.after];
-        if (after) for (let entity of util.toArray(param.after)) {
-            this.#after.add(model.TemporalEntity.from(after));
-        }
+        if (after) this.#after.set(after);
         const before = param[util.timeIRI.before] || param[util.timeURI.before];
-        if (before) for (let entity of util.toArray(param.before)) {
-            this.#before.add(model.TemporalEntity.from(before));
-        }
+        if (before) this.#before.set(before);
         const hasBeginning = param[util.timeIRI.hasBeginning] || param[util.timeURI.hasBeginning];
-        if (hasBeginning) this.#hasBeginning = model.Instant.from(hasBeginning);
+        if (hasBeginning) this.#hasBeginning.set(hasBeginning);
         const hasDuration = param[util.timeIRI.hasDuration] || param[util.timeURI.hasDuration];
-        if (hasDuration) this.#hasDuration = model.Duration.from(hasDuration);
+        if (hasDuration) this.#hasDuration.set(hasDuration);
         const hasDurationDescription = param[util.timeIRI.hasDurationDescription] || param[util.timeURI.hasDurationDescription];
-        if (hasDurationDescription) this.#hasDurationDescription = model.GeneralDurationDescription.from(hasDurationDescription);
+        if (hasDurationDescription) this.#hasDurationDescription.set(hasDurationDescription);
         const hasEnd = param[util.timeIRI.hasEnd] || param[util.timeURI.hasEnd];
-        if (hasEnd) this.#hasEnd = model.Instant.from(hasEnd);
+        if (hasEnd) this.#hasEnd.set(hasEnd);
         const hasTemporalDuration = param[util.timeIRI.hasTemporalDuration] || param[util.timeURI.hasTemporalDuration];
-        if (hasTemporalDuration) this.#hasTemporalDuration = model.TemporalDuration.from(hasTemporalDuration);
+        if (hasTemporalDuration) this.#hasTemporalDuration.set(hasTemporalDuration);
         const hasXSDDuration = param[util.timeIRI.hasXSDDuration] || param[util.timeURI.hasXSDDuration];
-        if (hasXSDDuration) this.#hasXSDDuration = model.duration.from(hasXSDDuration);
+        if (hasXSDDuration) this.#hasXSDDuration.set(hasXSDDuration);
     } // TemporalEntity#constructor
 
     get after() {
-        return Array.from(this.#after);
+        return this.#after;
     }
 
     get before() {
-        return Array.from(this.#before);
+        return this.#before;
     }
 
     get hasBeginning() {
@@ -71,16 +65,29 @@ class TemporalEntity extends model._Object {
         return this.#hasXSDDuration;
     }
 
+    lock() {
+        super.lock();
+        this.#after.lock();
+        this.#before.lock();
+        this.#hasBeginning.lock();
+        this.#hasDuration.lock();
+        this.#hasDurationDescription.lock();
+        this.#hasEnd.lock();
+        this.#hasTemporalDuration.lock();
+        this.#hasXSDDuration.lock();
+        return this;
+    } // TemporalEntity#lock
+
     toJSON() {
         const result = super.toJSON();
-        if (this.#after.size > 0) result[util.timeIRI.after] = Array.from(this.#after);
-        if (this.#before.size > 0) result[util.timeIRI.before] = Array.from(this.#before);
-        if (this.#hasBeginning) result[util.timeIRI.hasBeginning] = this.#hasBeginning;
-        if (this.#hasDuration) result[util.timeIRI.hasDuration] = this.#hasDuration;
-        if (this.#hasDurationDescription) result[util.timeIRI.hasDurationDescription] = this.#hasDurationDescription;
-        if (this.#hasEnd) result[util.timeIRI.hasEnd] = this.#hasEnd;
-        if (this.#hasTemporalDuration) result[util.timeIRI.hasTemporalDuration] = this.#hasTemporalDuration;
-        if (this.#hasXSDDuration) result[util.timeIRI.hasXSDDuration] = this.#hasXSDDuration;
+        if (!this.#after.empty) result[util.timeIRI.after] = this.#after.toJSON();
+        if (!this.#before.empty) result[util.timeIRI.before] = this.#before.toJSON();
+        if (!this.#hasBeginning.empty) result[util.timeIRI.hasBeginning] = this.#hasBeginning.toJSON();
+        if (!this.#hasDuration.empty) result[util.timeIRI.hasDuration] = this.#hasDuration.toJSON();
+        if (!this.#hasDurationDescription.empty) result[util.timeIRI.hasDurationDescription] = this.#hasDurationDescription.toJSON();
+        if (!this.#hasEnd.empty) result[util.timeIRI.hasEnd] = this.#hasEnd.toJSON();
+        if (!this.#hasTemporalDuration.empty) result[util.timeIRI.hasTemporalDuration] = this.#hasTemporalDuration.toJSON();
+        if (!this.#hasXSDDuration.empty) result[util.timeIRI.hasXSDDuration] = this.#hasXSDDuration.toJSON();
         return result;
     } // TemporalEntity#toJSON
 

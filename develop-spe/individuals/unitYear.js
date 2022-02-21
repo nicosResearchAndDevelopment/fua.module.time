@@ -34,4 +34,5 @@ const unitYear = new model.TemporalUnit({
     }
 });
 
+unitYear.lock();
 module.exports = unitYear;

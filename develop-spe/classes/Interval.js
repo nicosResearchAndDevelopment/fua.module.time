@@ -4,25 +4,27 @@ const
 
 class Interval extends model.TemporalEntity {
 
-    // TODO rework with object and datatype properties
-
-    #inside = new Set();
+    #inside = new model._ObjectProperty(model.Instant);
 
     constructor(param) {
         super(param);
         const inside = param[util.timeIRI.inside] || param[util.timeURI.inside];
-        if (inside) for (let entity of util.toArray(param.inside)) {
-            this.#inside.add(model.TemporalEntity.from(inside));
-        }
+        if (inside) this.#inside.set(inside);
     } // Interval#constructor
 
     get inside() {
-        return Array.from(this.#inside);
+        return this.#inside;
     }
+
+    lock() {
+        super.lock();
+        this.#inside.lock();
+        return this;
+    } // Interval#lock
 
     toJSON() {
         const result = super.toJSON();
-        if (this.#inside.size > 0) result[util.timeIRI.inside] = Array.from(this.#inside);
+        if (!this.#inside.empty) result[util.timeIRI.inside] = this.#inside.toJSON();
         return result;
     } // Interval#toJSON
 

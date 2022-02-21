@@ -6,4 +6,5 @@ const Sunday = new model.DayOfWeek({
     '@id': util.timeIRI('Sunday')
 });
 
+Sunday.lock();
 module.exports = Sunday;

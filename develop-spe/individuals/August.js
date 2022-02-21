@@ -11,4 +11,5 @@ const August = new model.MonthOfYear({
     'time:unitType': model.unitMonth
 });
 
+August.lock();
 module.exports = August;

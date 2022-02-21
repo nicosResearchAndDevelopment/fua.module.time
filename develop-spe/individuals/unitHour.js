@@ -34,4 +34,5 @@ const unitHour = new model.TemporalUnit({
     }
 });
 
+unitHour.lock();
 module.exports = unitHour;
