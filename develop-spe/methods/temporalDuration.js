@@ -7,7 +7,7 @@ function temporalDuration(param) {
 
     if (param instanceof model.TemporalDuration) {
         return param;
-    }
+    } // if (param instanceof model.TemporalDuration)
 
     if (util.isNumber(param)) {
         return model.Duration.from({
@@ -35,10 +35,11 @@ function temporalDuration(param) {
         }
 
         // TODO array of 2 strings
+        // TODO array of 2 temporal positions
 
     } // if (util.isArray(param))
 
-    if (util.isObject(param)) {
+    if (util.isObject(param) && !util.isArray(param)) {
 
         if ([
             util.timeIRI.unitType, util.timeURI.unitType,
@@ -67,7 +68,7 @@ function temporalDuration(param) {
             return model.TemporalDuration.from(param);
         }
 
-    } // if (util.isObject(param))
+    } // if (util.isObject(param) && !util.isArray(param))
 
     throw new Error('invalid param');
 

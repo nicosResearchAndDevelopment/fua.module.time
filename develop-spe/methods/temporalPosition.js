@@ -7,7 +7,7 @@ function temporalPosition(param) {
 
     if (param instanceof model.TemporalPosition) {
         return param;
-    }
+    } // if (param instanceof model.TemporalPosition)
 
     if (util.isNumber(param)) {
         return temporalPosition(new Date(1000 * param));
@@ -18,10 +18,6 @@ function temporalPosition(param) {
     } // if (util.isString(param))
 
     if (util.isDate(param)) {
-        // return model.TimePosition.from({
-        //     'time:hasTRS':          model.UnixTime,
-        //     'time:numericPosition': (param.valueOf() / 1000).toString()
-        // });
         return model.DateTimeDescription.from({
             'time:hasTRS':      model.Gregorian,
             'time:unitType':    model.unitSecond,
@@ -44,7 +40,7 @@ function temporalPosition(param) {
         });
     } // if (util.isDate(param))
 
-    if (util.isObject(param)) {
+    if (util.isObject(param) && !util.isArray(param)) {
 
         if ([
             util.timeIRI.nominalPosition, util.timeURI.nominalPosition,
@@ -79,7 +75,7 @@ function temporalPosition(param) {
             return model.TemporalPosition.from(param);
         }
 
-    } // if (util.isObject(param))
+    } // if (util.isObject(param) && !util.isArray(param))
 
     throw new Error('invalid param');
 
