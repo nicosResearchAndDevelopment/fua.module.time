@@ -98,8 +98,6 @@ class _ObjectProperty {
             target.forEach(entry => this.#references.add(entry));
             return target;
         } else {
-            if (this.#maxCardinality > 1)
-                throw new Error('expected target to be an array');
             if (target) {
                 target = this.#referenceType.from(target);
                 this.#references.clear();

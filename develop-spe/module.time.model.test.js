@@ -210,12 +210,8 @@ describe('develop-spe/module.time/model', function () {
         expect(ex1.hasXSDDuration.get()[0].months).toBe(0);
         expect(ex1.hasXSDDuration.get()[0].days).toBe(0);
         expect(ex1.hasBeginning.size).toBe(0);
-        expect(() => ex1.hasBeginning.add({
-            // NOTE: cardinality of inXSDDateTimeStamp is > 1, so an array must be used to construct the instant
-            'time:inXSDDateTimeStamp': '2000-01-01T00:00:00Z'
-        })).toThrow();
         ex1.hasBeginning.add({
-            'time:inXSDDateTimeStamp': ['2000-01-01T00:00:00Z']
+            'time:inXSDDateTimeStamp': '2000-01-01T00:00:00Z'
         });
         ex1.hasBeginning.add({
             'time:inXSDgYear': ['2000']
@@ -242,15 +238,15 @@ describe('develop-spe/module.time/model', function () {
 
     test('ProperInterval', function () {
         const ex1 = new model.ProperInterval({
-            'time:hasBeginning':   [{'time:inXSDDateTimeStamp': ['2000-01-01T00:00:00Z']}],
-            'time:hasEnd':         [{'time:inXSDDateTimeStamp': ['2001-01-01T00:00:00Z']}],
+            'time:hasBeginning':   {'time:inXSDDateTimeStamp': '2000-01-01T00:00:00Z'},
+            'time:hasEnd':         {'time:inXSDDateTimeStamp': '2001-01-01T00:00:00Z'},
             'time:intervalMeets':  [{
-                'time:hasBeginning': [{'time:inXSDDateTimeStamp': ['2001-01-01T00:00:00Z']}],
-                'time:hasEnd':       [{'time:inXSDDateTimeStamp': ['2002-01-01T00:00:00Z']}]
+                'time:hasBeginning': {'time:inXSDDateTimeStamp': '2001-01-01T00:00:00Z'},
+                'time:hasEnd':       {'time:inXSDDateTimeStamp': '2002-01-01T00:00:00Z'}
             }],
             'time:intervalBefore': [{
-                'time:hasBeginning': [{'time:inXSDDateTimeStamp': ['2002-01-01T00:00:00Z']}],
-                'time:hasEnd':       [{'time:inXSDDateTimeStamp': ['2003-01-01T00:00:00Z']}]
+                'time:hasBeginning': {'time:inXSDDateTimeStamp': '2002-01-01T00:00:00Z'},
+                'time:hasEnd':       {'time:inXSDDateTimeStamp': '2003-01-01T00:00:00Z'}
             }]
         });
         expect(JSON.parse(JSON.stringify(ex1))).toMatchObject({
