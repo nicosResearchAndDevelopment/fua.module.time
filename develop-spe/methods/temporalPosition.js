@@ -4,13 +4,20 @@ const
     factory = require('../module.time.factory.js');
 
 function temporalPosition(param) {
+
     if (param instanceof model.TemporalPosition) {
         return param;
-    } else if (util.isString(param)) {
-        return temporalPosition(new Date(param));
-    } else if (util.isNumber(param)) {
+    }
+
+    if (util.isNumber(param)) {
         return temporalPosition(new Date(1000 * param));
-    } else if (util.isDate(param)) {
+    } // if (util.isNumber(param))
+
+    if (util.isString(param)) {
+        return temporalPosition(new Date(param));
+    } // if (util.isString(param))
+
+    if (util.isDate(param)) {
         // return model.TimePosition.from({
         //     'time:hasTRS':          model.UnixTime,
         //     'time:numericPosition': (param.valueOf() / 1000).toString()
@@ -35,7 +42,9 @@ function temporalPosition(param) {
                                     model.October, model.November, model.December
                                 ][param.getUTCMonth()]
         });
-    } else if (util.isObject(param)) {
+    } // if (util.isDate(param))
+
+    if (util.isObject(param)) {
 
         if ([
             util.timeIRI.nominalPosition, util.timeURI.nominalPosition,
@@ -69,9 +78,11 @@ function temporalPosition(param) {
         ].some(prop => param[prop])) {
             return model.TemporalPosition.from(param);
         }
-    }
+
+    } // if (util.isObject(param))
 
     throw new Error('invalid param');
+
 } // temporalPosition
 
 module.exports = temporalPosition;

@@ -5,6 +5,10 @@ const
 
 function temporalEntity(param) {
 
+    if (param instanceof model.TemporalEntity) {
+        return param;
+    }
+
     // TODO
 
 } // temporalEntity
