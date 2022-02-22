@@ -19,6 +19,7 @@ exports.gYearMonth         = require('./datatypes/gYearMonth.js');
 
 exports.TRS       = require('./classes/TRS.js');
 exports.Gregorian = require('./individuals/Gregorian.js');
+exports.UnixTime  = require('./individuals/UnixTime.js');
 
 exports.TimeZone = require('./classes/TimeZone.js');
 

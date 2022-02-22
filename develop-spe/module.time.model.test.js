@@ -10,6 +10,7 @@ describe('develop-spe/module.time/model', function () {
         console.log(model);
 
         expect(model.Gregorian).toBeInstanceOf(model.TRS);
+        expect(model.UnixTime).toBeInstanceOf(model.TRS);
 
         expect(model.unitYear).toBeInstanceOf(model.TemporalUnit);
         expect(model.unitMonth).toBeInstanceOf(model.TemporalUnit);
