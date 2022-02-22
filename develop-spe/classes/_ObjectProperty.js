@@ -159,9 +159,11 @@ class _ObjectProperty {
      */
     toJSON() {
         if (this.#maxCardinality > 1) {
-            return Array.from(this.#references);
+            const target = Array.from(this.#references);
+            return target.map(entry => entry.id ? {'@id': entry.id} : entry.toJSON());
         } else if (this.#references.size > 0) {
-            return this.#references.values().next().value;
+            const target = this.#references.values().next().value;
+            return target.id ? {'@id': target.id} : target.toJSON();
         } else {
             return null;
         }

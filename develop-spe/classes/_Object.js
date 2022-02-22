@@ -56,7 +56,8 @@ class _Object {
     } // _Object#lock
 
     toJSON() {
-        const result = {'@type': util.timeIRI(this.#type)};
+        const result = {};
+        if (this.#type) result['@type'] = util.timeIRI(this.#type);
         if (this.#id) result['@id'] = this.#id;
         return result;
     } // _Object#toJSON

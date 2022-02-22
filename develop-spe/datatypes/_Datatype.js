@@ -55,12 +55,10 @@ class _Datatype {
     } // _Datatype#valueOf
 
     toJSON() {
-        if (!this.#type) return {'@value': this.#value};
-        return {
-            '@type':  util.xsdIRI(this.#type),
-            '@value': this.#value
-        };
-
+        const result = {};
+        if (this.#type) result['@type'] = util.xsdIRI(this.#type);
+        result['@value'] = this.#value;
+        return result;
     } // _Datatype#toJSON
 
 } // _Datatype
