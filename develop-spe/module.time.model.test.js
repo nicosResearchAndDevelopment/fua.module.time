@@ -1,65 +1,64 @@
 const
     {describe, test} = require('mocha'),
     expect           = require('expect'),
-    time             = require('./module.time.js'),
-    maxDateTS        = 8640000000000000e-3; // 8,640,000,000,000,000 milliseconds => e-3 makes it to seconds
+    model            = require('./module.time.model.js');
 
-describe('develop-spe/module.time', function () {
+describe('develop-spe/module.time/model', function () {
 
     test('DEVELOP', function () {
 
-        console.log(time.model);
+        console.log(model);
 
-        expect(time.model.Gregorian).toBeInstanceOf(time.model.TRS);
+        expect(model.Gregorian).toBeInstanceOf(model.TRS);
 
-        expect(time.model.unitYear).toBeInstanceOf(time.model.TemporalUnit);
-        expect(time.model.unitMonth).toBeInstanceOf(time.model.TemporalUnit);
-        expect(time.model.unitWeek).toBeInstanceOf(time.model.TemporalUnit);
-        expect(time.model.unitDay).toBeInstanceOf(time.model.TemporalUnit);
-        expect(time.model.unitHour).toBeInstanceOf(time.model.TemporalUnit);
-        expect(time.model.unitMinute).toBeInstanceOf(time.model.TemporalUnit);
-        expect(time.model.unitSecond).toBeInstanceOf(time.model.TemporalUnit);
+        expect(model.unitYear).toBeInstanceOf(model.TemporalUnit);
+        expect(model.unitMonth).toBeInstanceOf(model.TemporalUnit);
+        expect(model.unitWeek).toBeInstanceOf(model.TemporalUnit);
+        expect(model.unitDay).toBeInstanceOf(model.TemporalUnit);
+        expect(model.unitHour).toBeInstanceOf(model.TemporalUnit);
+        expect(model.unitMinute).toBeInstanceOf(model.TemporalUnit);
+        expect(model.unitSecond).toBeInstanceOf(model.TemporalUnit);
 
-        expect(time.model.Monday).toBeInstanceOf(time.model.DayOfWeek);
-        expect(time.model.Tuesday).toBeInstanceOf(time.model.DayOfWeek);
-        expect(time.model.Wednesday).toBeInstanceOf(time.model.DayOfWeek);
-        expect(time.model.Thursday).toBeInstanceOf(time.model.DayOfWeek);
-        expect(time.model.Friday).toBeInstanceOf(time.model.DayOfWeek);
-        expect(time.model.Saturday).toBeInstanceOf(time.model.DayOfWeek);
-        expect(time.model.Sunday).toBeInstanceOf(time.model.DayOfWeek);
+        expect(model.Monday).toBeInstanceOf(model.DayOfWeek);
+        expect(model.Tuesday).toBeInstanceOf(model.DayOfWeek);
+        expect(model.Wednesday).toBeInstanceOf(model.DayOfWeek);
+        expect(model.Thursday).toBeInstanceOf(model.DayOfWeek);
+        expect(model.Friday).toBeInstanceOf(model.DayOfWeek);
+        expect(model.Saturday).toBeInstanceOf(model.DayOfWeek);
+        expect(model.Sunday).toBeInstanceOf(model.DayOfWeek);
 
-        expect(time.model.January).toBeInstanceOf(time.model.MonthOfYear);
-        expect(time.model.February).toBeInstanceOf(time.model.MonthOfYear);
-        expect(time.model.March).toBeInstanceOf(time.model.MonthOfYear);
-        expect(time.model.April).toBeInstanceOf(time.model.MonthOfYear);
-        expect(time.model.May).toBeInstanceOf(time.model.MonthOfYear);
-        expect(time.model.June).toBeInstanceOf(time.model.MonthOfYear);
-        expect(time.model.July).toBeInstanceOf(time.model.MonthOfYear);
-        expect(time.model.August).toBeInstanceOf(time.model.MonthOfYear);
-        expect(time.model.September).toBeInstanceOf(time.model.MonthOfYear);
-        expect(time.model.October).toBeInstanceOf(time.model.MonthOfYear);
-        expect(time.model.November).toBeInstanceOf(time.model.MonthOfYear);
-        expect(time.model.December).toBeInstanceOf(time.model.MonthOfYear);
+        expect(model.January).toBeInstanceOf(model.MonthOfYear);
+        expect(model.February).toBeInstanceOf(model.MonthOfYear);
+        expect(model.March).toBeInstanceOf(model.MonthOfYear);
+        expect(model.April).toBeInstanceOf(model.MonthOfYear);
+        expect(model.May).toBeInstanceOf(model.MonthOfYear);
+        expect(model.June).toBeInstanceOf(model.MonthOfYear);
+        expect(model.July).toBeInstanceOf(model.MonthOfYear);
+        expect(model.August).toBeInstanceOf(model.MonthOfYear);
+        expect(model.September).toBeInstanceOf(model.MonthOfYear);
+        expect(model.October).toBeInstanceOf(model.MonthOfYear);
+        expect(model.November).toBeInstanceOf(model.MonthOfYear);
+        expect(model.December).toBeInstanceOf(model.MonthOfYear);
 
     }); // test
 
     test('TemporalPosition', function () {
-        const ex1 = new time.model.TemporalPosition({
+        const ex1 = new model.TemporalPosition({
             '@type':                              'http://www.w3.org/2006/time#TemporalPosition',
             '@id':                                'ex:1',
-            'http://www.w3.org/2006/time#hasTRS': time.model.Gregorian
+            'http://www.w3.org/2006/time#hasTRS': model.Gregorian
         });
         expect(JSON.parse(JSON.stringify(ex1))).toMatchObject({
             '@type':       'time:TemporalPosition',
             '@id':         'ex:1',
             'time:hasTRS': {'@id': 'http://www.opengis.net/def/uom/ISO-8601/0/Gregorian'}
         });
-        expect(ex1.hasTRS.get()).toBe(time.model.Gregorian);
+        expect(ex1.hasTRS.get()).toBe(model.Gregorian);
     }); // test
 
     test('TimePosition', function () {
-        const ex1 = new time.model.TimePosition({
-            'time:hasTRS':          time.model.Gregorian,
+        const ex1 = new model.TimePosition({
+            'time:hasTRS':          model.Gregorian,
             'time:numericPosition': {
                 '@type':  'xsd:decimal',
                 '@value': Math.floor(new Date('2000-01-01T00:00:00Z') / 1000).toString()
@@ -80,12 +79,12 @@ describe('develop-spe/module.time', function () {
     test('GeneralDateTimeDescription'); // test
 
     test('DateTimeDescription', function () {
-        const ex1 = new time.model.DateTimeDescription({
+        const ex1 = new model.DateTimeDescription({
             '@id':           'ex:1',
             'time:day':      '---12',
             'time:month':    '--02',
             'time:year':     '2008',
-            'time:unitType': time.model.unitDay
+            'time:unitType': model.unitDay
         });
         expect(JSON.parse(JSON.stringify(ex1))).toMatchObject({
             '@type':         'time:DateTimeDescription',
@@ -111,13 +110,13 @@ describe('develop-spe/module.time', function () {
     }); // test
 
     test('TemporalDuration', function () {
-        const ex1 = new time.model.TemporalDuration({
+        const ex1 = new model.TemporalDuration({
             '@id':           'ex:1',
             'time:day':      '---12',
             'time:month':    '--02',
             'time:year':     '2008',
-            'time:unitType': time.model.unitDay,
-            'time:hasTRS':   time.model.Gregorian
+            'time:unitType': model.unitDay,
+            'time:hasTRS':   model.Gregorian
         });
         expect(JSON.parse(JSON.stringify(ex1))).toEqual({
             '@type': 'time:TemporalDuration',
@@ -129,8 +128,8 @@ describe('develop-spe/module.time', function () {
     }); // test
 
     test('Duration', function () {
-        const ex1 = new time.model.Duration({
-            'time:unitType':        time.model.unitDay,
+        const ex1 = new model.Duration({
+            'time:unitType':        model.unitDay,
             'time:numericDuration': '365'
         });
         expect(JSON.parse(JSON.stringify(ex1))).toMatchObject({
@@ -146,7 +145,7 @@ describe('develop-spe/module.time', function () {
     test('GeneralDurationDescription'); // test
 
     test('DurationDescription', function () {
-        const ex1 = new time.model.DurationDescription({
+        const ex1 = new model.DurationDescription({
             'time:days':    '7',
             'time:hours':   '24',
             'time:minutes': '60',
@@ -193,7 +192,7 @@ describe('develop-spe/module.time', function () {
     }); // test
 
     test('TemporalEntity', function () {
-        const ex1 = new time.model.TemporalEntity({
+        const ex1 = new model.TemporalEntity({
             '@id':                 'ex:1',
             'time:hasXSDDuration': ['P1Y']
         });
@@ -242,7 +241,7 @@ describe('develop-spe/module.time', function () {
     test('Interval'); // test
 
     test('ProperInterval', function () {
-        const ex1 = new time.model.ProperInterval({
+        const ex1 = new model.ProperInterval({
             'time:hasBeginning':   [{'time:inXSDDateTimeStamp': ['2000-01-01T00:00:00Z']}],
             'time:hasEnd':         [{'time:inXSDDateTimeStamp': ['2001-01-01T00:00:00Z']}],
             'time:intervalMeets':  [{
