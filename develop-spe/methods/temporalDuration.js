@@ -28,14 +28,86 @@ function temporalDuration(param) {
         });
     } // if (util.isString(param))
 
-    if (util.isArray(param)) {
+    if (util.isArray(param) && param.length === 2) {
 
-        if (param.length === 2 && param.every(util.isNumber)) {
-            return temporalDuration(param[1] - param[0]);
+        const
+            beginning = factory.temporalPosition(param[0]),
+            end       = factory.temporalPosition(param[1]);
+
+        if (!((beginning instanceof model.DateTimeDescription) && (end instanceof model.DateTimeDescription)))
+            throw new Error('duration calculation is only possible with DateTimeDescriptions');
+
+        let days = 0, hours = 0, minutes = 0, months = 0, seconds = 0, years = 0;
+
+        if (!end.day.empty) {
+            const gDay = end.day.get();
+            days += gDay.day;
+            hours += gDay.hour;
+            minutes += gDay.minute;
+        }
+        if (!beginning.day.empty) {
+            const gDay = beginning.day.get();
+            days -= gDay.day;
+            hours -= gDay.hour;
+            minutes -= gDay.minute;
+        }
+        if (!end.month.empty) {
+            const gMonth = end.month.get();
+            months += gMonth.month;
+            hours += gMonth.hour;
+            minutes += gMonth.minute;
+        }
+        if (!beginning.month.empty) {
+            const gMonth = beginning.month.get();
+            months -= gMonth.month;
+            hours -= gMonth.hour;
+            minutes -= gMonth.minute;
+        }
+        if (!end.year.empty) {
+            const gYear = end.year.get();
+            years += gYear.year;
+            hours += gYear.hour;
+            minutes += gYear.minute;
+        }
+        if (!beginning.year.empty) {
+            const gYear = beginning.year.get();
+            years -= gYear.year;
+            hours -= gYear.hour;
+            minutes -= gYear.minute;
+        }
+        if (!end.hour.empty) {
+            const hour = end.hour.get();
+            hours += hour.number;
+        }
+        if (!beginning.hour.empty) {
+            const hour = beginning.hour.get();
+            hours -= hour.number;
+        }
+        if (!end.minute.empty) {
+            const minute = end.minute.get();
+            minutes += minute.number;
+        }
+        if (!beginning.minute.empty) {
+            const minute = beginning.minute.get();
+            minutes -= minute.number;
+        }
+        if (!end.second.empty) {
+            const second = end.second.get();
+            seconds += second.number;
+        }
+        if (!beginning.second.empty) {
+            const second = beginning.second.get();
+            seconds -= second.number;
         }
 
-        // TODO array of 2 strings
-        // TODO array of 2 temporal positions
+        return model.DurationDescription.from({
+            'time:days':    days,
+            'time:hours':   hours,
+            'time:minutes': minutes,
+            'time:months':  months,
+            'time:seconds': seconds,
+            'time:years':   years
+        });
 
     } // if (util.isArray(param))
 

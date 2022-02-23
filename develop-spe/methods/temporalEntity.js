@@ -39,21 +39,27 @@ function temporalEntity(param) {
         return temporalEntity(factory.temporalPosition(param));
     } // if (util.isDate(param))
 
-    if (util.isArray(param)) {
+    if (util.isArray(param) && param.length === 2) {
 
-        if (param.length === 2) {
+        let hasBeginning, hasEnd, hasTemporalDuration;
+
+        try {
+            hasBeginning = temporalEntity(param[0]);
             try {
-                return temporalEntity({
-                    'time:hasBeginning': temporalEntity(param[0]),
-                    'time:hasEnd':       temporalEntity(param[1])
-                });
+                hasEnd = temporalEntity(param[1]);
             } catch (err) {
-                return temporalEntity({
-                    'time:hasBeginning':        temporalEntity(param[0]),
-                    'time:hasTemporalDuration': factory.temporalDuration(param[1])
-                });
+                hasTemporalDuration = factory.temporalDuration(param[1]);
             }
+        } catch (err) {
+            hasTemporalDuration = factory.temporalDuration(param[0]);
+            hasEnd              = temporalEntity(param[1]);
         }
+
+        return temporalEntity({
+            'time:hasBeginning':        hasBeginning,
+            'time:hasEnd':              hasEnd,
+            'time:hasTemporalDuration': hasTemporalDuration
+        });
 
     } // if (util.isArray(param))
 
