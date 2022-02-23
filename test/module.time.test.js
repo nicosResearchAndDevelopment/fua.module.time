@@ -256,19 +256,19 @@ describe('fromXsdLiteral', () => {
 
     describe('xsd:gDay', () => {
 
-        test('return Instant from "---01"^^xsd:gDay', () => {
+        test('return ProperInterval from "---01"^^xsd:gDay', () => {
             const interval = time.fromXsdLiteral('"---01"^^xsd:gDay');
             expect(interval).toBeInstanceOf(time.ProperInterval);
             console.log(interval);
         });
 
-        test('return Instant from "---01Z"^^xsd:gDay', () => {
+        test('return ProperInterval from "---01Z"^^xsd:gDay', () => {
             const interval = time.fromXsdLiteral('"---01Z"^^xsd:gDay');
             expect(interval).toBeInstanceOf(time.ProperInterval);
             console.log(interval);
         });
 
-        test('return Instant from "---01+02:00"^^xsd:gDay', () => {
+        test('return ProperInterval from "---01+02:00"^^xsd:gDay', () => {
             const interval = time.fromXsdLiteral('"---01+02:00"^^xsd:gDay');
             expect(interval).toBeInstanceOf(time.ProperInterval);
             console.log(interval);
@@ -278,19 +278,19 @@ describe('fromXsdLiteral', () => {
 
     describe('xsd:gMonth', () => {
 
-        test('return Instant from "--05"^^xsd:gMonth', () => {
+        test('return ProperInterval from "--05"^^xsd:gMonth', () => {
             const interval = time.fromXsdLiteral('"--05"^^xsd:gMonth');
             expect(interval).toBeInstanceOf(time.ProperInterval);
             console.log(interval);
         });
 
-        test('return Instant from "--11Z"^^xsd:gMonth', () => {
+        test('return ProperInterval from "--11Z"^^xsd:gMonth', () => {
             const interval = time.fromXsdLiteral('"--11Z"^^xsd:gMonth');
             expect(interval).toBeInstanceOf(time.ProperInterval);
             console.log(interval);
         });
 
-        test('return Instant from "--11-04:00"^^xsd:gMonth', () => {
+        test('return ProperInterval from "--11-04:00"^^xsd:gMonth', () => {
             const interval = time.fromXsdLiteral('"--11-04:00"^^xsd:gMonth');
             expect(interval).toBeInstanceOf(time.ProperInterval);
             console.log(interval);
@@ -300,19 +300,19 @@ describe('fromXsdLiteral', () => {
 
     describe('xsd:gMonthDay', () => {
 
-        test('return Instant from "--05-01"^^xsd:gMonthDay', () => {
+        test('return ProperInterval from "--05-01"^^xsd:gMonthDay', () => {
             const interval = time.fromXsdLiteral('"--05-01"^^xsd:gMonthDay');
             expect(interval).toBeInstanceOf(time.ProperInterval);
             console.log(interval);
         });
 
-        test('return Instant from "--11-01Z"^^xsd:gMonthDay', () => {
+        test('return ProperInterval from "--11-01Z"^^xsd:gMonthDay', () => {
             const interval = time.fromXsdLiteral('"--11-01Z"^^xsd:gMonthDay');
             expect(interval).toBeInstanceOf(time.ProperInterval);
             console.log(interval);
         });
 
-        test('return Instant from "--11-01+02:00"^^xsd:gMonthDay', () => {
+        test('return ProperInterval from "--11-01+02:00"^^xsd:gMonthDay', () => {
             const interval = time.fromXsdLiteral('"--11-01+02:00"^^xsd:gMonthDay');
             expect(interval).toBeInstanceOf(time.ProperInterval);
             console.log(interval);
@@ -322,19 +322,19 @@ describe('fromXsdLiteral', () => {
 
     describe('xsd:gYear', () => {
 
-        test('return Instant from "2001"^^xsd:gYear', () => {
+        test('return ProperInterval from "2001"^^xsd:gYear', () => {
             const interval = time.fromXsdLiteral('"2001"^^xsd:gYear');
             expect(interval).toBeInstanceOf(time.ProperInterval);
             console.log(interval);
         });
 
-        test('return Instant from "2001Z"^^xsd:gYear', () => {
+        test('return ProperInterval from "2001Z"^^xsd:gYear', () => {
             const interval = time.fromXsdLiteral('"2001Z"^^xsd:gYear');
             expect(interval).toBeInstanceOf(time.ProperInterval);
             console.log(interval);
         });
 
-        test('return Instant from "-2001+02:00"^^xsd:gYear', () => {
+        test('return ProperInterval from "-2001+02:00"^^xsd:gYear', () => {
             const interval = time.fromXsdLiteral('"-2001+02:00"^^xsd:gYear');
             expect(interval).toBeInstanceOf(time.ProperInterval);
             console.log(interval);
@@ -344,19 +344,19 @@ describe('fromXsdLiteral', () => {
 
     describe('xsd:gYearMonth', () => {
 
-        test('return Instant from "2001-11"^^xsd:gYearMonth', () => {
+        test('return ProperInterval from "2001-11"^^xsd:gYearMonth', () => {
             const interval = time.fromXsdLiteral('"2001-11"^^xsd:gYearMonth');
             expect(interval).toBeInstanceOf(time.ProperInterval);
             console.log(interval);
         });
 
-        test('return Instant from "2001-10Z"^^xsd:gYearMonth', () => {
+        test('return ProperInterval from "2001-10Z"^^xsd:gYearMonth', () => {
             const interval = time.fromXsdLiteral('"2001-10Z"^^xsd:gYearMonth');
             expect(interval).toBeInstanceOf(time.ProperInterval);
             console.log(interval);
         });
 
-        test('return Instant from "2001-10+02:00"^^xsd:gYearMonth', () => {
+        test('return ProperInterval from "2001-10+02:00"^^xsd:gYearMonth', () => {
             const interval = time.fromXsdLiteral('"2001-10+02:00"^^xsd:gYearMonth');
             expect(interval).toBeInstanceOf(time.ProperInterval);
             console.log(interval);
@@ -366,13 +366,13 @@ describe('fromXsdLiteral', () => {
 
     describe('xsd:duration', () => {
 
-        test('return Instant from "P1Y"^^xsd:duration', () => {
+        test('return ProperInterval from "P1Y"^^xsd:duration', () => {
             const interval = time.fromXsdLiteral('"P1Y"^^xsd:duration');
             expect(interval).toBeInstanceOf(time.ProperInterval);
             console.log(interval);
         });
 
-        test('return Instant from "-P1M2DT3H"^^xsd:duration', () => {
+        test('return ProperInterval from "-P1M2DT3H"^^xsd:duration', () => {
             const interval = time.fromXsdLiteral('"-P1M2DT3H"^^xsd:duration');
             expect(interval).toBeInstanceOf(time.ProperInterval);
             console.log(interval);
