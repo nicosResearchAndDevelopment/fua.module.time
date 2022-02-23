@@ -62,6 +62,8 @@ _.buildDate = function (value) {
                 result = value;
             } else if (value instanceof time.Instant) {
                 result = value.date;
+            } else if (value instanceof time.ProperInterval) {
+                result = value.dateBeginning;
             }
     }
 
@@ -108,8 +110,8 @@ _.getTemporalEntity = function (parameter) {
                 from = (parameter['hasBeginning']['@value'] || parameter['hasBeginning']['inXSDDateTimeStamp']);
                 from = ((from['@value']) ? from['@value'] : from)
                 to   = (parameter['hasEnd']['@value'] || parameter['hasEnd']['inXSDDateTimeStamp']);
-                to = ((to['@value']) ? to['@value'] : to)
-                return new time.ProperInterval(from,to);
+                to   = ((to['@value']) ? to['@value'] : to)
+                return new time.ProperInterval(from, to);
                 //>>>>>>>>>>>>>>>>>>>> return new time.ProperInterval(parameter['hasBeginning']['@value'], parameter['hasEnd']['@value']);
 
             } else {

@@ -48,7 +48,11 @@ const xsdRegExp = {
     duration:      /^(-?)P(?=.)(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)D)?(?:T(?=.)(?:(\d+)H)?(?:(\d+)M)?(?:(\d*(?:\.\d+)?)S)?)?$/
 };
 
-method.fromXsdLiteral = function (literal) {
+method.fromXsdLiteral = function (literal, referenceDate) {
+    if (!referenceDate) referenceDate = new Date();
+    else referenceDate = _.buildDate(referenceDate);
+    _.assert(_.isDate(referenceDate), 'fromXsdLiteral : invalid referenceDate');
+
     let xsdValue = '', xsdType = '';
     if (_.isString(literal)) {
         const match = xsdRegExp.literalString.exec(literal);
@@ -56,7 +60,10 @@ method.fromXsdLiteral = function (literal) {
         xsdValue = match[1];
         xsdType  = match[2];
     } else if (_.isObject(literal)) {
-        if (literal['@value'] && literal['@type']) literal = {value: literal['@value'], datatype: literal['@type']};
+        if (literal['@value'] && literal['@type']) literal = {
+            value:    literal['@value'],
+            datatype: {value: literal['@type']}
+        };
         _.assert(_.isString(literal.value) && xsdRegExp.literalValue.test(literal.value), 'fromXsdLiteral : invalid literal value');
         _.assert(_.isString(literal.datatype?.value), 'fromXsdLiteral : invalid literal datatype');
         const match = xsdRegExp.literalType.exec(literal.datatype.value);
@@ -66,7 +73,7 @@ method.fromXsdLiteral = function (literal) {
     }
 
     _.assert(xsdValue && xsdType, 'fromXsdLiteral : invalid xsd data');
-    let result = null, now = new Date(), temp = {};
+    let result = null, now = referenceDate, temp = {};
 
     switch (xsdType) {
 
