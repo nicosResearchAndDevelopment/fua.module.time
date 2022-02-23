@@ -101,12 +101,12 @@ function temporalDuration(param) {
         }
 
         return model.DurationDescription.from({
-            'time:days':    days,
-            'time:hours':   hours,
-            'time:minutes': minutes,
-            'time:months':  months,
-            'time:seconds': seconds,
-            'time:years':   years
+            'time:days':    days.toString(),
+            'time:hours':   hours.toString(),
+            'time:minutes': minutes.toString(),
+            'time:months':  months.toString(),
+            'time:seconds': seconds.toString(),
+            'time:years':   years.toString()
         });
 
     } // if (util.isArray(param))
