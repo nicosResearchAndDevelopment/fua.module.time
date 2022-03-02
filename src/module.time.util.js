@@ -246,7 +246,3 @@ _.durationFromDates2xsdDuration = function (beginning, end) {
 _.durationFromInstants2xsdDuration = function (beginning, end) {
     return _.durationFromDates2xsdDuration(beginning.date, end.date);
 };
-
-_.gregorianMonthFromXsdgMonth = function (month) {
-    return
-};
