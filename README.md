@@ -2,6 +2,12 @@
 
 [motic.decide, binary operator, `time`](https://github.com/nicosResearchAndDevelopment/nrd-motic/blob/master/decide/operator/time.md)
 
+## Ideas & ToDos
+
+- calendar week of the year
+- day of the year to calendar week calculation
+- _module.time.Year_: implement week class and get weeks of year
+
 ## Default configuration
 
 ```javascript
