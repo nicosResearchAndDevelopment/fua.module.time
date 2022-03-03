@@ -71,6 +71,8 @@ class Year {
 
 class HalfOfYear {
 
+    //#new_half = -1;
+
     constructor(year, half) {
         _.assert(year instanceof Year, 'HalfOfYear#constructor : invalid year', TypeError);
         _.assert(_.isInteger(half) && half >= 0 && half < 2, 'HalfOfYear#constructor : invalid half', TypeError);
@@ -78,6 +80,7 @@ class HalfOfYear {
         this['@type']        = 'time:HalfOfYear';
         this.year            = year;
         this.half            = half;
+        //this.#new_half            = half;
         this['xsd:duration'] = 'P6M';
         this.properInterval  = new time.ProperInterval(
             new Date(year.year, 6 * half, 1),
@@ -90,6 +93,14 @@ class HalfOfYear {
         this._quarters = null;
         _.hideProp(this, '_months', '_quarters');
     } // HalfOfYear#constructor
+
+    get which() {
+        return this.half;
+    } // HalfOfYear#which
+
+    get ofYear() {
+        return this.year;
+    } // HalfOfYear#which
 
     get months() {
         if (!this._months) {
