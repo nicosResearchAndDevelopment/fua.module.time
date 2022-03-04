@@ -4,6 +4,7 @@ const
     time           = require('./module.time.js'),
     MODULE_NAME    = 'module.time',
     RE_xsdDuration = /^(-?)P(?=.)(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)D)?(?:T(?=.)(?:(\d+)H)?(?:(\d+)M)?(?:(\d*(?:\.\d+)?)S)?)?$/i;
+const time_module  = require("./module.time");
 
 _.assert = function (value, errMsg = 'undefined error', errType = Error) {
     if (!value) {
@@ -106,12 +107,47 @@ _.getTemporalEntity = function (parameter) {
                 return new time.Instant(parameter['@value']);
             } else if (parameter['@type'] === "time:ProperInterval") {
                 //return new time.ProperInterval(parameter['@value']['hasBeginning'], parameter['@value']['hasEnd']);
-                let from, to;
-                from = (parameter['hasBeginning']['@value'] || parameter['hasBeginning']['inXSDDateTimeStamp']);
-                from = ((from['@value']) ? from['@value'] : from)
-                to   = (parameter['hasEnd']['@value'] || parameter['hasEnd']['inXSDDateTimeStamp']);
-                to   = ((to['@value']) ? to['@value'] : to)
-                return new time.ProperInterval(from, to);
+                let from, to, duration;
+
+                from = (parameter['time:hasBeginning'] || parameter['hasBeginning']);
+                if (from) {
+                    from = ((from['@value']) ? from['@value'] : from);
+                } else {
+                    from = (parameter['time:hasXSDDuration'] || parameter['hasXSDDuration']);
+                    if (from && (from['@type'] === "xsd:duration")) {
+                        duration = from['@value'];
+                        from     = undefined;
+                    } else {
+                        throw(new Error(`TODO : better error`)); // TODO : better error
+                    } // if ()
+                } // if ()
+
+                to = (parameter['time:hasEnd'] || parameter['hasEnd']);
+                if (to) {
+                    to = ((to['@value']) ? to['@value'] : to);
+                } else {
+                    to = (parameter['time:hasXSDDuration'] || parameter['hasXSDDuration']);
+                    if (!duration && to && (to['@type'] === "xsd:duration")) {
+                        duration = to['@value'];
+                        to       = undefined;
+                    } else {
+                        throw(new Error(`TODO : better error`)); // TODO : better error
+                    } // if ()
+                } // if ()
+
+                //from = time.fromXsdLiteral(property);
+                //
+                //from = (parameter['time:hasBeginning']['@value'] || parameter['hasBeginning']['@value'] ||
+                //    (
+                //        (parameter['hasBeginning']['inXSDDateTimeStamp'])
+                //            ? parameter['hasBeginning']['inXSDDateTimeStamp']
+                //            : parameter['time:hasBeginning']['time:inXSDDateTimeStamp']
+                //    )
+                //);
+                //from = ((from['@value']) ? from['@value'] : from)
+                //to   = (parameter['hasEnd']['@value'] || parameter['hasEnd']['inXSDDateTimeStamp']);
+                //to   = ((to['@value']) ? to['@value'] : to)
+                return new time.ProperInterval((from || duration), (to || duration));
                 //>>>>>>>>>>>>>>>>>>>> return new time.ProperInterval(parameter['hasBeginning']['@value'], parameter['hasEnd']['@value']);
 
             } else {

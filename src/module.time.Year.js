@@ -28,18 +28,48 @@ class Year {
         _.hideProp(this, '_months', '_quarters', '_halves');
     } // Year#constructor
 
+    month(month) {
+        return new Month(this, month);
+    } // Year#month
+
     get months() {
         if (!this._months) {
             const months = new Array(12);
-            for (let i = 0; i < months.length; i++) {
+            for (let i = 0, length = months.length; i < length; i++) {
                 months[i] = new Month(this, i);
-            }
+            } // for (i)
             this._months = Object.freeze(months);
             _.lockProp(this, '_months');
         }
 
         return this._months;
     } // Year#months
+
+    get months_BETA() {
+        if (!this._months) {
+            const months          = new Array(12);
+            //months['xsd:gMonth']       = {};
+            months['gMonth']      = {};
+            //months['time:MonthOfYear'] = {};
+            months['MonthOfYear'] = {};
+            for (let i = 0, length = months.length; i < length; i++) {
+                months[i] = new Month(this, i);
+                //months[`_${i + 1}`] = months[i];
+                //months['xsd:gMonth'][`${months[i]['xsd:gMonth']}`]        = months[i];
+                months['gMonth'][`${months[i]['xsd:gMonth']}`]       = months[i];
+                //months['time:MonthOfYear'][months[i]['time:MonthOfYear']] = months[i];
+                months['MonthOfYear'][months[i]['time:MonthOfYear']] = months[i];
+            } // for (i)
+            this._months = Object.freeze(months);
+            _.lockProp(this, '_months');
+        }
+
+        return this._months;
+    } // Year#months_BETA
+
+    quarter(quarter) {
+        return (this._quarters ? this._quarters[(quarter - 1)] : new QuarterOfYear(this, quarter));
+    } // Year#quarter
 
     get quarters() {
         if (!this._quarters) {
@@ -53,6 +83,10 @@ class Year {
 
         return this._quarters;
     } // Year#quarters
+
+    half(half) {
+        return (this._halves ? this._halves[(half - 1)] : new HalfOfYear(this, half));
+    } // Year#halve
 
     get halves() {
         if (!this._halves) {
@@ -163,14 +197,16 @@ class Month {
         _.assert(year instanceof Year, 'Month#constructor : invalid year', TypeError);
         _.assert(_.isInteger(month) && month >= 0 && month < 12, 'Month#constructor : invalid month', TypeError);
 
-        this['@type']        = 'time:Month';
-        this.year            = year;
-        this.month           = month;
-        this.inDays          = [31, year.isLeapYear ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month];
-        this.inSeconds       = this.inDays * C.dayInSeconds;
-        this['xsd:duration'] = 'P' + this.inDays + 'D';
-        this['xsd:gMonth']   = '--' + (month + 1).toString().padStart(2, '0');
-        this.properInterval  = new time.ProperInterval(
+        this['@type']            = 'time:Month';
+        this.year                = year;
+        this.month               = month;
+        this.inDays              = [31, year.isLeapYear ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month];
+        this.inSeconds           = this.inDays * C.dayInSeconds;
+        this['xsd:duration']     = 'P' + this.inDays + 'D';
+        this['xsd:gMonth']       = '--' + (month + 1).toString().padStart(2, '0');
+        this['time:MonthOfYear'] = time.XsdgMonthGregorianMonth[this['xsd:gMonth']];
+
+        this.properInterval = new time.ProperInterval(
             new Date(year.year, month, 1),
             new Date(year.year + (month < 11 ? 0 : 1), (month + 1) % 12, 1)
         );
