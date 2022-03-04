@@ -43,4 +43,9 @@ const proper_interval = new time.ProperInterval(
 const result = time[METHOD](temporalEntity1, temporalEntity2);
 ```
 
+## addons
+
+[here](./src/addon/README.md)
+
+
 ---
