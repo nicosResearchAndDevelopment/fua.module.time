@@ -5,6 +5,9 @@ const
 
 class Year {
 
+    /**
+     * @param {number} year
+     */
     constructor(year) {
         _.assert(_.isInteger(year), 'Year#constructor : invalid year', TypeError);
 
@@ -29,17 +32,22 @@ class Year {
         _.hideProp(this, '_weeks', '_months', '_quarters', '_halves');
     } // Year#constructor
 
+    /**
+     * @param {number} week
+     * @returns {CalendarWeek}
+     */
     week(week) {
         _.assert(_.isInteger(week), 'Year#week : invalid week', TypeError);
         _.assert(week >= 0 && week < this.weeks.length, 'Year#week : week out of range');
         return this.weeks[week];
     } // Year#week
 
+    /** @type {Array<CalendarWeek>} */
     get weeks() {
         if (!this._weeks) {
             const
-                // offset        = this.properInterval.dateBeginning.getDay(), // NOTE this offset calculates weeks from sunday to saturday
-                offset        = (this.properInterval.dateBeginning.getDay() + 6) % 7, // NOTE this offset calculates weeks from monday to sunday
+                // offset        = this.properInterval.dateBeginning.getDay(), // REM this offset calculates weeks from sunday to saturday
+                offset        = (this.properInterval.dateBeginning.getDay() + 6) % 7, // REM this offset calculates weeks from monday to sunday
                 beginningDays = 7 - offset,
                 endDays       = (this.inDays - beginningDays) % 7 || 7,
                 weeksCount    = 2 + (this.inDays - beginningDays - endDays) / 7,
@@ -54,12 +62,17 @@ class Year {
         return this._weeks;
     } // Year#weeks
 
+    /**
+     * @param {number} month
+     * @returns {Month}
+     */
     month(month) {
         _.assert(_.isInteger(month), 'Year#month : invalid month', TypeError);
         _.assert(month >= 0 && month < this.months.length, 'Year#month : month out of range');
         return this.months[month];
     } // Year#month
 
+    /** @type {Array<Month>} */
     get months() {
         if (!this._months) {
             const months = new Array(12);
@@ -73,6 +86,7 @@ class Year {
         return this._months;
     } // Year#months
 
+    // TODO necessary?
     get months_BETA() {
         if (!this._months) {
             const months          = new Array(12);
@@ -95,12 +109,17 @@ class Year {
         return this._months;
     } // Year#months_BETA
 
+    /**
+     * @param {number} quarter
+     * @returns {QuarterOfYear}
+     */
     quarter(quarter) {
         _.assert(_.isInteger(quarter), 'Year#quarter : invalid quarter', TypeError);
         _.assert(quarter >= 0 && quarter < this.quarters.length, 'Year#quarter : quarter out of range');
         return this.quarters[quarter];
     } // Year#quarter
 
+    /** @type {Array<QuarterOfYear>} */
     get quarters() {
         if (!this._quarters) {
             const quarters = new Array(4);
@@ -114,12 +133,17 @@ class Year {
         return this._quarters;
     } // Year#quarters
 
+    /**
+     * @param {number} half
+     * @returns {HalfOfYear}
+     */
     half(half) {
         _.assert(_.isInteger(half), 'Year#half : invalid half', TypeError);
         _.assert(half >= 0 && half < this.halves.length, 'Year#half : half out of range');
         return this.halves[half];
     } // Year#half
 
+    /** @type {Array<HalfOfYear>} */
     get halves() {
         if (!this._halves) {
             const halves = new Array(2);
@@ -137,6 +161,10 @@ class Year {
 
 class HalfOfYear {
 
+    /**
+     * @param {Year} year
+     * @param {number} half
+     */
     constructor(year, half) {
         _.assert(year instanceof Year, 'HalfOfYear#constructor : invalid year', TypeError);
         _.assert(_.isInteger(half) && half >= 0 && half < 2, 'HalfOfYear#constructor : invalid half', TypeError);
@@ -157,20 +185,27 @@ class HalfOfYear {
         _.hideProp(this, '_months', '_quarters');
     } // HalfOfYear#constructor
 
+    // TODO necessary?
     get which() {
         return this.half;
     } // HalfOfYear#which
 
+    // TODO necessary?
     get ofYear() {
         return this.year;
-    } // HalfOfYear#which
+    } // HalfOfYear#ofYear
 
+    /**
+     * @param {number} month
+     * @returns {Month}
+     */
     month(month) {
         _.assert(_.isInteger(month), 'HalfOfYear#month : invalid month', TypeError);
         _.assert(month >= 0 && month < this.months.length, 'HalfOfYear#month : month out of range');
         return this.months[month];
     } // HalfOfYear#month
 
+    /** @type {Array<Month>} */
     get months() {
         if (!this._months) {
             const months = this.year.months.slice(6 * this.half, 6 * (this.half + 1));
@@ -181,12 +216,17 @@ class HalfOfYear {
         return this._months;
     } // HalfOfYear#months
 
+    /**
+     * @param {number} quarter
+     * @returns {QuarterOfYear}
+     */
     quarter(quarter) {
         _.assert(_.isInteger(quarter), 'HalfOfYear#quarter : invalid quarter', TypeError);
         _.assert(quarter >= 0 && quarter < this.quarters.length, 'HalfOfYear#quarter : quarter out of range');
         return this.quarters[quarter];
     } // HalfOfYear#quarter
 
+    /** @type {Array<QuarterOfYear>} */
     get quarters() {
         if (!this._quarters) {
             const quarters = this.year.quarters.slice(2 * this.half, 2 * (this.half + 1));
@@ -201,6 +241,10 @@ class HalfOfYear {
 
 class QuarterOfYear {
 
+    /**
+     * @param {Year} year
+     * @param {number} quarter
+     */
     constructor(year, quarter) {
         _.assert(year instanceof Year, 'QuarterOfYear#constructor : invalid year', TypeError);
         _.assert(_.isInteger(quarter) && quarter >= 0 && quarter < 4, 'QuarterOfYear#constructor : invalid quarter', TypeError);
@@ -220,12 +264,17 @@ class QuarterOfYear {
         _.hideProp(this, '_months');
     } // QuarterOfYear#constructor
 
+    /**
+     * @param {number} month
+     * @returns {Month}
+     */
     month(month) {
         _.assert(_.isInteger(month), 'QuarterOfYear#month : invalid month', TypeError);
         _.assert(month >= 0 && month < this.months.length, 'QuarterOfYear#month : month out of range');
         return this.months[month];
     } // QuarterOfYear#month
 
+    /** @type {Array<Month>} */
     get months() {
         if (!this._months) {
             const months = this.year.months.slice(3 * this.quarter, 3 * (this.quarter + 1));
@@ -240,6 +289,10 @@ class QuarterOfYear {
 
 class Month {
 
+    /**
+     * @param {Year} year
+     * @param {number} month
+     */
     constructor(year, month) {
         _.assert(year instanceof Year, 'Month#constructor : invalid year', TypeError);
         _.assert(_.isInteger(month) && month >= 0 && month < 12, 'Month#constructor : invalid month', TypeError);
@@ -264,12 +317,17 @@ class Month {
         _.hideProp(this, '_days');
     } // Month#constructor
 
+    /**
+     * @param {number} day
+     * @returns {Day}
+     */
     day(day) {
         _.assert(_.isInteger(day), 'Month#day : invalid day', TypeError);
         _.assert(day >= 0 && day < this.days.length, 'Month#day : day out of range');
         return this.days[day];
     } // Month#days
 
+    /** @type {Array<Day>} */
     get days() {
         if (!this._days) {
             const days = new Array(this.inDays);
@@ -287,6 +345,11 @@ class Month {
 
 class CalendarWeek {
 
+    /**
+     * @param {Year} year
+     * @param {number} week
+     * @param {number} offset
+     */
     constructor(year, week, offset) {
         _.assert(year instanceof Year, 'CalendarWeek#constructor : invalid year', TypeError);
         _.assert(_.isInteger(week) && week >= 0 && week < 54, 'CalendarWeek#constructor : invalid week', TypeError);
@@ -315,12 +378,17 @@ class CalendarWeek {
         _.hideProp(this, '_days');
     } // Month#constructor
 
+    /**
+     * @param {number} day
+     * @returns {Day}
+     */
     day(day) {
         _.assert(_.isInteger(day), 'CalendarWeek#day : invalid day', TypeError);
         _.assert(day >= 0 && day < this.days.length, 'CalendarWeek#day : day out of range');
         return this.days[day];
     } // CalendarWeek#day
 
+    /** @type {Array<Day>} */
     get days() {
         if (!this._days) {
             const days = new Array(this.inDays);
@@ -339,6 +407,10 @@ class CalendarWeek {
 
 class Day {
 
+    /**
+     * @param {Month} month
+     * @param {number} day
+     */
     constructor(month, day) {
         _.assert(month instanceof Month, 'Day#constructor : invalid month', TypeError);
         _.assert(_.isInteger(day) && day >= 0 && day < month.inDays, 'Day#constructor : invalid day', TypeError);
