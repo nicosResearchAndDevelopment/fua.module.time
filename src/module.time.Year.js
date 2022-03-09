@@ -22,14 +22,42 @@ class Year {
 
         _.lockProp(this, '@type', 'year', 'isLeapYear', 'inDays', 'inSeconds', 'xsd:gYear', 'xsd:duration', 'properInterval');
 
+        this._weeks    = null;
         this._months   = null;
         this._quarters = null;
         this._halves   = null;
-        _.hideProp(this, '_months', '_quarters', '_halves');
+        _.hideProp(this, '_weeks', '_months', '_quarters', '_halves');
     } // Year#constructor
 
+    week(week) {
+        _.assert(_.isInteger(week), 'Year#week : invalid week', TypeError);
+        _.assert(week >= 0 && week < this.weeks.length, 'Year#week : week out of range');
+        return this.weeks[week];
+    } // Year#week
+
+    get weeks() {
+        if (!this._weeks) {
+            const
+                // offset        = this.properInterval.dateBeginning.getDay(), // NOTE this offset calculates weeks from sunday to saturday
+                offset        = (this.properInterval.dateBeginning.getDay() + 6) % 7, // NOTE this offset calculates weeks from monday to sunday
+                beginningDays = 7 - offset,
+                endDays       = (this.inDays - beginningDays) % 7 || 7,
+                weeksCount    = 2 + (this.inDays - beginningDays - endDays) / 7,
+                weeks         = new Array(weeksCount);
+            for (let i = 0, length = weeks.length; i < length; i++) {
+                weeks[i] = new CalendarWeek(this, i, offset);
+            }
+            this._weeks = Object.freeze(weeks);
+            _.lockProp(this, '_weeks');
+        }
+
+        return this._weeks;
+    } // Year#weeks
+
     month(month) {
-        return new Month(this, month);
+        _.assert(_.isInteger(month), 'Year#month : invalid month', TypeError);
+        _.assert(month >= 0 && month < this.months.length, 'Year#month : month out of range');
+        return this.months[month];
     } // Year#month
 
     get months() {
@@ -68,7 +96,9 @@ class Year {
     } // Year#months_BETA
 
     quarter(quarter) {
-        return (this._quarters ? this._quarters[(quarter - 1)] : new QuarterOfYear(this, quarter));
+        _.assert(_.isInteger(quarter), 'Year#quarter : invalid quarter', TypeError);
+        _.assert(quarter >= 0 && quarter < this.quarters.length, 'Year#quarter : quarter out of range');
+        return this.quarters[quarter];
     } // Year#quarter
 
     get quarters() {
@@ -85,8 +115,10 @@ class Year {
     } // Year#quarters
 
     half(half) {
-        return (this._halves ? this._halves[(half - 1)] : new HalfOfYear(this, half));
-    } // Year#halve
+        _.assert(_.isInteger(half), 'Year#half : invalid half', TypeError);
+        _.assert(half >= 0 && half < this.halves.length, 'Year#half : half out of range');
+        return this.halves[half];
+    } // Year#half
 
     get halves() {
         if (!this._halves) {
@@ -105,8 +137,6 @@ class Year {
 
 class HalfOfYear {
 
-    //#new_half = -1;
-
     constructor(year, half) {
         _.assert(year instanceof Year, 'HalfOfYear#constructor : invalid year', TypeError);
         _.assert(_.isInteger(half) && half >= 0 && half < 2, 'HalfOfYear#constructor : invalid half', TypeError);
@@ -114,7 +144,6 @@ class HalfOfYear {
         this['@type']        = 'time:HalfOfYear';
         this.year            = year;
         this.half            = half;
-        //this.#new_half            = half;
         this['xsd:duration'] = 'P6M';
         this.properInterval  = new time.ProperInterval(
             new Date(year.year, 6 * half, 1),
@@ -136,6 +165,12 @@ class HalfOfYear {
         return this.year;
     } // HalfOfYear#which
 
+    month(month) {
+        _.assert(_.isInteger(month), 'HalfOfYear#month : invalid month', TypeError);
+        _.assert(month >= 0 && month < this.months.length, 'HalfOfYear#month : month out of range');
+        return this.months[month];
+    } // HalfOfYear#month
+
     get months() {
         if (!this._months) {
             const months = this.year.months.slice(6 * this.half, 6 * (this.half + 1));
@@ -145,6 +180,12 @@ class HalfOfYear {
 
         return this._months;
     } // HalfOfYear#months
+
+    quarter(quarter) {
+        _.assert(_.isInteger(quarter), 'HalfOfYear#quarter : invalid quarter', TypeError);
+        _.assert(quarter >= 0 && quarter < this.quarters.length, 'HalfOfYear#quarter : quarter out of range');
+        return this.quarters[quarter];
+    } // HalfOfYear#quarter
 
     get quarters() {
         if (!this._quarters) {
@@ -178,6 +219,12 @@ class QuarterOfYear {
         this._months = null;
         _.hideProp(this, '_months');
     } // QuarterOfYear#constructor
+
+    month(month) {
+        _.assert(_.isInteger(month), 'QuarterOfYear#month : invalid month', TypeError);
+        _.assert(month >= 0 && month < this.months.length, 'QuarterOfYear#month : month out of range');
+        return this.months[month];
+    } // QuarterOfYear#month
 
     get months() {
         if (!this._months) {
@@ -217,6 +264,12 @@ class Month {
         _.hideProp(this, '_days');
     } // Month#constructor
 
+    day(day) {
+        _.assert(_.isInteger(day), 'Month#day : invalid day', TypeError);
+        _.assert(day >= 0 && day < this.days.length, 'Month#day : day out of range');
+        return this.days[day];
+    } // Month#days
+
     get days() {
         if (!this._days) {
             const days = new Array(this.inDays);
@@ -231,6 +284,58 @@ class Month {
     } // Month#days
 
 } // Month
+
+class CalendarWeek {
+
+    constructor(year, week, offset) {
+        _.assert(year instanceof Year, 'CalendarWeek#constructor : invalid year', TypeError);
+        _.assert(_.isInteger(week) && week >= 0 && week < 54, 'CalendarWeek#constructor : invalid week', TypeError);
+        _.assert(_.isInteger(offset) && offset >= 0 && offset < 7, 'CalendarWeek#constructor : invalid offset', TypeError);
+
+        this['@type'] = 'time:CalendarWeek';
+        this.year     = year;
+        this.week     = week;
+
+        const
+            beginningDay = week === 0 ? 0 : 7 * week - offset,
+            endDay       = week === 0 ? 6 - offset : Math.min(year.inDays - 1, beginningDay + 6);
+
+        this.inDays          = endDay + 1 - beginningDay;
+        this.inSeconds       = this.inDays * C.dayInSeconds;
+        this['xsd:duration'] = 'P' + this.inDays + 'D';
+
+        this.properInterval = new time.ProperInterval(
+            new Date(year.year, 0, beginningDay + 1),
+            new Date(year.year, 0, endDay + 2)
+        );
+
+        _.lockProp(this, '@type', 'year', 'week', 'inDays', 'inSeconds', 'xsd:duration', 'properInterval');
+
+        this._days = null;
+        _.hideProp(this, '_days');
+    } // Month#constructor
+
+    day(day) {
+        _.assert(_.isInteger(day), 'CalendarWeek#day : invalid day', TypeError);
+        _.assert(day >= 0 && day < this.days.length, 'CalendarWeek#day : day out of range');
+        return this.days[day];
+    } // CalendarWeek#day
+
+    get days() {
+        if (!this._days) {
+            const days = new Array(this.inDays);
+            for (let i = 0; i < days.length; i++) {
+                const date = new Date(this.properInterval.dateBeginning.valueOf() + i * C.dayInMilliseconds);
+                days[i]    = this.year.months[date.getMonth()].days[date.getDate() - 1];
+            }
+            this._days = Object.freeze(days);
+            _.lockProp(this, '_days');
+        }
+
+        return this._days;
+    } // CalendarWeek#days
+
+} // CalendarWeek
 
 class Day {
 
