@@ -29,7 +29,8 @@ class Year {
         this._months   = null;
         this._quarters = null;
         this._halves   = null;
-        _.hideProp(this, '_weeks', '_months', '_quarters', '_halves');
+        this._seasons  = null;
+        _.hideProp(this, '_weeks', '_months', '_quarters', '_halves', '_seasons');
     } // Year#constructor
 
     /**
@@ -157,7 +158,58 @@ class Year {
         return this._halves;
     } // Year#halves
 
+    /**
+     * @param {number} season
+     * @returns {Season}
+     */
+    season(season) {
+        _.assert(_.isInteger(season), 'Year#season : invalid season', TypeError);
+        _.assert(season >= 0 && season < this.seasons.length, 'Year#season : season out of range');
+        return this.seasons[season];
+    } // Year#season
+
+    /** @type {Array<Season>} */
+    get seasons() {
+        if (!this._seasons) {
+            const seasons = new Array(4);
+            for (let i = 0; i < seasons.length; i++) {
+                seasons[i] = new Season(this, i)
+            }
+            this._seasons = Object.freeze(seasons);
+            _.lockProp(this, '_seasons');
+        }
+
+        return this._seasons;
+    } // Year#seasons
+
 } // Year
+
+class Season {
+
+    /**
+     * @param {Year} year
+     * @param {number} season
+     * @see https://en.wikipedia.org/wiki/Season#Meteorological
+     */
+    constructor(year, season) {
+        _.assert(year instanceof Year, 'Season#constructor : invalid year', TypeError);
+        _.assert(_.isInteger(season) && season >= 0 && season < 4, 'Season#constructor : invalid season', TypeError);
+
+        this['@type']     = 'time:Season';
+        this.year         = year;
+        this.season       = season;
+        this.northernName = ['Spring', 'Summer', 'Autumn', 'Winter'][season];
+        this.southernName = ['Autumn', 'Winter', 'Spring', 'Summer'][season];
+
+        this.properInterval = new time.ProperInterval(
+            new Date(year.year, 2 + 3 * season, 1),
+            new Date(year.year, 5 + 3 * season, 1)
+        );
+
+        _.lockProp(this, '@type', 'year', 'season', 'seasonName', 'properInterval');
+    } // Season#constructor
+
+} // Season
 
 class HalfOfYear {
 
@@ -363,6 +415,8 @@ class CalendarWeek {
             beginningDay = week === 0 ? 0 : 7 * week - offset,
             endDay       = week === 0 ? 6 - offset : Math.min(year.inDays - 1, beginningDay + 6);
 
+        _.assert(beginningDay <= endDay, 'CalendarWeek#constructor : invalid week', TypeError);
+
         this.inDays          = endDay + 1 - beginningDay;
         this.inSeconds       = this.inDays * C.dayInSeconds;
         this['xsd:duration'] = 'P' + this.inDays + 'D';
@@ -376,7 +430,7 @@ class CalendarWeek {
 
         this._days = null;
         _.hideProp(this, '_days');
-    } // Month#constructor
+    } // CalendarWeek#constructor
 
     /**
      * @param {number} day

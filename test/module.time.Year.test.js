@@ -15,13 +15,19 @@ describe('time.Year', () => {
         // console.log('last week from:  \t', weeks[weeks.length - 1].properInterval.dateBeginning.toUTCString());
         // console.log('last week to:    \t', weeks[weeks.length - 1].properInterval.dateEnd.toUTCString());
 
-        for (let week of new time.Year(2020).weeks) {
+        console.log(new time.Year(2020).seasons);
+
+    });
+
+    test('calendar weeks of a year', function () {
+        const currentYear = 2020;
+        console.log('Year: ' + currentYear);
+        for (let week of new time.Year(currentYear).weeks) {
             console.log('CW: ' + week.week);
             for (let day of week.days) {
                 console.log('- ' + day.properInterval.dateBeginning.toDateString());
             }
         }
-
     });
 
     test('generate some years', function () {
@@ -29,6 +35,7 @@ describe('time.Year', () => {
             years      = {},
             minYear    = 1970,
             maxYear    = 2100,
+            doSeasons  = true,
             doHalves   = true,
             doQuarters = true,
             doMonths   = true,
@@ -39,6 +46,7 @@ describe('time.Year', () => {
         console.time('time');
         for (let currentYear = minYear; currentYear <= maxYear; currentYear++) {
             const year = years[currentYear] = new time.Year(currentYear);
+            if (doSeasons) year.seasons;
             if (doHalves) year.halves;
             if (doQuarters) year.quarters;
             if (doMonths) year.months;
