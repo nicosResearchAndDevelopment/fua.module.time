@@ -45,7 +45,7 @@ time.XsdgMonthGregorianMonth = Object.freeze({
     '--12': 'greg:December'
 });
 
-time.dayOfWeekToTimeWeek = Object.freeze(C.firstDayOfWeekMonday ? [
+time.iso_dayOfWeekToTimeWeek = Object.freeze([
     'time:Monday',
     'time:Tuesday',
     'time:Wednesday',
@@ -53,14 +53,11 @@ time.dayOfWeekToTimeWeek = Object.freeze(C.firstDayOfWeekMonday ? [
     'time:Friday',
     'time:Saturday',
     'time:Sunday'
-] : [
-    'time:Sunday',
-    'time:Monday',
-    'time:Tuesday',
-    'time:Wednesday',
-    'time:Thursday',
-    'time:Friday',
-    'time:Saturday'
+]);
+
+time.us_dayOfWeekToTimeWeek = Object.freeze([
+    time.iso_dayOfWeekToTimeWeek[6],
+    ...time.iso_dayOfWeekToTimeWeek.slice(0, 6)
 ]);
 
 time.Before       = op.Before;
