@@ -3,6 +3,8 @@ const
     C    = require('./module.time.constants.js'),
     time = require('./module.time.js');
 
+// IDEA toplevel class Time -> map years
+
 class Year {
 
     /**
@@ -47,8 +49,9 @@ class Year {
     get weeks() {
         if (!this._weeks) {
             const
-                // offset        = this.properInterval.dateBeginning.getDay(), // REM this offset calculates weeks from sunday to saturday
-                offset        = (this.properInterval.dateBeginning.getDay() + 6) % 7, // REM this offset calculates weeks from monday to sunday
+                offset        = C.firstDayOfWeekMonday
+                    ? (this.properInterval.dateBeginning.getDay() + 6) % 7
+                    : this.properInterval.dateBeginning.getDay(),
                 beginningDays = 7 - offset,
                 endDays       = (this.inDays - beginningDays) % 7 || 7,
                 weeksCount    = 2 + (this.inDays - beginningDays - endDays) / 7,
@@ -469,17 +472,21 @@ class Day {
         _.assert(month instanceof Month, 'Day#constructor : invalid month', TypeError);
         _.assert(_.isInteger(day) && day >= 0 && day < month.inDays, 'Day#constructor : invalid day', TypeError);
 
-        this['@type']        = 'time:Day';
-        this.year            = month.year;
-        this.month           = month;
-        this.day             = day;
-        this['xsd:duration'] = 'P1D';
-        this['xsd:gDay']     = '--' + (day + 1).toString().padStart(2, '0');
-        const endOfMonth     = (day + 1 === month.inDays);
-        this.properInterval  = new time.ProperInterval(
+        this['@type']          = 'time:Day';
+        this.year              = month.year;
+        this.month             = month;
+        this.day               = day;
+        this['xsd:duration']   = 'P1D';
+        this['xsd:gDay']       = '--' + (day + 1).toString().padStart(2, '0');
+        const endOfMonth       = (day + 1 === month.inDays);
+        this.properInterval    = new time.ProperInterval(
             new Date(month.year.year, month.month, day + 1),
             new Date(month.year.year + (month.month < 11 && !endOfMonth ? 0 : 1), (month.month + (endOfMonth ? 1 : 0)) % 12, endOfMonth ? 1 : day + 2)
         );
+        this.dayOfWeek         = C.firstDayOfWeekMonday
+            ? (this.properInterval.dateBeginning.getDay() + 6) % 7
+            : this.properInterval.dateBeginning.getDay();
+        this['time:dayOfWeek'] = time.dayOfWeekToTimeWeek[this.dayOfWeek];
 
         _.lockProp(this, '@type', 'year', 'month', 'day', 'xsd:duration', 'xsd:gDay', 'properInterval');
     } // Day#constructor

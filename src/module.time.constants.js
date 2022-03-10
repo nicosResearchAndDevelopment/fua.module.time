@@ -1,9 +1,11 @@
 const C = exports;
 
-C.trsUnixTime        = 'http://dbpedia.org/resource/Unix_time';
-C.durationZero       = 0;
-C.durationZeroPeriod = 'P0Y';
-C.tolerance          = Number.EPSILON;
+C.trsUnixTime          = 'http://dbpedia.org/resource/Unix_time';
+C.trsGregorianTime     = 'http://www.opengis.net/def/uom/ISO-8601/0/Gregorian';
+C.durationZero         = 0;
+C.durationZeroPeriod   = 'P0Y';
+C.tolerance            = Number.EPSILON;
+C.firstDayOfWeekMonday = true;
 
 C.secondInMilliseconds           = 1000;
 C.millisecondInSeconds           = 1 / C.secondInMilliseconds;

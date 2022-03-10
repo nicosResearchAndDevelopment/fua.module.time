@@ -25,7 +25,7 @@ describe('time.Year', () => {
         for (let week of new time.Year(currentYear).weeks) {
             console.log('CW: ' + week.week);
             for (let day of week.days) {
-                console.log('- ' + day.properInterval.dateBeginning.toDateString());
+                console.log('- [' + day.dayOfWeek + '] ' + day['time:dayOfWeek'].padEnd(16, ' ') + '-> ' + day.properInterval.dateBeginning.toDateString());
             }
         }
     });

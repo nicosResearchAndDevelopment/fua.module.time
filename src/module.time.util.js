@@ -4,7 +4,6 @@ const
     time           = require('./module.time.js'),
     MODULE_NAME    = 'module.time',
     RE_xsdDuration = /^(-?)P(?=.)(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)D)?(?:T(?=.)(?:(\d+)H)?(?:(\d+)M)?(?:(\d*(?:\.\d+)?)S)?)?$/i;
-const time_module  = require("./module.time");
 
 _.assert = function (value, errMsg = 'undefined error', errType = Error) {
     if (!value) {
