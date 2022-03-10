@@ -111,7 +111,7 @@ _.getTemporalEntity = function (parameter) {
 
                 from = (parameter['time:hasBeginning'] || parameter['hasBeginning']);
                 if (from) {
-                    from = ((from['@value']) ? from['@value'] : from);
+                    from = ((from['@value']) ? from['@value'] : ((from['inXSDDateTimeStamp']) ? from['inXSDDateTimeStamp']['@value'] : from));
                 } else {
                     from = (parameter['time:hasXSDDuration'] || parameter['hasXSDDuration']);
                     if (from && (from['@type'] === "xsd:duration")) {
@@ -124,7 +124,7 @@ _.getTemporalEntity = function (parameter) {
 
                 to = (parameter['time:hasEnd'] || parameter['hasEnd']);
                 if (to) {
-                    to = ((to['@value']) ? to['@value'] : to);
+                    to = ((to['@value']) ? to['@value'] : ((to['inXSDDateTimeStamp']) ? to['inXSDDateTimeStamp']['@value'] : to));
                 } else {
                     to = (parameter['time:hasXSDDuration'] || parameter['hasXSDDuration']);
                     if (!duration && to && (to['@type'] === "xsd:duration")) {
@@ -135,20 +135,7 @@ _.getTemporalEntity = function (parameter) {
                     } // if ()
                 } // if ()
 
-                //from = time.fromXsdLiteral(property);
-                //
-                //from = (parameter['time:hasBeginning']['@value'] || parameter['hasBeginning']['@value'] ||
-                //    (
-                //        (parameter['hasBeginning']['inXSDDateTimeStamp'])
-                //            ? parameter['hasBeginning']['inXSDDateTimeStamp']
-                //            : parameter['time:hasBeginning']['time:inXSDDateTimeStamp']
-                //    )
-                //);
-                //from = ((from['@value']) ? from['@value'] : from)
-                //to   = (parameter['hasEnd']['@value'] || parameter['hasEnd']['inXSDDateTimeStamp']);
-                //to   = ((to['@value']) ? to['@value'] : to)
                 return new time.ProperInterval((from || duration), (to || duration));
-                //>>>>>>>>>>>>>>>>>>>> return new time.ProperInterval(parameter['hasBeginning']['@value'], parameter['hasEnd']['@value']);
 
             } else {
                 return;

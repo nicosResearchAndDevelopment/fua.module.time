@@ -52,13 +52,14 @@ class Year {
                 beginningDays = 7 - offset,
                 endDays       = (this.inDays - beginningDays) % 7 || 7,
                 weeksCount    = 2 + (this.inDays - beginningDays - endDays) / 7,
-                weeks         = new Array(weeksCount);
+                weeks         = new Array(weeksCount)
+            ;
             for (let i = 0, length = weeks.length; i < length; i++) {
                 weeks[i] = new CalendarWeek(this, i, offset);
-            }
+            } // for()
             this._weeks = Object.freeze(weeks);
             _.lockProp(this, '_weeks');
-        }
+        } // if ()
 
         return this._weeks;
     } // Year#weeks
