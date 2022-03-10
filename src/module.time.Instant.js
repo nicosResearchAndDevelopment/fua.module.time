@@ -149,7 +149,7 @@ class Instant {
     }
 
     get dayOfWeek() {
-        return time.dayOfWeekToTimeWeek[_.getDayOfWeek(this.date)];
+        return time.us_dayOfWeekToTimeWeek[_.getDayOfWeek(this.date)];
     }
 
     get hour() {
