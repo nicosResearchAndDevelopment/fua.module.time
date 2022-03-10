@@ -7,7 +7,7 @@ describe('time.Year', () => {
 
     test('DEVELOP', () => {
 
-        // const weeks = new time.Year(2020).weeks;
+        // const weeks = new time.Year(2020).weeks('iso');
         // console.log('first week from: \t', weeks[0].properInterval.dateBeginning.toUTCString());
         // console.log('first week to:   \t', weeks[0].properInterval.dateEnd.toUTCString());
         // console.log('second week from:\t', weeks[1].properInterval.dateBeginning.toUTCString());
@@ -15,54 +15,58 @@ describe('time.Year', () => {
         // console.log('last week from:  \t', weeks[weeks.length - 1].properInterval.dateBeginning.toUTCString());
         // console.log('last week to:    \t', weeks[weeks.length - 1].properInterval.dateEnd.toUTCString());
 
-        console.log(new time.Year(2020).seasons);
+        console.log(new time.Year(2020).seasons('meteorological'));
 
     });
 
-    test('calendar weeks of a year', function () {
+    test('iso calendar weeks of a year', function () {
+        const currentYear = 2015;
+        console.log('Year: ' + currentYear);
+        const year = new time.Year(currentYear);
+        console.log('weeks: ' + year.iso_weeks.length);
+        console.log('from: ' + year.iso_weeks[0].properInterval.dateBeginning.toDateString());
+        console.log('to (not including): ' + year.iso_weeks[year.iso_weeks.length - 1].properInterval.dateEnd.toDateString());
+    });
+
+    test('us calendar weeks of a year', function () {
         const currentYear = 2020;
         console.log('Year: ' + currentYear);
-        for (let week of new time.Year(currentYear).weeks) {
+        for (let week of new time.Year(currentYear).us_weeks) {
             console.log('CW: ' + week.week);
             for (let day of week.days) {
-                console.log('- ' + day.properInterval.dateBeginning.toDateString());
+                console.log('- ' + day['time:dayOfWeek'].padEnd(16, ' ') + '-> ' + day.properInterval.dateBeginning.toDateString());
             }
         }
     });
 
     test('generate some years', function () {
+        this.timeout(60e3);
         const
-            years      = {},
-            minYear    = 1970,
-            maxYear    = 2100,
-            doSeasons  = true,
-            doHalves   = true,
-            doQuarters = true,
-            doMonths   = true,
-            doWeeks    = true,
-            doDays     = true;
-        console.log(`generate years from ${minYear} to ${maxYear} with the following subdivisions:`);
-        console.log([doHalves && 'halves', doQuarters && 'quarters', doMonths && 'months', doWeeks && 'weeks', doDays && 'days'].filter(val => val).join(', '));
+            years   = {},
+            minYear = 1970,
+            maxYear = 2100;
+        console.log(`generate years from ${minYear} to ${maxYear} with all subdivisions ...`);
         console.time('time');
         for (let currentYear = minYear; currentYear <= maxYear; currentYear++) {
             const year = years[currentYear] = new time.Year(currentYear);
-            if (doSeasons) year.seasons;
-            if (doHalves) year.halves;
-            if (doQuarters) year.quarters;
-            if (doMonths) year.months;
-            if (doWeeks) year.weeks;
-            if (doHalves) for (let half of year.halves) {
-                if (doQuarters) half.quarters;
-                if (doMonths) half.months;
+            year.meteor_seasons;
+            year.halves;
+            year.quarters;
+            year.months;
+            year.iso_weeks;
+            year.us_weeks;
+            for (let half of year.halves) {
+                half.quarters;
+                half.months;
             }
-            if (doQuarters) for (let quarter of year.quarters) {
-                if (doMonths) quarter.months;
+            for (let quarter of year.quarters) {
+                quarter.months;
             }
-            if (doMonths) for (let month of year.months) {
-                if (doDays) month.days;
+            for (let month of year.months) {
+                month.days;
             }
-            if (doWeeks) for (let week of year.weeks) {
-                if (doDays) week.days;
+            for (let us_week of year.us_weeks) {
+                us_week.days;
             }
         }
         console.timeEnd('time');

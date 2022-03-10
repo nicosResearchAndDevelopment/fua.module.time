@@ -3,6 +3,8 @@ const
     C    = require('./module.time.constants.js'),
     time = require('./module.time.js');
 
+// IDEA toplevel class Time -> map years
+
 class Year {
 
     /**
@@ -25,44 +27,99 @@ class Year {
 
         _.lockProp(this, '@type', 'year', 'isLeapYear', 'inDays', 'inSeconds', 'xsd:gYear', 'xsd:duration', 'properInterval');
 
-        this._weeks    = null;
-        this._months   = null;
-        this._quarters = null;
-        this._halves   = null;
-        this._seasons  = null;
-        _.hideProp(this, '_weeks', '_months', '_quarters', '_halves', '_seasons');
+        this._iso_weeks      = null;
+        this._us_weeks       = null;
+        this._months         = null;
+        this._quarters       = null;
+        this._halves         = null;
+        this._meteor_seasons = null;
+        _.hideProp(this, '_iso_weeks', '_us_weeks', '_months', '_quarters', '_halves', '_meteor_seasons');
     } // Year#constructor
+
+    week(type, week) {
+        switch (type) {
+            case 'iso':
+                return this.iso_week(week);
+            case 'us':
+                return this.us_week(week);
+            default:
+                throw new Error('Year#week : unknown type');
+        }
+    } // Year#week
+
+    /**
+     * @param {string} type
+     * @returns {ISO_CalendarWeek|US_CalendarWeek}
+     */
+    weeks(type) {
+        switch (type) {
+            case 'iso':
+                return this.iso_weeks;
+            case 'us':
+                return this.us_weeks;
+            default:
+                throw new Error('Year#weeks : unknown type');
+        }
+    } // Year#weeks
 
     /**
      * @param {number} week
-     * @returns {CalendarWeek}
+     * @returns {ISO_CalendarWeek}
      */
-    week(week) {
-        _.assert(_.isInteger(week), 'Year#week : invalid week', TypeError);
-        _.assert(week >= 0 && week < this.weeks.length, 'Year#week : week out of range');
-        return this.weeks[week];
-    } // Year#week
+    iso_week(week) {
+        _.assert(_.isInteger(week), 'Year#iso_week : invalid week', TypeError);
+        _.assert(week >= 0 && week < this.iso_weeks.length, 'Year#iso_week : week out of range');
+        return this.iso_weeks[week];
+    } // Year#iso_week
 
-    /** @type {Array<CalendarWeek>} */
-    get weeks() {
-        if (!this._weeks) {
+    /** @type {Array<ISO_CalendarWeek>} */
+    get iso_weeks() {
+        if (!this._iso_weeks) {
             const
-                // offset        = this.properInterval.dateBeginning.getDay(), // REM this offset calculates weeks from sunday to saturday
-                offset        = (this.properInterval.dateBeginning.getDay() + 6) % 7, // REM this offset calculates weeks from monday to sunday
+                offset        = (this.properInterval.dateBeginning.getDay() + 6) % 7,
+                beginningDays = 7 - offset,
+                endDays       = (this.inDays - beginningDays) % 7 || 7,
+                weeksCount    = (this.inDays - beginningDays - endDays) / 7 + (beginningDays < 4 ? 0 : 1) + (endDays < 4 ? 0 : 1),
+                weeks         = new Array(weeksCount),
+                iso_offset    = beginningDays < 4 ? beginningDays : beginningDays - 7;
+            for (let i = 0, length = weeks.length; i < length; i++) {
+                weeks[i] = new ISO_CalendarWeek(this, i, iso_offset);
+            }
+            this._iso_weeks = Object.freeze(weeks);
+            _.lockProp(this, '_iso_weeks');
+        }
+
+        return this._iso_weeks;
+    } // Year#iso_weeks
+
+    /**
+     * @param {number} week
+     * @returns {US_CalendarWeek}
+     */
+    us_week(week) {
+        _.assert(_.isInteger(week), 'Year#us_week : invalid week', TypeError);
+        _.assert(week >= 0 && week < this.us_weeks.length, 'Year#us_week : week out of range');
+        return this.us_weeks[week];
+    } // Year#us_week
+
+    /** @type {Array<US_CalendarWeek>} */
+    get us_weeks() {
+        if (!this._us_weeks) {
+            const
+                offset        = this.properInterval.dateBeginning.getDay(),
                 beginningDays = 7 - offset,
                 endDays       = (this.inDays - beginningDays) % 7 || 7,
                 weeksCount    = 2 + (this.inDays - beginningDays - endDays) / 7,
-                weeks         = new Array(weeksCount)
-            ;
+                weeks         = new Array(weeksCount);
             for (let i = 0, length = weeks.length; i < length; i++) {
-                weeks[i] = new CalendarWeek(this, i, offset);
-            } // for()
-            this._weeks = Object.freeze(weeks);
-            _.lockProp(this, '_weeks');
-        } // if ()
+                weeks[i] = new US_CalendarWeek(this, i, offset);
+            }
+            this._us_weeks = Object.freeze(weeks);
+            _.lockProp(this, '_us_weeks');
+        }
 
-        return this._weeks;
-    } // Year#weeks
+        return this._us_weeks;
+    } // Year#us_weeks
 
     /**
      * @param {number} month
@@ -159,44 +216,64 @@ class Year {
         return this._halves;
     } // Year#halves
 
-    /**
-     * @param {number} season
-     * @returns {Season}
-     */
-    season(season) {
-        _.assert(_.isInteger(season), 'Year#season : invalid season', TypeError);
-        _.assert(season >= 0 && season < this.seasons.length, 'Year#season : season out of range');
-        return this.seasons[season];
+    season(type, season) {
+        switch (type) {
+            case 'meteor':
+            case 'meteorological':
+                return this.meteor_season(season);
+            default:
+                throw new Error('Year#seasons : unknown type');
+        }
     } // Year#season
 
-    /** @type {Array<Season>} */
-    get seasons() {
-        if (!this._seasons) {
+    seasons(type) {
+        switch (type) {
+            case 'meteor':
+            case 'meteorological':
+                return this.meteor_seasons;
+            default:
+                throw new Error('Year#seasons : unknown type');
+        }
+    } // Year#seasons
+
+    /**
+     * @param {number} season
+     * @returns {MeteorologicalSeason}
+     */
+    meteor_season(season) {
+        _.assert(_.isInteger(season), 'Year#season : invalid season', TypeError);
+        _.assert(season >= 0 && season < this.meteor_seasons.length, 'Year#season : season out of range');
+        return this.meteor_seasons[season];
+    } // Year#meteor_season
+
+    /** @type {Array<MeteorologicalSeason>} */
+    get meteor_seasons() {
+        if (!this._meteor_seasons) {
             const seasons = new Array(4);
             for (let i = 0; i < seasons.length; i++) {
-                seasons[i] = new Season(this, i)
+                seasons[i] = new MeteorologicalSeason(this, i)
             }
-            this._seasons = Object.freeze(seasons);
-            _.lockProp(this, '_seasons');
+            this._meteor_seasons = Object.freeze(seasons);
+            _.lockProp(this, '_meteor_seasons');
         }
 
-        return this._seasons;
-    } // Year#seasons
+        return this._meteor_seasons;
+    } // Year#meteor_seasons
 
 } // Year
 
-class Season {
+class MeteorologicalSeason {
 
     /**
      * @param {Year} year
      * @param {number} season
-     * @see https://en.wikipedia.org/wiki/Season#Meteorological
+     * @see https://en.wikipedia.org/wiki/MeteorologicalSeason#Meteorological
      */
     constructor(year, season) {
-        _.assert(year instanceof Year, 'Season#constructor : invalid year', TypeError);
-        _.assert(_.isInteger(season) && season >= 0 && season < 4, 'Season#constructor : invalid season', TypeError);
+        _.assert(year instanceof Year, 'MeteorologicalSeason#constructor : invalid year', TypeError);
+        _.assert(_.isInteger(season) && season >= 0 && season < 4, 'MeteorologicalSeason#constructor : invalid season', TypeError);
 
-        this['@type']     = 'time:Season';
+        this['@type']     = 'time:MeteorologicalSeason';
         this.year         = year;
         this.season       = season;
         this.northernName = ['Spring', 'Summer', 'Autumn', 'Winter'][season];
@@ -208,9 +285,9 @@ class Season {
         );
 
         _.lockProp(this, '@type', 'year', 'season', 'seasonName', 'properInterval');
-    } // Season#constructor
+    } // MeteorologicalSeason#constructor
 
-} // Season
+} // MeteorologicalSeason
 
 class HalfOfYear {
 
@@ -396,7 +473,7 @@ class Month {
 
 } // Month
 
-class CalendarWeek {
+class ISO_CalendarWeek {
 
     /**
      * @param {Year} year
@@ -404,11 +481,49 @@ class CalendarWeek {
      * @param {number} offset
      */
     constructor(year, week, offset) {
-        _.assert(year instanceof Year, 'CalendarWeek#constructor : invalid year', TypeError);
-        _.assert(_.isInteger(week) && week >= 0 && week < 54, 'CalendarWeek#constructor : invalid week', TypeError);
-        _.assert(_.isInteger(offset) && offset >= 0 && offset < 7, 'CalendarWeek#constructor : invalid offset', TypeError);
+        _.assert(year instanceof Year, 'ISO_CalendarWeek#constructor : invalid year', TypeError);
+        _.assert(_.isInteger(week) && week >= 0 && week < 53, 'ISO_CalendarWeek#constructor : invalid week', TypeError);
+        _.assert(_.isInteger(offset) && offset >= -3 && offset < 4, 'ISO_CalendarWeek#constructor : invalid offset', TypeError);
 
-        this['@type'] = 'time:CalendarWeek';
+        this['@type']        = 'time:ISO_CalendarWeek';
+        this.year            = year;
+        this.week            = week;
+        this.inDays          = 7;
+        this.inSeconds       = this.inDays * C.dayInSeconds;
+        this['xsd:duration'] = 'P' + this.inDays + 'D';
+
+        const
+            beginningDay = 7 * week + offset,
+            endDay       = beginningDay + 6;
+
+        _.assert(beginningDay >= -3 && endDay < year.inDays + 3, 'ISO_CalendarWeek#constructor : invalid week', TypeError);
+
+        this.properInterval = new time.ProperInterval(
+            new Date(year.year, 0, beginningDay + 1),
+            new Date(year.year, 0, endDay + 2)
+        );
+
+        _.lockProp(this, '@type', 'year', 'week', 'inDays', 'inSeconds', 'xsd:duration', 'properInterval');
+
+        this._days = null;
+        _.hideProp(this, '_days');
+    } // US_CalendarWeek#constructor
+
+} // ISO_CalendarWeek
+
+class US_CalendarWeek {
+
+    /**
+     * @param {Year} year
+     * @param {number} week
+     * @param {number} offset
+     */
+    constructor(year, week, offset) {
+        _.assert(year instanceof Year, 'US_CalendarWeek#constructor : invalid year', TypeError);
+        _.assert(_.isInteger(week) && week >= 0 && week < 54, 'US_CalendarWeek#constructor : invalid week', TypeError);
+        _.assert(_.isInteger(offset) && offset >= 0 && offset < 7, 'US_CalendarWeek#constructor : invalid offset', TypeError);
+
+        this['@type'] = 'time:US_CalendarWeek';
         this.year     = year;
         this.week     = week;
 
@@ -416,7 +531,7 @@ class CalendarWeek {
             beginningDay = week === 0 ? 0 : 7 * week - offset,
             endDay       = week === 0 ? 6 - offset : Math.min(year.inDays - 1, beginningDay + 6);
 
-        _.assert(beginningDay <= endDay, 'CalendarWeek#constructor : invalid week', TypeError);
+        _.assert(beginningDay <= endDay, 'US_CalendarWeek#constructor : invalid week', TypeError);
 
         this.inDays          = endDay + 1 - beginningDay;
         this.inSeconds       = this.inDays * C.dayInSeconds;
@@ -431,17 +546,17 @@ class CalendarWeek {
 
         this._days = null;
         _.hideProp(this, '_days');
-    } // CalendarWeek#constructor
+    } // US_CalendarWeek#constructor
 
     /**
      * @param {number} day
      * @returns {Day}
      */
     day(day) {
-        _.assert(_.isInteger(day), 'CalendarWeek#day : invalid day', TypeError);
-        _.assert(day >= 0 && day < this.days.length, 'CalendarWeek#day : day out of range');
+        _.assert(_.isInteger(day), 'US_CalendarWeek#day : invalid day', TypeError);
+        _.assert(day >= 0 && day < this.days.length, 'US_CalendarWeek#day : day out of range');
         return this.days[day];
-    } // CalendarWeek#day
+    } // US_CalendarWeek#day
 
     /** @type {Array<Day>} */
     get days() {
@@ -456,9 +571,9 @@ class CalendarWeek {
         }
 
         return this._days;
-    } // CalendarWeek#days
+    } // US_CalendarWeek#days
 
-} // CalendarWeek
+} // US_CalendarWeek
 
 class Day {
 
@@ -470,17 +585,19 @@ class Day {
         _.assert(month instanceof Month, 'Day#constructor : invalid month', TypeError);
         _.assert(_.isInteger(day) && day >= 0 && day < month.inDays, 'Day#constructor : invalid day', TypeError);
 
-        this['@type']        = 'time:Day';
-        this.year            = month.year;
-        this.month           = month;
-        this.day             = day;
-        this['xsd:duration'] = 'P1D';
-        this['xsd:gDay']     = '--' + (day + 1).toString().padStart(2, '0');
-        const endOfMonth     = (day + 1 === month.inDays);
-        this.properInterval  = new time.ProperInterval(
+        this['@type']          = 'time:Day';
+        this.year              = month.year;
+        this.month             = month;
+        this.day               = day;
+        this['xsd:duration']   = 'P1D';
+        this['xsd:gDay']       = '--' + (day + 1).toString().padStart(2, '0');
+        const endOfMonth       = (day + 1 === month.inDays);
+        this.properInterval    = new time.ProperInterval(
             new Date(month.year.year, month.month, day + 1),
             new Date(month.year.year + (month.month < 11 && !endOfMonth ? 0 : 1), (month.month + (endOfMonth ? 1 : 0)) % 12, endOfMonth ? 1 : day + 2)
         );
+        const us_dayOfWeek     = this.properInterval.dateBeginning.getDay();
+        this['time:dayOfWeek'] = time.us_dayOfWeekToTimeWeek[us_dayOfWeek];
 
         _.lockProp(this, '@type', 'year', 'month', 'day', 'xsd:duration', 'xsd:gDay', 'properInterval');
     } // Day#constructor

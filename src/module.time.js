@@ -30,45 +30,35 @@ time.XSD_URI    = "http://www.w3.org/2001/XMLSchema#";
 
 time.GREGORIAN_PREFIX        = "greg";
 time.GREGORIAN_URI           = "https://www.w3.org/ns/time/gregorian#";
-time.XsdgMonthGregorianMonth = {
-    "--01": "greg:January",
-    "--02": "greg:February",
-    "--03": "greg:March",
-    "--04": "greg:April",
-    "--05": "greg:May",
-    "--06": "greg:June",
-    "--07": "greg:July",
-    "--08": "greg:August",
-    "--09": "greg:September",
-    "--10": "greg:October",
-    "--11": "greg:November",
-    "--12": "greg:December"
-};
-Object.freeze(time.XsdgMonthGregorianMonth);
+time.XsdgMonthGregorianMonth = Object.freeze({
+    '--01': 'greg:January',
+    '--02': 'greg:February',
+    '--03': 'greg:March',
+    '--04': 'greg:April',
+    '--05': 'greg:May',
+    '--06': 'greg:June',
+    '--07': 'greg:July',
+    '--08': 'greg:August',
+    '--09': 'greg:September',
+    '--10': 'greg:October',
+    '--11': 'greg:November',
+    '--12': 'greg:December'
+});
 
-time.dayOfWeekToTimeWeek = {
-    0: "time:Sunday",
-    1: "time:Monday",
-    2: "time:Tuesday",
-    3: "time:Wednesday",
-    4: "time:Thursday",
-    5: "time:Friday",
-    6: "time:Saturday"
+time.iso_dayOfWeekToTimeWeek = Object.freeze([
+    'time:Monday',
+    'time:Tuesday',
+    'time:Wednesday',
+    'time:Thursday',
+    'time:Friday',
+    'time:Saturday',
+    'time:Sunday'
+]);
 
-};
-Object.freeze(time.dayOfWeekToTimeWeek);
-
-//TODO: maybe (?!?) wrong...
-//time.xsdgDayToTimeWeek = {
-//    '---01': "time:Monday",
-//    '---02': "time:Tuesday",
-//    '---03': "time:Wednesday",
-//    '---04': "time:Thursday",
-//    '---05': "time:Friday",
-//    '---06': "time:Saturday",
-//    '---07': "time:Sunday"
-//};
-//Object.freeze(time.xsdgDayToTimeWeek);
+time.us_dayOfWeekToTimeWeek = Object.freeze([
+    time.iso_dayOfWeekToTimeWeek[6],
+    ...time.iso_dayOfWeekToTimeWeek.slice(0, 6)
+]);
 
 time.Before       = op.Before;
 time.After        = op.After;
