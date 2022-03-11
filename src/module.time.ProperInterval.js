@@ -84,27 +84,27 @@ class ProperInterval {
                 [time.GREGORIAN_PREFIX]: time.GREGORIAN_URI
             }],
             '@type':          'time:ProperInterval',
-            'hasDuration':    this['hasDuration'],
-            'hasXSDDuration': this['hasXSDDuration']
+            'time:hasDuration':    this['hasDuration'],
+            'time:hasXSDDuration': this['hasXSDDuration']
         };
 
         if (!this.#hasBeginningSerialized) {
             this.#hasBeginningSerialized = this['hasBeginning']['$serialize']();
             this.#hasBeginningSerialized = {
                 "@type":              "time:Instant",
-                "inXSDDateTimeStamp": this.#hasBeginningSerialized['inXSDDateTimeStamp']
+                "time:inXSDDateTimeStamp": this.#hasBeginningSerialized['inXSDDateTimeStamp']
             };
         } // if ()
         if (!this.#hasEndSerialized) {
             this.#hasEndSerialized = this['hasEnd']['$serialize']();
             this.#hasEndSerialized = {
                 "@type":              "time:Instant",
-                "inXSDDateTimeStamp": this.#hasEndSerialized['inXSDDateTimeStamp']
+                "time:inXSDDateTimeStamp": this.#hasEndSerialized['inXSDDateTimeStamp']
             };
         } // if ()
 
-        result['hasBeginning'] = this.#hasBeginningSerialized;
-        result['hasEnd']       = this.#hasEndSerialized;
+        result['time:hasBeginning'] = this.#hasBeginningSerialized;
+        result['time:hasEnd']       = this.#hasEndSerialized;
 
         return result;
     } // ProperInterval#$serialize
@@ -121,8 +121,8 @@ class ProperInterval {
     get hasDuration() {
         return {
             '@type':           'time:Duration',
-            'numericDuration': {'@type': "xsd:decimal", '@value': this.#duration},
-            'unitType':        'time:unitSecond'
+            'time:numericDuration': {'@type': "xsd:decimal", '@value': this.#duration},
+            'time:unitType':        'time:unitSecond'
         };
     }
 

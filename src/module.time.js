@@ -7,12 +7,17 @@ const
     Time           = require('./module.time.time.js'),
     Instant        = require('./module.time.Instant.js'),
     ProperInterval = require('./module.time.ProperInterval.js'),
-    Year           = require('./module.time.Year.js');
+    //Year           = require('./module.time.Year.js')
+    {
+        Year, Century
+    }              = require('./module.time.Year.js')
+;
 
 time.Time           = Time;
 time.Instant        = Instant;
 time.ProperInterval = ProperInterval;
 time.Year           = Year;
+time.Century        = Century;
 
 time.now            = method.now;
 time.from           = method.from;

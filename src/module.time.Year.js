@@ -1,17 +1,96 @@
 const
     _    = require('./module.time.util.js'),
     C    = require('./module.time.constants.js'),
-    time = require('./module.time.js');
+    time = require('./module.time.js')
+;
 
 // IDEA toplevel class Time -> map years
+
+const
+    time_line_date = new Map()
+;
+
+function hasTimelineEntity(entity) {
+    return !!time_line_date.get((entity['@id'] || entity.valueOf()));
+}
+
+function getTimelineEntity(entity, temporalEntity) {
+    let
+        index = (entity['@id'] || entity.valueOf()),
+        node,
+        result
+    ;
+    result    = time_line_date.get(index);
+    if (!result) {
+        node = {
+            timestamp:  (new Date).valueOf(),
+            entity:     entity,
+            referenced: {},
+            meets:      [],
+            metBy:      []
+        };
+        if (temporalEntity)
+            node.referenced[temporalEntity['@id']] = temporalEntity;
+        time_line_date.set(index, node);
+        result = entity;
+    } else {
+        if (temporalEntity && !result.referenced[temporalEntity['@id']])
+            result.referenced[temporalEntity['@id']] = temporalEntity;
+
+        result['timestamp'] = (new Date).valueOf();
+        result              = result['entity'];
+        //debugger;
+    }
+    return result;
+}
 
 class Year {
 
     /**
      * @param {number} year
      */
+    //constructor(year) {
+    //    
+    //    _.assert(_.isInteger(year), 'Year#constructor : invalid year', TypeError);
+    //
+    //    this['@type']        = 'time:Year';
+    //    this.year            = year;
+    //    this.isLeapYear      = _.isLeapYear(year);
+    //    this.inDays          = this.isLeapYear ? C.leapYearInDays : C.nonLeapYearInDays;
+    //    this.inSeconds       = this.isLeapYear ? C.leapYearInSeconds : C.nonLeapYearInSeconds;
+    //    this['xsd:gYear']    = year.toString();
+    //    this['xsd:duration'] = 'P1Y';
+    //
+    //    //this.properInterval  = new time.ProperInterval(
+    //    //    new Date(year, 0, 1),
+    //    //    new Date(year + 1, 0, 1)
+    //    //);
+    //    this.properInterval = new time.ProperInterval(
+    //        getTimelineEntity(new Date(year, 0, 1)),
+    //        getTimelineEntity(new Date(year + 1, 0, 1))
+    //    );
+    //
+    //    _.lockProp(this, '@type', 'year', 'isLeapYear', 'inDays', 'inSeconds', 'xsd:gYear', 'xsd:duration', 'properInterval');
+    //
+    //    this._iso_weeks      = null;
+    //    this._us_weeks       = null;
+    //    this._months         = null;
+    //    this._quarters       = null;
+    //    this._halves         = null;
+    //    this._meteor_seasons = null;
+    //    _.hideProp(this, '_iso_weeks', '_us_weeks', '_months', '_quarters', '_halves', '_meteor_seasons');
+    //} // Year#constructor
+
+    /**
+     * @param {number} year
+     */
     constructor(year) {
+
         _.assert(_.isInteger(year), 'Year#constructor : invalid year', TypeError);
+
+        this['@id'] = `_:Y${year}/`;
+        if (hasTimelineEntity(this))
+            return getTimelineEntity(this);
 
         this['@type']        = 'time:Year';
         this.year            = year;
@@ -20,9 +99,14 @@ class Year {
         this.inSeconds       = this.isLeapYear ? C.leapYearInSeconds : C.nonLeapYearInSeconds;
         this['xsd:gYear']    = year.toString();
         this['xsd:duration'] = 'P1Y';
-        this.properInterval  = new time.ProperInterval(
-            new Date(year, 0, 1),
-            new Date(year + 1, 0, 1)
+
+        //this.properInterval  = new time.ProperInterval(
+        //    new Date(year, 0, 1),
+        //    new Date(year + 1, 0, 1)
+        //);
+        this.properInterval = new time.ProperInterval(
+            getTimelineEntity(new Date(year, 0, 1), this),
+            getTimelineEntity(new Date(year + 1, 0, 1), this)
         );
 
         _.lockProp(this, '@type', 'year', 'isLeapYear', 'inDays', 'inSeconds', 'xsd:gYear', 'xsd:duration', 'properInterval');
@@ -34,6 +118,7 @@ class Year {
         this._halves         = null;
         this._meteor_seasons = null;
         _.hideProp(this, '_iso_weeks', '_us_weeks', '_months', '_quarters', '_halves', '_meteor_seasons');
+        return getTimelineEntity(this);
     } // Year#constructor
 
     week(type, week) {
@@ -279,11 +364,14 @@ class MeteorologicalSeason {
         this.northernName = ['Spring', 'Summer', 'Autumn', 'Winter'][season];
         this.southernName = ['Autumn', 'Winter', 'Spring', 'Summer'][season];
 
+        //this.properInterval = new time.ProperInterval(
+        //    new Date(year.year, 2 + 3 * season, 1),
+        //    new Date(year.year, 5 + 3 * season, 1)
+        //);
         this.properInterval = new time.ProperInterval(
-            new Date(year.year, 2 + 3 * season, 1),
-            new Date(year.year, 5 + 3 * season, 1)
+            getTimelineEntity(new Date(year.year, 2 + 3 * season, 1), this),
+            getTimelineEntity(new Date(year.year, 5 + 3 * season, 1), this)
         );
-
         _.lockProp(this, '@type', 'year', 'season', 'seasonName', 'properInterval');
     } // MeteorologicalSeason#constructor
 
@@ -299,13 +387,22 @@ class HalfOfYear {
         _.assert(year instanceof Year, 'HalfOfYear#constructor : invalid year', TypeError);
         _.assert(_.isInteger(half) && half >= 0 && half < 2, 'HalfOfYear#constructor : invalid half', TypeError);
 
+        // REM : 'YH', so ther will be no confusion with hour 'H'...
+        this['@id'] = `_:Y${year.year}/YH${half}/`;
+        if (hasTimelineEntity(this))
+            return getTimelineEntity(this);
+
         this['@type']        = 'time:HalfOfYear';
         this.year            = year;
         this.half            = half;
         this['xsd:duration'] = 'P6M';
-        this.properInterval  = new time.ProperInterval(
-            new Date(year.year, 6 * half, 1),
-            new Date(year.year + (half < 1 ? 0 : 1), 6 * (half + 1) % 12, 1)
+        //this.properInterval  = new time.ProperInterval(
+        //    new Date(year.year, 6 * half, 1),
+        //    new Date(year.year + (half < 1 ? 0 : 1), 6 * (half + 1) % 12, 1)
+        //);
+        this.properInterval = new time.ProperInterval(
+            getTimelineEntity(new Date(year.year, 6 * half, 1), this),
+            getTimelineEntity(new Date(year.year + (half < 1 ? 0 : 1), 6 * (half + 1) % 12, 1), this)
         );
 
         _.lockProp(this, '@type', 'year', 'half', 'xsd:duration', 'properInterval');
@@ -313,6 +410,7 @@ class HalfOfYear {
         this._months   = null;
         this._quarters = null;
         _.hideProp(this, '_months', '_quarters');
+        return getTimelineEntity(this);
     } // HalfOfYear#constructor
 
     // TODO necessary?
@@ -379,19 +477,27 @@ class QuarterOfYear {
         _.assert(year instanceof Year, 'QuarterOfYear#constructor : invalid year', TypeError);
         _.assert(_.isInteger(quarter) && quarter >= 0 && quarter < 4, 'QuarterOfYear#constructor : invalid quarter', TypeError);
 
+        this['@id'] = `_:Y${year.year}/Q${quarter}/`;
+        if (hasTimelineEntity(this))
+            return getTimelineEntity(this);
+
         this['@type']        = 'time:QuarterOfYear';
         this.year            = year;
         this.quarter         = quarter;
         this['xsd:duration'] = 'P3M';
-        this.properInterval  = new time.ProperInterval(
-            new Date(year.year, 3 * quarter, 1),
-            new Date(year.year + (quarter < 3 ? 0 : 1), 3 * (quarter + 1) % 12, 1)
+        //this.properInterval  = new time.ProperInterval(
+        //    new Date(year.year, 3 * quarter, 1),
+        //    new Date(year.year + (quarter < 3 ? 0 : 1), 3 * (quarter + 1) % 12, 1)
+        //);
+        this.properInterval = new time.ProperInterval(
+            getTimelineEntity(new Date(year.year, 3 * quarter, 1), this),
+            getTimelineEntity(new Date(year.year + (quarter < 3 ? 0 : 1), 3 * (quarter + 1) % 12, 1), this)
         );
-
         _.lockProp(this, '@type', 'year', 'quarter', 'xsd:duration', 'properInterval');
 
         this._months = null;
         _.hideProp(this, '_months');
+        return getTimelineEntity(this);
     } // QuarterOfYear#constructor
 
     /**
@@ -427,6 +533,10 @@ class Month {
         _.assert(year instanceof Year, 'Month#constructor : invalid year', TypeError);
         _.assert(_.isInteger(month) && month >= 0 && month < 12, 'Month#constructor : invalid month', TypeError);
 
+        this['@id'] = `_:Y${year.year}/M${month}/`;
+        if (hasTimelineEntity(this))
+            return getTimelineEntity(this);
+
         this['@type']            = 'time:Month';
         this.year                = year;
         this.month               = month;
@@ -436,15 +546,20 @@ class Month {
         this['xsd:gMonth']       = '--' + (month + 1).toString().padStart(2, '0');
         this['time:MonthOfYear'] = time.XsdgMonthGregorianMonth[this['xsd:gMonth']];
 
+        //this.properInterval = new time.ProperInterval(
+        //    new Date(year.year, month, 1),
+        //    new Date(year.year + (month < 11 ? 0 : 1), (month + 1) % 12, 1)
+        //);
         this.properInterval = new time.ProperInterval(
-            new Date(year.year, month, 1),
-            new Date(year.year + (month < 11 ? 0 : 1), (month + 1) % 12, 1)
+            getTimelineEntity(new Date(year.year, month, 1), this),
+            getTimelineEntity(new Date(year.year + (month < 11 ? 0 : 1), (month + 1) % 12, 1), this)
         );
 
         _.lockProp(this, '@type', 'year', 'month', 'inDays', 'inSeconds', 'xsd:duration', 'xsd:gMonth', 'properInterval');
 
         this._days = null;
         _.hideProp(this, '_days');
+        return getTimelineEntity(this);
     } // Month#constructor
 
     /**
@@ -485,6 +600,10 @@ class ISO_CalendarWeek {
         _.assert(_.isInteger(week) && week >= 0 && week < 53, 'ISO_CalendarWeek#constructor : invalid week', TypeError);
         _.assert(_.isInteger(offset) && offset >= -3 && offset < 4, 'ISO_CalendarWeek#constructor : invalid offset', TypeError);
 
+        this['@id'] = `_:Y${year.year}/CW${week}-iso/`;
+        if (hasTimelineEntity(this))
+            return getTimelineEntity(this);
+
         this['@type']        = 'time:ISO_CalendarWeek';
         this.year            = year;
         this.week            = week;
@@ -498,15 +617,19 @@ class ISO_CalendarWeek {
 
         _.assert(beginningDay >= -3 && endDay < year.inDays + 3, 'ISO_CalendarWeek#constructor : invalid week', TypeError);
 
+        //this.properInterval = new time.ProperInterval(
+        //    new Date(year.year, 0, beginningDay + 1),
+        //    new Date(year.year, 0, endDay + 2)
+        //);
         this.properInterval = new time.ProperInterval(
-            new Date(year.year, 0, beginningDay + 1),
-            new Date(year.year, 0, endDay + 2)
+            getTimelineEntity(new Date(year.year, 0, beginningDay + 1), this),
+            getTimelineEntity(new Date(year.year, 0, endDay + 2), this)
         );
-
         _.lockProp(this, '@type', 'year', 'week', 'inDays', 'inSeconds', 'xsd:duration', 'properInterval');
 
         this._days = null;
         _.hideProp(this, '_days');
+        return getTimelineEntity(this);
     } // US_CalendarWeek#constructor
 
 } // ISO_CalendarWeek
@@ -523,6 +646,10 @@ class US_CalendarWeek {
         _.assert(_.isInteger(week) && week >= 0 && week < 54, 'US_CalendarWeek#constructor : invalid week', TypeError);
         _.assert(_.isInteger(offset) && offset >= 0 && offset < 7, 'US_CalendarWeek#constructor : invalid offset', TypeError);
 
+        this['@id'] = `_:Y${year.year}/CW${week}-us/`;
+        if (hasTimelineEntity(this))
+            return getTimelineEntity(this);
+
         this['@type'] = 'time:US_CalendarWeek';
         this.year     = year;
         this.week     = week;
@@ -537,15 +664,19 @@ class US_CalendarWeek {
         this.inSeconds       = this.inDays * C.dayInSeconds;
         this['xsd:duration'] = 'P' + this.inDays + 'D';
 
+        //this.properInterval = new time.ProperInterval(
+        //    new Date(year.year, 0, beginningDay + 1),
+        //    new Date(year.year, 0, endDay + 2)
+        //);
         this.properInterval = new time.ProperInterval(
-            new Date(year.year, 0, beginningDay + 1),
-            new Date(year.year, 0, endDay + 2)
+            getTimelineEntity(new Date(year.year, 0, beginningDay + 1), this),
+            getTimelineEntity(new Date(year.year, 0, endDay + 2), this)
         );
-
         _.lockProp(this, '@type', 'year', 'week', 'inDays', 'inSeconds', 'xsd:duration', 'properInterval');
 
         this._days = null;
         _.hideProp(this, '_days');
+        return getTimelineEntity(this);
     } // US_CalendarWeek#constructor
 
     /**
@@ -585,23 +716,101 @@ class Day {
         _.assert(month instanceof Month, 'Day#constructor : invalid month', TypeError);
         _.assert(_.isInteger(day) && day >= 0 && day < month.inDays, 'Day#constructor : invalid day', TypeError);
 
-        this['@type']          = 'time:Day';
-        this.year              = month.year;
-        this.month             = month;
-        this.day               = day;
-        this['xsd:duration']   = 'P1D';
-        this['xsd:gDay']       = '--' + (day + 1).toString().padStart(2, '0');
-        const endOfMonth       = (day + 1 === month.inDays);
-        this.properInterval    = new time.ProperInterval(
-            new Date(month.year.year, month.month, day + 1),
-            new Date(month.year.year + (month.month < 11 && !endOfMonth ? 0 : 1), (month.month + (endOfMonth ? 1 : 0)) % 12, endOfMonth ? 1 : day + 2)
+        this['@id'] = `_:Y${year.year}/D${week}/`;
+        if (hasTimelineEntity(this))
+            return getTimelineEntity(this);
+
+        this['@type']        = 'time:Day';
+        this.year            = month.year;
+        this.month           = month;
+        this.day             = day;
+        this['xsd:duration'] = 'P1D';
+        this['xsd:gDay']     = '--' + (day + 1).toString().padStart(2, '0');
+        const endOfMonth     = (day + 1 === month.inDays);
+        //this.properInterval    = new time.ProperInterval(
+        //    new Date(month.year.year, month.month, day + 1),
+        //    new Date(month.year.year + (month.month < 11 && !endOfMonth ? 0 : 1), (month.month + (endOfMonth ? 1 : 0)) % 12, endOfMonth ? 1 : day + 2)
+        //);
+        this.properInterval = new time.ProperInterval(
+            getTimelineEntity(new Date(month.year.year, month.month, day + 1), this),
+            getTimelineEntity(new Date(month.year.year + (month.month < 11 && !endOfMonth ? 0 : 1), (month.month + (endOfMonth ? 1 : 0)) % 12, endOfMonth ? 1 : day + 2), this)
         );
+
         const us_dayOfWeek     = this.properInterval.dateBeginning.getDay();
         this['time:dayOfWeek'] = time.us_dayOfWeekToTimeWeek[us_dayOfWeek];
 
         _.lockProp(this, '@type', 'year', 'month', 'day', 'xsd:duration', 'xsd:gDay', 'properInterval');
+        return getTimelineEntity(this);
     } // Day#constructor
 
 } // Day
 
-module.exports = Year;
+class Century {
+
+    /**
+     * @param {number} year
+     */
+    constructor(century) {
+
+        _.assert(_.isInteger(century), 'Year#constructor : invalid year', TypeError);
+
+        this['@id'] = `_:CE${century}/`;
+        if (hasTimelineEntity(this))
+            return getTimelineEntity(this);
+
+        this['@type'] = 'time:Century';
+        this.century  = century;
+        this.inYears  = 100;
+        //this.inSeconds       = this.isLeapYear ? C.leapYearInSeconds : C.nonLeapYearInSeconds;
+        //this['xsd:gYear']    = year.toString();
+        this['xsd:duration'] = 'P100Y';
+
+        //this.properInterval  = new time.ProperInterval(
+        //    new Date(year, 0, 1),
+        //    new Date(year + 1, 0, 1)
+        //);
+        this.properInterval = new time.ProperInterval(
+            getTimelineEntity(new Date(((century - 1) * 100), 0, 1), this),
+            getTimelineEntity(new Date((century * 100), 0, 1), this)
+        );
+
+        _.lockProp(this, '@type', 'century', 'inYears', 'xsd:duration', 'properInterval');
+        this._years  = null;
+        this._halves = null;
+        _.hideProp(this, '_halves', '_years');
+        return getTimelineEntity(this);
+    } // Century#constructor
+
+    /**
+     * @param {number} month
+     * @returns {Month}
+     */
+    year(year) {
+        _.assert(_.isInteger(year), 'Century#year : invalid year', TypeError);
+        _.assert(year >= (this.century * 100) && year < this.years.length, 'Century#year : year out of range');
+        return this.years[year];
+    } // Century#year
+
+    /** @type {Array<Year>} */
+    get years() {
+        if (!this._years) {
+            const
+                _cen  = (this.century - 1),
+                years = new Array(100)
+            ;
+            for (let i = 0, length = years.length; i < length; i++) {
+                years[i] = new Year(((_cen * 100) + i));
+            } // for (i)
+            this._years = Object.freeze(years);
+            _.lockProp(this, '_years');
+        }
+        return this._years;
+    } // Year#months
+
+} // Century
+
+//module.exports = Year;
+exports.Year    = Year;
+exports.Century = Century;
+
+// EOF
