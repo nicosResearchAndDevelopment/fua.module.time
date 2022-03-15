@@ -9,7 +9,7 @@ const
     ProperInterval = require('./module.time.ProperInterval.js'),
     //Year           = require('./module.time.Year.js')
     {
-        Year, Century
+        Year, Century, Millennium
     }              = require('./module.time.Year.js')
 ;
 
@@ -18,6 +18,7 @@ time.Instant        = Instant;
 time.ProperInterval = ProperInterval;
 time.Year           = Year;
 time.Century        = Century;
+time.Millennium     = Millennium;
 
 time.now            = method.now;
 time.from           = method.from;

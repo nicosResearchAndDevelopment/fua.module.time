@@ -531,7 +531,7 @@ class Month {
      */
     constructor(year, month) {
         _.assert(year instanceof Year, 'Month#constructor : invalid year', TypeError);
-        _.assert(_.isInteger(month) && month >= 0 && month < 12, 'Month#constructor : invalid month', TypeError);
+        _.assert(_.isInteger(month) && ((month >= 0) && (month < 12)), 'Month#constructor : invalid month', TypeError);
 
         this['@id'] = `_:Y${year.year}/M${month}/`;
         if (hasTimelineEntity(this))
@@ -745,24 +745,88 @@ class Day {
 
 } // Day
 
-class Century {
+class Decade {
 
     /**
-     * @param {number} year
+     * @param {number} century
+     * @param {number} decade
      */
-    constructor(century) {
+    constructor(century, decade) {
 
-        _.assert(_.isInteger(century), 'Year#constructor : invalid year', TypeError);
+        _.assert(century instanceof Century, 'Decade#constructor : invalid century', TypeError);
+        _.assert(_.isInteger(decade) && (decade >= 0) && (decade < 10), 'HalfOfYear#constructor : invalid half', TypeError);
 
-        this['@id'] = `_:CE${century}/`;
+        this['@id'] = `_:CE${century.century}/DE${decade}/`;
         if (hasTimelineEntity(this))
             return getTimelineEntity(this);
 
         this['@type'] = 'time:Century';
         this.century  = century;
-        this.inYears  = 100;
+        this.decade   = decade;
+        this.inYears  = 10;
         //this.inSeconds       = this.isLeapYear ? C.leapYearInSeconds : C.nonLeapYearInSeconds;
         //this['xsd:gYear']    = year.toString();
+        this['xsd:duration'] = 'P10Y';
+
+        //this.properInterval  = new time.ProperInterval(
+        //    new Date(year, 0, 1),
+        //    new Date(year + 1, 0, 1)
+        //);
+        this.properInterval = new time.ProperInterval(
+            getTimelineEntity(new Date((((century.century - 1) * 100) + (decade * 10)), 0, 1), this),
+            getTimelineEntity(new Date(((century.century * 100) + ((decade + 1) * 10)), 0, 1), this)
+        );
+
+        _.lockProp(this, '@type', 'decade', 'inYears', 'xsd:duration', 'properInterval');
+        this._years = null;
+        _.hideProp(this, '_halves', '_years');
+        return getTimelineEntity(this);
+    } // Decade#constructor
+
+    /**
+     * @param {number} year
+     * @returns {Year}
+     */
+    year(year) {
+        _.assert(_.isInteger(year), 'Century#year : invalid year', TypeError);
+        _.assert(year >= (this.century * 100) && year < this.years.length, 'Century#year : year out of range');
+        return this.years[year];
+    } // Decade#year
+
+    /** @type {Array<Year>} */
+    get years() {
+        if (!this._years) {
+            const
+                _cen  = (this.century - 1),
+                years = new Array(100)
+            ;
+            for (let i = 0, length = years.length; i < length; i++) {
+                years[i] = new Year(((_cen * 100) + i));
+            } // for (i)
+            this._years = Object.freeze(years);
+            _.lockProp(this, '_years');
+        }
+        return this._years;
+    } // Decade#years
+
+} // Decade
+
+class Century {
+
+    /**
+     * @param {number} century
+     */
+    constructor(century) {
+
+        _.assert(_.isInteger(century), `Century#constructor : invalid century <${century}>`, TypeError);
+
+        this['@id'] = `_:CE${century}/`;
+        if (hasTimelineEntity(this))
+            return getTimelineEntity(this);
+
+        this['@type']        = 'time:Century';
+        this.century         = century;
+        this.inYears         = 100;
         this['xsd:duration'] = 'P100Y';
 
         //this.properInterval  = new time.ProperInterval(
@@ -775,19 +839,20 @@ class Century {
         );
 
         _.lockProp(this, '@type', 'century', 'inYears', 'xsd:duration', 'properInterval');
-        this._years  = null;
-        this._halves = null;
-        _.hideProp(this, '_halves', '_years');
+        this._decades = null;
+        this._years   = null;
+        // TODO : this._halves  = null;
+        _.hideProp(this, '_halves', '_years', '_decades');
         return getTimelineEntity(this);
     } // Century#constructor
 
     /**
-     * @param {number} month
-     * @returns {Month}
+     * @param {number} year
+     * @returns {Year}
      */
     year(year) {
         _.assert(_.isInteger(year), 'Century#year : invalid year', TypeError);
-        _.assert(year >= (this.century * 100) && year < this.years.length, 'Century#year : year out of range');
+        _.assert((year >= (this.century * 100)) && (year < this.years.length), 'Century#year : year out of range');
         return this.years[year];
     } // Century#year
 
@@ -805,12 +870,99 @@ class Century {
             _.lockProp(this, '_years');
         }
         return this._years;
-    } // Year#months
+    } // Century#years
+
+    /**
+     * @param {number} decade
+     * @returns {Decade}
+     */
+    decade(decade) {
+        _.assert(_.isInteger(decade), 'Decade#decade : invalid decade', TypeError);
+        _.assert((decade < 0) || (decade > 9), 'Century#decade : decade out of range');
+        return this.decades[decade];
+    } // Century#decade
+
+    /** @type {Array<Decade>} */
+    get decades() {
+        if (!this._decades) {
+            const
+                decades = new Array(10)
+            ;
+            for (let i = 0, length = decades.length; i < length; i++) {
+                decades[i] = new Decade(this, i);
+            } // for (i)
+            this._decades = Object.freeze(decades);
+            _.lockProp(this, '_decades');
+        }
+        return this._decades;
+    } // Century#decades
 
 } // Century
 
+class Millennium {
+
+    /**
+     * @param {number} millennium
+     */
+    constructor(millennium) {
+
+        _.assert(_.isInteger(millennium), `Millennium#constructor : invalid millennium <${millennium}>`, TypeError);
+
+        this['@id'] = `_:CE${millennium}/`;
+        if (hasTimelineEntity(this))
+            return getTimelineEntity(this);
+
+        this['@type']        = 'time:Millennium';
+        this.millennium      = millennium;
+        this.inYears         = 1000;
+        this['xsd:duration'] = 'P1000Y';
+
+        //this.properInterval  = new time.ProperInterval(
+        //    new Date(year, 0, 1),
+        //    new Date(year + 1, 0, 1)
+        //);
+        this.properInterval = new time.ProperInterval(
+            getTimelineEntity(new Date(((millennium - 1) * 1000), 0, 1), this),
+            getTimelineEntity(new Date((millennium * 1000), 0, 1), this)
+        );
+
+        _.lockProp(this, '@type', 'millennium', 'inYears', 'xsd:duration', 'properInterval');
+        this._centuries = null;
+        // TODO : this._halves  = null;
+        _.hideProp(this, '_centuries');
+        return getTimelineEntity(this);
+    } // Millennium#constructor
+
+    ///**
+    // * @param {number} century
+    // * @returns {Century}
+    // */
+    //century(century) {
+    //    _.assert(_.isInteger(century), 'Decade#decade : invalid decade', TypeError);
+    //    _.assert((decade < 0) || (decade > 9), 'Century#decade : decade out of range');
+    //    return this.decades[decade];
+    //} // Century#decade
+
+    /** @type {Array<Century>} */
+    get centuries() {
+        if (!this._centuries) {
+            const
+                centuries = new Array(10)
+            ;
+            for (let i = 0, length = centuries.length; i < length; i++) {
+                centuries[i] = new Century(((this.millennium - 1) * 10 + (i + 1)));
+            } // for (i)
+            this._centuries = Object.freeze(centuries);
+            _.lockProp(this, '_centuries');
+        }
+        return this._centuries;
+    } // Millennium#centuries
+
+} // Millennium
+
 //module.exports = Year;
-exports.Year    = Year;
-exports.Century = Century;
+exports.Year       = Year;
+exports.Century    = Century;
+exports.Millennium = Millennium;
 
 // EOF
