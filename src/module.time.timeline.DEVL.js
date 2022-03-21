@@ -59,9 +59,6 @@ const
 
 class Year {
 
-    /** @type {Map<Month>} */
-    #months = new Map();
-
     constructor(year) {
         if (year instanceof Year) return year;
         _.assert(_.isSafeInteger(year), 'expected year to be an integer');
@@ -73,25 +70,22 @@ class Year {
         this.year      = year;
         this.beginning = new Date(year, 0);
         this.end       = new Date(year + 1, 0);
+        this._months   = new Array(12);
 
-        _.lockProp(this, 'id', 'year', 'beginning', 'end');
+        _.hideProp(this, '_months');
+        _.lockProp(this, 'id', 'year', 'beginning', 'end', '_months');
         _timeline.set(id, this);
     } // Year#constructor
 
     month(month) {
         _.assert(_.isSafeInteger(month), 'expected month to be an integer');
-        if (this.#months.has(month)) return this.#months.get(month);
-        const entity = new Month(this, month);
-        this.#months.set(month, entity);
-        return entity;
+        if (month < 0 || month >= this._months.length) return null;
+        return this._months[month] || (this._months[month] = new Month(this, month));
     } // Year#month
 
 } // Year
 
 class Month {
-
-    /** @type {Map<Day>} */
-    #days = new Map();
 
     constructor(year, month) {
         year = new Year(year);
@@ -106,17 +100,17 @@ class Month {
         this.month     = month;
         this.beginning = new Date(year.year, month);
         this.end       = new Date(year.year, month + 1);
+        this._days     = new Array(new Date(year.year, month + 1, 0).getDate());
 
-        _.lockProp(this, 'id', 'year', 'month', 'beginning', 'end');
+        _.hideProp(this, '_days');
+        _.lockProp(this, 'id', 'year', 'month', 'beginning', 'end', '_days');
         _timeline.set(id, this);
     } // Month#constructor
 
     day(day) {
         _.assert(_.isSafeInteger(day), 'expected day to be an integer');
-        if (this.#days.has(day)) return this.#days.get(day);
-        const entity = new Day(this.year, this, day);
-        this.#days.set(day, entity);
-        return entity;
+        if (day < 0 || day >= this._days.length) return null;
+        return this._days[day] || (this._days[day] = new Day(this.year, this, day));
     } // Month#day
 
 } // Month
