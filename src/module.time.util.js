@@ -35,6 +35,10 @@ _.isInteger = function (value) {
     return _.isNumber(value) && value === Math.floor(value);
 };
 
+_.isSafeInteger = function (value) {
+    return Number.isSafeInteger(value);
+};
+
 _.isString = function (value) {
     return typeof value === 'string';
 };
