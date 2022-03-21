@@ -40,9 +40,9 @@ function getTimelineEntity(entity, temporalEntity) {
         result['timestamp'] = (new Date).valueOf();
         result              = result['entity'];
         //debugger;
-    }
+    } // if ()
     return result;
-}
+} // getTimelineEntity()
 
 class Year {
 
