@@ -716,7 +716,7 @@ class Day {
         _.assert(month instanceof Month, 'Day#constructor : invalid month', TypeError);
         _.assert(_.isInteger(day) && day >= 0 && day < month.inDays, 'Day#constructor : invalid day', TypeError);
 
-        this['@id'] = `_:Y${month.year}/D${week}/`;
+        this['@id'] = `_:Y${month.year.year}/M${month.month}/D${day}/`;
         if (hasTimelineEntity(this))
             return getTimelineEntity(this);
 
