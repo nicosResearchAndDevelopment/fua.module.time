@@ -50,7 +50,7 @@ class Year {
      * @param {number} year
      */
     //constructor(year) {
-    //    
+    //
     //    _.assert(_.isInteger(year), 'Year#constructor : invalid year', TypeError);
     //
     //    this['@type']        = 'time:Year';
@@ -716,7 +716,7 @@ class Day {
         _.assert(month instanceof Month, 'Day#constructor : invalid month', TypeError);
         _.assert(_.isInteger(day) && day >= 0 && day < month.inDays, 'Day#constructor : invalid day', TypeError);
 
-        this['@id'] = `_:Y${year.year}/D${week}/`;
+        this['@id'] = `_:Y${month.year}/D${week}/`;
         if (hasTimelineEntity(this))
             return getTimelineEntity(this);
 

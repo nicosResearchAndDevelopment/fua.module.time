@@ -145,17 +145,17 @@ exports.Day   = Day;
 
 //region >> TEST <<
 
-const
-    day_2022_2_20_a = new Day(2022, 2, 20),
-    year_2022       = new Year(2022),
-    day_2022_2_20_b = new Day(year_2022, 2, 20),
-    month_2022_2_a  = year_2022.month(2),
-    month_2022_2_b  = new Month(year_2022, 2);
-
-console.log(day_2022_2_20_a === day_2022_2_20_b);
-console.log(month_2022_2_a === month_2022_2_b);
-console.log(day_2022_2_20_a.year === year_2022);
-console.log(month_2022_2_b.year === year_2022);
-console.log(day_2022_2_20_a.month === month_2022_2_b);
+// const
+//     day_2022_2_20_a = new Day(2022, 2, 20),
+//     year_2022       = new Year(2022),
+//     day_2022_2_20_b = new Day(year_2022, 2, 20),
+//     month_2022_2_a  = year_2022.month(2),
+//     month_2022_2_b  = new Month(year_2022, 2);
+//
+// console.log(day_2022_2_20_a === day_2022_2_20_b);
+// console.log(month_2022_2_a === month_2022_2_b);
+// console.log(day_2022_2_20_a.year === year_2022);
+// console.log(month_2022_2_b.year === year_2022);
+// console.log(day_2022_2_20_a.month === month_2022_2_b);
 
 //endregion >> TEST <<
