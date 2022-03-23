@@ -908,7 +908,7 @@ class Millennium {
 
         _.assert(_.isInteger(millennium), `Millennium#constructor : invalid millennium <${millennium}>`, TypeError);
 
-        this['@id'] = `_:CE${millennium}/`;
+        this['@id'] = `_:ML${millennium}/`;
         if (hasTimelineEntity(this))
             return getTimelineEntity(this);
 
