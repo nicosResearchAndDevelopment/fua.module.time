@@ -381,3 +381,43 @@ describe('fromXsdLiteral', () => {
     });
 
 });
+
+describe('fromPeriod', () => {
+
+    test('period-explicit = iso-date-time "/" iso-date-time', () => {
+        const
+            date_beginning  = new Date('2000-01-10T12:00:00Z'),
+            date_end        = new Date('2010-01-10T12:00:00Z'),
+            period_interval = time.fromPeriod(date_beginning.toISOString() + '/' + date_end);
+
+        expect(period_interval.dateBeginning.getTime()).toBe(date_beginning.getTime());
+        expect(period_interval.dateEnd.getTime()).toBe(date_end.getTime());
+
+        expect(() => time.fromPeriod(date_end.toISOString() + '/' + date_beginning)).toThrow();
+    });
+
+    test('period-start = iso-date-time "/" duration', () => {
+        const
+            date_beginning  = new Date('2000-01-10T12:00:00Z'),
+            date_end        = new Date('2010-01-10T12:00:00Z'),
+            period_interval = time.fromPeriod(date_beginning.toISOString() + '/P10Y');
+
+        expect(period_interval.dateBeginning.getTime()).toBe(date_beginning.getTime());
+        expect(period_interval.dateEnd.getTime()).toBe(date_end.getTime());
+
+        expect(() => time.fromPeriod(date_end.toISOString() + '/P-10Y')).toThrow();
+    });
+
+    test('period-end = duration "/" iso-date-time', () => {
+        const
+            date_beginning  = new Date('2000-01-10T12:00:00Z'),
+            date_end        = new Date('2010-01-10T12:00:00Z'),
+            period_interval = time.fromPeriod('P10Y/' + date_end);
+
+        expect(period_interval.dateBeginning.getTime()).toBe(date_beginning.getTime());
+        expect(period_interval.dateEnd.getTime()).toBe(date_end.getTime());
+
+        expect(() => time.fromPeriod('P-10Y/' + date_beginning)).toThrow();
+    });
+
+});

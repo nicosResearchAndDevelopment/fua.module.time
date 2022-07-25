@@ -370,6 +370,16 @@ method.fromXsdLiteral = function (literal, referenceDate) {
     return result;
 }; // method.fromXsdLiteral
 
+method.fromPeriod = function (periodString) {
+    // SEE https://datatracker.ietf.org/doc/html/rfc3339#appendix-A
+    // period          = period-explicit / period-start / period-end
+    // period-explicit = iso-date-time "/" iso-date-time
+    // period-start    = iso-date-time "/" duration
+    // period-end      = duration "/" iso-date-time
+    const [beginning, end] = periodString.split('/');
+    return new time.ProperInterval(beginning, end);
+}; // method.fromPeriod
+
 method.today = function () {
     let
         _date_ = new Date

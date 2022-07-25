@@ -20,13 +20,15 @@ time.Year           = Year;
 time.Century        = Century;
 time.Millennium     = Millennium;
 
-time.now            = method.now;
 time.from           = method.from;
 time.fromXsdLiteral = method.fromXsdLiteral;
-time.today          = method.today;
-time.tomorrow       = method.tomorrow;
-time.yesterday      = method.yesterday;
-time.stamp          = method.stamp;
+time.fromPeriod     = method.fromPeriod
+
+time.now       = method.now;
+time.today     = method.today;
+time.tomorrow  = method.tomorrow;
+time.yesterday = method.yesterday;
+time.stamp     = method.stamp;
 
 time.PREFIX = "time";
 time.URI    = "http://www.w3.org/2006/time#";
