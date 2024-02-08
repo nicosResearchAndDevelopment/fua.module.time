@@ -15,7 +15,7 @@
     "addon/easter/src/*"
   ],
   "devDependencies": {
-    "mocha": "^8.2.1",
+    "mocha": "^10.2.0",
     "expect": "^26.6.2"
   },
   "scripts": {
