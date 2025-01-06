@@ -1,5 +1,5 @@
 {
-  "name": "@nrd/fua.module.time",
+  "name": "@fua/module.time",
   "version": "1.0.0",
   "description": "",
   "exports": {
@@ -15,8 +15,9 @@
     "addon/easter/src/*"
   ],
   "devDependencies": {
-    "mocha": "^10.2.0",
-    "expect": "^26.6.2"
+    "@fua/core.util": "^1.0.12",
+    "expect": "26.x",
+    "mocha": "10.x"
   },
   "scripts": {
     "test": "mocha"
@@ -28,12 +29,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "ssh://git@git02.int.nsc.ag:10022/research/fua/module/time.git"
+    "url": "ssh://git@github.com:nicosResearchAndDevelopment/fua.module.time.git"
   },
   "keywords": [
-    "time",
-    "time ontology"
+    "time"
   ],
-  "author": "jlangkau@nicos-ag.com",
-  "license": "UNLICENSED"
+  "author": "Jörg Langkau <jlangkau@nicos-ag.com>",
+  "contributors": [
+    "Simon Petrac <pfoerdie@gmail.com>"
+  ],
+  "license": "MIT"
 }
